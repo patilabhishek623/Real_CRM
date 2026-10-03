@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Follow-Up Leads - Real_Crm</title>
+    <title>Lead Response - Real_Crm</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -23,10 +24,23 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
+        .timeline-line {
+            position: absolute;
+            left: 19px;
+            top: 42px;
+            bottom: -20px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .timeline-last .timeline-line {
+            display: none;
+        }
+
         .detail-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px 18px;
+            gap: 12px 18px;
         }
 
         @media (max-width: 640px) {
@@ -37,714 +51,295 @@
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased">
 
-<header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+<body class="bg-slate-50 min-h-screen text-slate-800 antialiased">
 
-        <div class="flex items-center space-x-3">
 
-            <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                <i class="fa-solid fa-calendar-days text-lg"></i>
+<!-- ============================================================
+     HEADER
+============================================================ -->
+
+<header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-10 h-10 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid fa-calendar-days"></i>
             </div>
 
             <div>
-                <span class="text-xl font-extrabold tracking-tight text-slate-900">
-                    Real_<span class="text-emerald-600">Crm</span>
-                </span>
 
-                <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">
+                <div class="text-lg font-extrabold text-slate-900">
+                    Real_<span class="text-emerald-600">Crm</span>
+                </div>
+
+                <div class="text-[9px] uppercase tracking-wider font-bold text-slate-400">
                     Lead Management
-                </span>
+                </div>
+
             </div>
 
         </div>
 
-        <div class="flex items-center gap-3 sm:gap-4">
+
+        <div class="flex items-center gap-3">
 
             <span
                 id="activeUserBadge"
-                class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"
+                class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-2 rounded-xl border border-slate-200"
             ></span>
+
 
             <a
                 href="/"
                 onclick="logoutUser()"
-                class="group inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition-all"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-xl text-xs font-bold transition"
             >
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
+                Logout
             </a>
 
         </div>
+
     </div>
+
 </header>
 
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
 
-    <!-- SIDEBAR -->
-    <aside class="md:col-span-1">
+<!-- ============================================================
+     PAGE
+============================================================ -->
 
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
-                Member Menu
-            </p>
 
-            <a
-                href="teammember.html"
-                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition"
-            >
-                <i class="fa-solid fa-house w-5 text-slate-400"></i>
-                Dashboard
-            </a>
+    <!-- BACK BUTTON -->
 
-            <a
-                href="assignedmembertask.html"
-                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition"
-            >
-                <i class="fa-solid fa-list-check w-5 text-slate-400"></i>
-                Assigned Tasks
+    <div class="mb-6">
 
-                <span
-                    id="sidebarPendingCount"
-                    class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200"
+        <a
+            href="followups.html"
+            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-emerald-600 transition"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Follow-Ups
+        </a>
+
+    </div>
+
+
+
+    <!-- ========================================================
+         LEAD HEADER
+    ========================================================= -->
+
+    <div
+        id="leadHeader"
+        class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 mb-6"
+    >
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+
+            <div>
+
+                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">
+                    Lead
+                </p>
+
+                <h1
+                    id="leadName"
+                    class="text-2xl font-bold text-slate-900"
                 >
-                    0
-                </span>
-            </a>
+                    Loading...
+                </h1>
 
-            <a
-                href="followups.html"
-                class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm"
-            >
-                <i class="fa-solid fa-calendar-days w-5 text-emerald-100"></i>
-                Follow Ups
-
-                <span
-                    id="sidebarFollowupCount"
-                    class="ml-auto bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full"
+                <p
+                    id="leadContact"
+                    class="text-sm text-slate-500 mt-2"
                 >
-                    0
-                </span>
-            </a>
+                    —
+                </p>
 
-            <a
-                href="visits.html"
-                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition"
+            </div>
+
+
+            <div
+                id="leadStatusBadge"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold"
             >
-                <i class="fa-solid fa-map-location-dot w-5 text-slate-400"></i>
-                Visits
-
-                <span
-                    id="sidebarVisitCount"
-                    class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2 py-0.5 rounded-full border border-teal-200"
-                >
-                    0
-                </span>
-            </a>
+                Loading...
+            </div>
 
         </div>
 
-    </aside>
+    </div>
 
 
-    <!-- MAIN -->
-    <main class="md:col-span-3">
 
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+    <!-- ========================================================
+         CUSTOMER HISTORY
+    ========================================================= -->
 
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
 
-                <div>
 
-                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900">
-                        Scheduled Follow-Ups
-                    </h1>
+        <!-- TITLE -->
 
-                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                        Click any lead name to view and record the complete call log.
-                    </p>
+        <div class="flex items-center gap-3 pb-6 border-b border-slate-100">
 
-                </div>
+            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
 
-                <div
-                    id="followupCountBadge"
-                    class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200"
-                >
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>0 Active Follow-ups</span>
-                </div>
+                <i class="fa-solid fa-clock-rotate-left text-lg"></i>
 
             </div>
 
 
-            <!-- TABS -->
-            <div class="flex flex-wrap gap-2 mt-6">
+            <div>
 
-                <button
-                    onclick="switchTab('lapsed')"
-                    id="tab-lapsed"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-rose-600 text-white border-rose-600"
-                >
-                    Lapsed Calls
-                    <span id="badge-lapsed" class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">
-                        0
-                    </span>
-                </button>
+                <h2 class="text-xl font-bold text-slate-900">
+                    Customer History Timeline
+                </h2>
 
-                <button
-                    onclick="switchTab('today')"
-                    id="tab-today"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200"
-                >
-                    Today
-                    <span id="badge-today" class="bg-slate-200 px-2 py-0.5 rounded-full text-[10px]">
-                        0
-                    </span>
-                </button>
-
-                <button
-                    onclick="switchTab('tomorrow')"
-                    id="tab-tomorrow"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200"
-                >
-                    Tomorrow
-                    <span id="badge-tomorrow" class="bg-slate-200 px-2 py-0.5 rounded-full text-[10px]">
-                        0
-                    </span>
-                </button>
-
-                <button
-                    onclick="switchTab('other')"
-                    id="tab-other"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200"
-                >
-                    Other / Upcoming
-                    <span id="badge-other" class="bg-slate-200 px-2 py-0.5 rounded-full text-[10px]">
-                        0
-                    </span>
-                </button>
-
-            </div>
-
-
-            <!-- TABLE -->
-            <div class="overflow-x-auto mt-6">
-
-                <table class="w-full text-left border-collapse">
-
-                    <thead>
-
-                        <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-
-                            <th class="py-3.5 px-4">
-                                Lead Name
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Contact Number
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Follow-Up Option
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Date & Time
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Call Log
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody
-                        id="followupTableBody"
-                        class="divide-y divide-slate-100 text-sm"
-                    >
-
-                        <tr>
-
-                            <td colspan="5" class="text-center py-12 text-slate-400">
-
-                                <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
-
-                                <p class="text-xs font-medium">
-                                    Loading follow-ups...
-                                </p>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                <p class="text-xs text-slate-400 mt-1">
+                    Complete customer interaction history
+                </p>
 
             </div>
 
         </div>
 
-    </main>
+
+
+        <!-- TIMELINE -->
+
+        <div
+            id="customerHistoryTimeline"
+            class="mt-8"
+        >
+
+            <div class="text-center py-12 text-slate-400">
+
+                <div class="inline-block animate-spin rounded-full h-7 w-7 border-2 border-emerald-500 border-t-transparent mb-3"></div>
+
+                <p class="text-sm font-medium">
+                    Loading customer history...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
 
+
 <script>
 
+
+/* ============================================================
+   SESSION
+============================================================ */
+
 const currentUsername =
-    localStorage.getItem('crm_username');
+    localStorage.getItem("crm_username");
 
 
 if (!currentUsername) {
 
-    alert('No active session found. Please log in again.');
+    alert(
+        "No active session found. Please log in again."
+    );
 
-    window.location.href = '/';
+    window.location.href = "/";
 
 }
 
 
-document.getElementById('activeUserBadge').innerHTML = `
-    <i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i>
+document.getElementById(
+    "activeUserBadge"
+).innerHTML = `
+
+    <i class="fa-solid fa-user-shield text-emerald-600 mr-1"></i>
+
     User:
+
     <b class="text-slate-900 ml-1">
         ${escapeHtml(currentUsername)}
     </b>
+
 `;
 
 
-let globalFollowupTasks = [];
 
-let currentActiveTab = 'lapsed';
+/* ============================================================
+   GET LEAD ID
+============================================================ */
+
+const urlParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const leadId =
+    urlParams.get("id");
+
+
+if (!leadId) {
+
+    showError(
+        "No lead ID was provided in the URL."
+    );
+
+}
+
 
 
 /* ============================================================
-   HELPERS
+   HTML ESCAPE
 ============================================================ */
-
-function valueOrDash(value) {
-
-    if (
-        value === undefined ||
-        value === null ||
-        String(value).trim() === ''
-    ) {
-        return '—';
-    }
-
-    return String(value);
-
-}
-
-
-function valueOrEmpty(value) {
-
-    if (
-        value === undefined ||
-        value === null
-    ) {
-        return '';
-    }
-
-    return String(value).trim();
-
-}
-
-
-function isYes(value) {
-
-    return String(value || '')
-        .trim()
-        .toLowerCase() === 'yes';
-
-}
-
 
 function escapeHtml(value) {
 
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
-
-function formatDateString(date) {
-
-    const d = new Date(date);
-
-    if (Number.isNaN(d.getTime())) {
-        return '';
-    }
-
-    let month = String(d.getMonth() + 1);
-
-    let day = String(d.getDate());
-
-    const year = d.getFullYear();
-
-    if (month.length < 2) {
-        month = '0' + month;
-    }
-
-    if (day.length < 2) {
-        day = '0' + day;
-    }
-
-    return `${year}-${month}-${day}`;
-
-}
 
 
 /* ============================================================
-   DATE PARSER
+   VALUE FORMATTER
 ============================================================ */
 
-function parseTaskTargetDate(task) {
-
-    let dateStr =
-        valueOrEmpty(task.followUpDate);
-
-    let timeStr =
-        valueOrEmpty(task.followUpTime) || '00:00';
-
-
-    if (!dateStr) {
-        return null;
-    }
-
-
-    if (
-        dateStr.length > 10 &&
-        dateStr.includes(':')
-    ) {
-
-        const parts =
-            dateStr.match(
-                /^(\d{4}-\d{2}-\d{2})[T ]?(\d{2}:\d{2})/
-            );
-
-        if (parts) {
-
-            dateStr = parts[1];
-
-            timeStr = parts[2];
-
-        }
-
-    }
-
-
-    if (!/^\d{2}:\d{2}$/.test(timeStr)) {
-        timeStr = '00:00';
-    }
-
-
-    const result =
-        new Date(`${dateStr}T${timeStr}:00`);
-
-
-    if (Number.isNaN(result.getTime())) {
-        return null;
-    }
-
-
-    return result;
-
-}
-
-
-/* ============================================================
-   LAPSED
-============================================================ */
-
-function getLapsedDetails(targetDate) {
-
-    if (!targetDate) {
-        return null;
-    }
-
-    const diffMs =
-        new Date() - targetDate;
-
-
-    if (diffMs <= 0) {
-        return null;
-    }
-
-
-    const diffDays =
-        Math.floor(
-            diffMs /
-            (1000 * 60 * 60 * 24)
-        );
-
-
-    const diffHours =
-        Math.floor(
-            (
-                diffMs %
-                (1000 * 60 * 60 * 24)
-            ) /
-            (1000 * 60 * 60)
-        );
-
-
-    if (diffDays > 0) {
-
-        return `${diffDays}d ${diffHours}h Lapsed`;
-
-    }
-
-
-    const diffMinutes =
-        Math.floor(
-            (
-                diffMs %
-                (1000 * 60 * 60)
-            ) /
-            (1000 * 60)
-        );
-
-
-    return `${diffHours}h ${diffMinutes}m Lapsed`;
-
-}
-
-
-/* ============================================================
-   HISTORY
-============================================================ */
-
-function getLatestCallLog(task) {
-
-    if (
-        Array.isArray(task.history) &&
-        task.history.length
-    ) {
-
-        const callLogs =
-            task.history.filter(item =>
-                String(item?.title || '')
-                    .trim()
-                    .toLowerCase() === 'call log'
-            );
-
-
-        if (callLogs.length) {
-
-            return callLogs[callLogs.length - 1];
-
-        }
-
-    }
-
+function formatValue(value) {
 
     /*
-     * Also support the call-log fields directly
-     * on the task.
+     * Empty value
      */
 
-    return task;
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
 
-}
+        return "—";
 
-
-/* ============================================================
-   CALL LOG DETAILS
-============================================================ */
-
-function callLogDetails(task) {
-
-    const log =
-        getLatestCallLog(task);
-
-
-    return `
-
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 min-w-[360px] max-w-[520px]">
-
-            <div class="flex items-center gap-2 mb-3">
-
-                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
-
-                    <i class="fa-solid fa-phone"></i>
-
-                </div>
-
-                <div>
-
-                    <div class="text-xs font-bold text-slate-800">
-                        ${escapeHtml(
-                            valueOrDash(log.title || 'Call Log')
-                        )}
-                    </div>
-
-                    <div class="text-[10px] text-slate-400">
-                        Complete Call Log
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="detail-grid">
-
-                ${detailItem(
-                    'Call Connected',
-                    log.call_connected
-                )}
-
-                ${detailItem(
-                    'Remark',
-                    log.remark
-                )}
-
-                ${detailItem(
-                    'Follow-Up Required',
-                    log.followUpRequired
-                )}
-
-                ${detailItem(
-                    'Follow-Up Option',
-                    log.followUpOption
-                )}
-
-                ${detailItem(
-                    'Follow-Up Date',
-                    log.followUpDate
-                )}
-
-                ${detailItem(
-                    'Follow-Up Time',
-                    log.followUpTime
-                )}
-
-                ${detailItem(
-                    'Visit Scheduled',
-                    log.visitScheduled
-                )}
-
-                ${detailItem(
-                    'Visit Date',
-                    log.visitDate
-                )}
-
-                ${detailItem(
-                    'Visit Time',
-                    log.visitTime
-                )}
-
-                ${detailItem(
-                    'Visit Building',
-                    log.visitBuilding
-                )}
-
-                ${detailItem(
-                    'Visit Location',
-                    log.visitLocation
-                )}
-
-                ${detailItem(
-                    'Visit Note',
-                    log.visitNote
-                )}
-
-                ${detailItem(
-                    'Visitor Coming',
-                    log.visitorComing
-                )}
-
-                ${detailItem(
-                    'Reschedule Reason',
-                    log.rescheduleReason
-                )}
-
-                ${detailItem(
-                    'Visit Interest Customer',
-                    log.visitInterestCustomer
-                )}
-
-                ${detailItem(
-                    'Reschedule Visit Choice',
-                    log.rescheduleVisitChoice
-                )}
-
-                ${detailItem(
-                    'Lead Status',
-                    log.leadStatus
-                )}
-
-                ${detailItem(
-                    'Close Reason',
-                    log.closeReason
-                )}
-
-                ${detailItem(
-                    'Logged At',
-                    formatLoggedAt(log.loggedAt)
-                )}
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-/* ============================================================
-   DETAIL ITEM
-============================================================ */
-
-function detailItem(label, value) {
-
-    return `
-
-        <div class="border-b border-slate-200/70 pb-2">
-
-            <div class="text-[9px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">
-                ${escapeHtml(label)}
-            </div>
-
-            <div class="text-xs font-semibold text-slate-700 break-words">
-                ${escapeHtml(valueOrDash(value))}
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-/* ============================================================
-   LOGGED AT
-============================================================ */
-
-function formatLoggedAt(value) {
-
-    if (!value) {
-        return '—';
     }
 
 
-    let dateValue = value;
-
-
     /*
-     * MongoDB extended JSON:
+     * MongoDB Extended JSON date:
      *
      * {
      *   "$date": "2026-10-03T18:34:59.751Z"
@@ -752,21 +347,154 @@ function formatLoggedAt(value) {
      */
 
     if (
-        typeof value === 'object' &&
+        typeof value === "object" &&
+        value !== null &&
         value.$date
     ) {
 
-        dateValue = value.$date;
+        const date =
+            new Date(value.$date);
+
+
+        if (!isNaN(date.getTime())) {
+
+            return date.toLocaleString();
+
+        }
+
+
+        return String(value.$date);
+
+    }
+
+
+    /*
+     * Normal Date object
+     */
+
+    if (value instanceof Date) {
+
+        return value.toLocaleString();
+
+    }
+
+
+    /*
+     * Array
+     */
+
+    if (Array.isArray(value)) {
+
+        if (!value.length) {
+            return "—";
+        }
+
+        return value
+            .map(item => formatValue(item))
+            .join(", ");
+
+    }
+
+
+    /*
+     * Other objects
+     */
+
+    if (typeof value === "object") {
+
+        try {
+
+            return JSON.stringify(value);
+
+        } catch (error) {
+
+            return String(value);
+
+        }
+
+    }
+
+
+    return String(value);
+
+}
+
+
+
+/* ============================================================
+   FIELD LABEL
+============================================================ */
+
+function formatFieldLabel(key) {
+
+    if (!key) {
+        return "Unknown Field";
+    }
+
+
+    return String(key)
+
+        .replace(/_/g, " ")
+
+        .replace(
+            /([a-z])([A-Z])/g,
+            "$1 $2"
+        )
+
+        .replace(
+            /\b\w/g,
+            character =>
+                character.toUpperCase()
+        );
+
+}
+
+
+
+/* ============================================================
+   FORMAT LOGGED AT
+============================================================ */
+
+function formatLoggedAt(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "—";
+
+    }
+
+
+    let rawValue = value;
+
+
+    /*
+     * MongoDB:
+     *
+     * { "$date": "..." }
+     */
+
+    if (
+        typeof value === "object" &&
+        value.$date
+    ) {
+
+        rawValue = value.$date;
 
     }
 
 
     const date =
-        new Date(dateValue);
+        new Date(rawValue);
 
 
-    if (Number.isNaN(date.getTime())) {
-        return valueOrDash(value);
+    if (isNaN(date.getTime())) {
+
+        return formatValue(value);
+
     }
 
 
@@ -775,204 +503,378 @@ function formatLoggedAt(value) {
 }
 
 
+
 /* ============================================================
-   TAB SWITCH
+   GET ALL CALL KEYS
 ============================================================ */
 
-function switchTab(tab) {
+function getCallKeys(data) {
 
-    currentActiveTab = tab;
+    if (
+        !data ||
+        typeof data !== "object"
+    ) {
 
+        return [];
 
-    [
-        'lapsed',
-        'today',
-        'tomorrow',
-        'other'
-    ].forEach(name => {
-
-        const btn =
-            document.getElementById(
-                `tab-${name}`
-            );
+    }
 
 
-        if (name === tab) {
+    return Object.keys(data)
 
-            btn.className =
-                name === 'lapsed'
-                ?
-                'px-4 py-2 text-xs font-bold rounded-xl border bg-rose-600 text-white border-rose-600'
-                :
-                'px-4 py-2 text-xs font-bold rounded-xl border bg-emerald-600 text-white border-emerald-600';
+        .filter(key =>
+            /^call\d+$/i.test(key)
+        )
 
-        } else {
+        .sort((a, b) => {
 
-            btn.className =
-                'px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200';
-
-        }
-
-    });
+            const numberA =
+                parseInt(
+                    a.replace(/\D/g, ""),
+                    10
+                );
 
 
-    renderTable();
+            const numberB =
+                parseInt(
+                    b.replace(/\D/g, ""),
+                    10
+                );
+
+
+            return numberA - numberB;
+
+        });
 
 }
 
 
+
 /* ============================================================
-   RENDER TABLE
+   FIND HISTORY SOURCE
 ============================================================ */
 
-function renderTable() {
+function findHistorySource(data) {
 
-    const now =
-        new Date();
+    /*
+     * Case 1:
+     *
+     * Backend directly returns:
+     *
+     * {
+     *   call1: {...},
+     *   call2: {...}
+     * }
+     */
 
+    if (
+        data &&
+        typeof data === "object" &&
+        getCallKeys(data).length
+    ) {
 
-    const todayStr =
-        formatDateString(now);
+        return data;
 
-
-    const tomorrow =
-        new Date();
-
-
-    tomorrow.setDate(
-        tomorrow.getDate() + 1
-    );
-
-
-    const tomorrowStr =
-        formatDateString(tomorrow);
-
-
-    const lapsedTasks = [];
-
-    const todayTasks = [];
-
-    const tomorrowTasks = [];
-
-    const otherTasks = [];
-
-
-    globalFollowupTasks.forEach(task => {
-
-        const targetDate =
-            parseTaskTargetDate(task);
-
-
-        if (!targetDate) {
-
-            otherTasks.push(task);
-
-            return;
-
-        }
-
-
-        const dateStr =
-            formatDateString(targetDate);
-
-
-        if (targetDate < now) {
-
-            lapsedTasks.push(task);
-
-        }
-
-        else if (dateStr === todayStr) {
-
-            todayTasks.push(task);
-
-        }
-
-        else if (dateStr === tomorrowStr) {
-
-            tomorrowTasks.push(task);
-
-        }
-
-        else {
-
-            otherTasks.push(task);
-
-        }
-
-    });
-
-
-    document.getElementById('badge-lapsed').textContent =
-        lapsedTasks.length;
-
-
-    document.getElementById('badge-today').textContent =
-        todayTasks.length;
-
-
-    document.getElementById('badge-tomorrow').textContent =
-        tomorrowTasks.length;
-
-
-    document.getElementById('badge-other').textContent =
-        otherTasks.length;
-
-
-    let activeList =
-        lapsedTasks;
-
-
-    if (currentActiveTab === 'today') {
-        activeList = todayTasks;
     }
 
 
-    if (currentActiveTab === 'tomorrow') {
-        activeList = tomorrowTasks;
+    /*
+     * Case 2:
+     *
+     * Backend returns:
+     *
+     * {
+     *   task: {
+     *      call1: {...}
+     *   }
+     * }
+     */
+
+    if (
+        data &&
+        data.task &&
+        typeof data.task === "object"
+    ) {
+
+        if (
+            getCallKeys(data.task).length
+        ) {
+
+            return data.task;
+
+        }
+
     }
 
 
-    if (currentActiveTab === 'other') {
-        activeList = otherTasks;
+    /*
+     * Case 3:
+     *
+     * Backend returns:
+     *
+     * {
+     *   lead: {
+     *      call1: {...}
+     *   }
+     * }
+     */
+
+    if (
+        data &&
+        data.lead &&
+        typeof data.lead === "object"
+    ) {
+
+        if (
+            getCallKeys(data.lead).length
+        ) {
+
+            return data.lead;
+
+        }
+
     }
 
 
-    const tbody =
-        document.getElementById(
-            'followupTableBody'
-        );
+    return {};
+
+}
 
 
-    if (!activeList.length) {
 
-        tbody.innerHTML = `
+/* ============================================================
+   RENDER SINGLE FIELD
+============================================================ */
 
-            <tr>
+function renderTimelineField(
+    fieldName,
+    fieldValue
+) {
 
-                <td
-                    colspan="5"
-                    class="text-center py-16 text-slate-400"
-                >
+    let displayValue;
 
-                    <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-slate-100">
 
-                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+    /*
+     * Logged At gets special formatting
+     */
+
+    if (
+        fieldName.toLowerCase() ===
+        "loggedat"
+    ) {
+
+        displayValue =
+            formatLoggedAt(fieldValue);
+
+    } else {
+
+        displayValue =
+            formatValue(fieldValue);
+
+    }
+
+
+    return `
+
+        <div class="border-b border-slate-100 pb-3">
+
+            <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">
+
+                ${escapeHtml(
+                    formatFieldLabel(fieldName)
+                )}
+
+            </div>
+
+
+            <div class="text-sm font-semibold text-slate-700 break-words">
+
+                ${escapeHtml(displayValue)}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* ============================================================
+   RENDER ONE CALL
+============================================================ */
+
+function renderCallTimelineItem(
+    callKey,
+    callData,
+    index,
+    total
+) {
+
+    const callNumber =
+        callKey.replace(/\D/g, "") ||
+        String(index + 1);
+
+
+    /*
+     * Every backend property is rendered.
+     */
+
+    const fields =
+        Object.entries(callData)
+            .map(([key, value]) => {
+
+                return renderTimelineField(
+                    key,
+                    value
+                );
+
+            })
+            .join("");
+
+
+    return `
+
+        <div
+            class="relative pl-12 ${
+                index === total - 1
+                    ? "timeline-last"
+                    : ""
+            }"
+        >
+
+
+            <!-- Timeline line -->
+
+            <div class="timeline-line"></div>
+
+
+            <!-- Timeline icon -->
+
+            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-emerald-100 border-4 border-white shadow-sm flex items-center justify-center z-10">
+
+                <i class="fa-solid fa-phone text-emerald-600"></i>
+
+            </div>
+
+
+
+            <!-- Call card -->
+
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+
+
+                <!-- Header -->
+
+                <div class="px-5 py-4 bg-slate-50 border-b border-slate-200">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+
+
+                        <div>
+
+                            <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+                                Customer History
+                            </div>
+
+                            <h3 class="text-lg font-bold text-slate-900 mt-0.5">
+                                Call ${escapeHtml(callNumber)}
+                            </h3>
+
+                        </div>
+
+
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                            Call Log
+
+                        </div>
 
                     </div>
 
-                    <p class="text-sm font-semibold text-slate-700">
-                        No records found!
-                    </p>
+                </div>
 
-                    <p class="text-xs text-slate-400 mt-0.5">
-                        There are no follow-ups found in
-                        ${escapeHtml(currentActiveTab)}.
-                    </p>
 
-                </td>
 
-            </tr>
+                <!-- ALL BACKEND FIELDS -->
+
+                <div class="p-5">
+
+                    <div class="detail-grid">
+
+                        ${fields}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* ============================================================
+   RENDER CUSTOMER HISTORY
+============================================================ */
+
+function renderCustomerHistoryTimeline(
+    backendData
+) {
+
+    const container =
+        document.getElementById(
+            "customerHistoryTimeline"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const historyData =
+        findHistorySource(
+            backendData
+        );
+
+
+    const callKeys =
+        getCallKeys(historyData);
+
+
+    /*
+     * No calls
+     */
+
+    if (!callKeys.length) {
+
+        container.innerHTML = `
+
+            <div class="text-center py-16">
+
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 mb-4">
+
+                    <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+
+                </div>
+
+                <p class="text-sm font-bold text-slate-700">
+                    No Customer History
+                </p>
+
+                <p class="text-xs text-slate-400 mt-1">
+                    No call logs were found for this lead.
+                </p>
+
+            </div>
 
         `;
 
@@ -981,183 +883,219 @@ function renderTable() {
     }
 
 
-    tbody.innerHTML =
-        activeList.map(task => {
+    /*
+     * Render all calls:
+     *
+     * call1
+     * call2
+     * call3
+     * ...
+     */
 
-            const targetDate =
-                parseTaskTargetDate(task);
+    container.innerHTML =
+        callKeys
+            .map((callKey, index) => {
 
-
-            const lapsedLabel =
-                getLapsedDetails(targetDate);
-
-
-            const taskId =
-                task._id || task.id || '';
-
-
-            const leadName =
-                valueOrDash(task.name);
+                const callData =
+                    historyData[callKey];
 
 
-            const contactNumber =
-                valueOrEmpty(
-                    task.contactNumber
+                if (
+                    !callData ||
+                    typeof callData !== "object"
+                ) {
+
+                    return "";
+
+                }
+
+
+                return renderCallTimelineItem(
+                    callKey,
+                    callData,
+                    index,
+                    callKeys.length
                 );
 
-
-            const followUpOption =
-                valueOrDash(
-                    task.followUpOption
-                );
-
-
-            const followUpDate =
-                valueOrDash(
-                    task.followUpDate
-                );
-
-
-            const followUpTime =
-                valueOrDash(
-                    task.followUpTime
-                );
-
-
-            return `
-
-                <tr class="hover:bg-slate-50/60 transition-colors align-top">
-
-                    <!-- LEAD NAME -->
-
-                    <td class="py-4 px-4">
-
-                        <a
-                            href="lead-response.html?id=${encodeURIComponent(taskId)}"
-                            class="font-semibold text-slate-900 hover:text-emerald-600 underline decoration-slate-300"
-                        >
-                            ${escapeHtml(leadName)}
-                        </a>
-
-                    </td>
-
-
-                    <!-- CONTACT -->
-
-                    <td class="py-4 px-4 text-slate-600">
-
-                        ${
-                            contactNumber
-                            ?
-                            `
-                            <a
-                                href="tel:${encodeURIComponent(contactNumber)}"
-                                class="inline-flex items-center gap-1.5 hover:text-emerald-600"
-                            >
-
-                                <i class="fa-solid fa-phone text-xs text-slate-400"></i>
-
-                                ${escapeHtml(contactNumber)}
-
-                            </a>
-                            `
-                            :
-                            `
-                            <span class="text-slate-400 italic">
-                                —
-                            </span>
-                            `
-                        }
-
-                    </td>
-
-
-                    <!-- FOLLOW-UP -->
-
-                    <td class="py-4 px-4">
-
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 font-semibold rounded-xl text-xs border border-amber-200">
-
-                            <i class="fa-solid fa-tag text-[10px]"></i>
-
-                            ${escapeHtml(followUpOption)}
-
-                        </span>
-
-                    </td>
-
-
-                    <!-- DATE -->
-
-                    <td class="py-4 px-4 text-slate-600">
-
-                        <div class="flex flex-wrap gap-2 items-center">
-
-                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">
-                                ${escapeHtml(followUpDate)}
-                            </span>
-
-                            <span class="text-xs text-slate-400">
-                                ${escapeHtml(followUpTime)}
-                            </span>
-
-                            ${
-                                lapsedLabel
-                                ?
-                                `
-                                <span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200">
-
-                                    <i class="fa-solid fa-clock-rotate-left mr-1"></i>
-
-                                    ${escapeHtml(lapsedLabel)}
-
-                                </span>
-                                `
-                                :
-                                ''
-                            }
-
-                        </div>
-
-                    </td>
-
-
-                    <!-- COMPLETE CALL LOG -->
-
-                    <td class="py-4 px-4">
-
-                        ${callLogDetails(task)}
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }).join('');
+            })
+            .join("");
 
 }
 
 
+
 /* ============================================================
-   LOAD DATA
+   UPDATE LEAD HEADER
 ============================================================ */
 
-async function loadFollowUps() {
+function updateLeadHeader(
+    backendData
+) {
+
+    let lead =
+        backendData;
+
+
+    if (
+        backendData &&
+        backendData.lead
+    ) {
+
+        lead =
+            backendData.lead;
+
+    }
+
+
+    if (
+        backendData &&
+        backendData.task
+    ) {
+
+        lead =
+            backendData.task;
+
+    }
+
+
+    if (
+        !lead ||
+        typeof lead !== "object"
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * Name
+     */
+
+    const name =
+        lead.name ||
+        lead.customerName ||
+        lead.leadName ||
+        "Lead";
+
+
+    document.getElementById(
+        "leadName"
+    ).textContent =
+        formatValue(name);
+
+
+    /*
+     * Contact
+     */
+
+    const contact =
+        lead.contactNumber ||
+        lead.phone ||
+        lead.mobile ||
+        "";
+
+
+    document.getElementById(
+        "leadContact"
+    ).innerHTML =
+        contact
+        ?
+        `
+            <a
+                href="tel:${encodeURIComponent(contact)}"
+                class="inline-flex items-center gap-2 hover:text-emerald-600"
+            >
+
+                <i class="fa-solid fa-phone text-xs"></i>
+
+                ${escapeHtml(contact)}
+
+            </a>
+        `
+        :
+        "Contact Number: —";
+
+
+    /*
+     * Status
+     */
+
+    const status =
+        lead.leadStatus ||
+        lead.status ||
+        "—";
+
+
+    const statusBadge =
+        document.getElementById(
+            "leadStatusBadge"
+        );
+
+
+    statusBadge.textContent =
+        status;
+
+
+    if (
+        String(status)
+            .toLowerCase() === "completed"
+    ) {
+
+        statusBadge.className =
+            "inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold";
+
+    }
+
+}
+
+
+
+/* ============================================================
+   FIND LEAD RESPONSE
+============================================================ */
+
+async function loadLeadData() {
 
     try {
 
-        const response =
+        /*
+         * First try the lead-response endpoint.
+         */
+
+        let response =
             await fetch(
-                `/api/member-tasks/${encodeURIComponent(currentUsername)}`,
+                `/api/lead-response/${encodeURIComponent(leadId)}`,
                 {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
-                        'Accept': 'application/json'
+                        "Accept": "application/json"
                     },
-                    cache: 'no-store'
+                    cache: "no-store"
                 }
             );
+
+
+        /*
+         * If that endpoint doesn't exist,
+         * fall back to member tasks.
+         */
+
+        if (!response.ok) {
+
+            response =
+                await fetch(
+                    `/api/member-tasks/${encodeURIComponent(currentUsername)}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json"
+                        },
+                        cache: "no-store"
+                    }
+                );
+
+        }
 
 
         if (!response.ok) {
@@ -1173,138 +1111,136 @@ async function loadFollowUps() {
             await response.json();
 
 
+        /*
+         * If using member-tasks endpoint,
+         * find the requested lead.
+         */
+
+        let finalData =
+            data;
+
+
         if (
-            !data.success ||
-            !Array.isArray(data.tasks)
+            data &&
+            Array.isArray(data.tasks)
         ) {
 
-            throw new Error(
-                data.message ||
-                'No task data returned from server.'
-            );
+            const task =
+                data.tasks.find(item => {
+
+                    const itemId =
+                        item._id ||
+                        item.id;
+
+                    return String(itemId) ===
+                        String(leadId);
+
+                });
+
+
+            if (!task) {
+
+                throw new Error(
+                    "Lead was not found in the assigned tasks."
+                );
+
+            }
+
+
+            finalData =
+                task;
 
         }
 
 
-        const tasks =
-            data.tasks;
+        /*
+         * Update header
+         */
+
+        updateLeadHeader(
+            finalData
+        );
 
 
         /*
-         * Follow-ups:
-         *
-         * Yes / yes / YES all work.
+         * Render ALL call logs
          */
 
-        globalFollowupTasks =
-            tasks.filter(task =>
-                isYes(
-                    task.followUpRequired
-                )
-            );
-
-
-        /*
-         * Pending tasks.
-         */
-
-        const pendingTasks =
-            tasks.filter(task => {
-
-                const status =
-                    valueOrEmpty(
-                        task.status
-                    ).toLowerCase();
-
-                return status !== 'completed';
-
-            });
-
-
-        /*
-         * Visits.
-         */
-
-        const visitTasks =
-            tasks.filter(task =>
-                isYes(task.visitRequired) ||
-                isYes(task.visitScheduled)
-            );
-
-
-        document.getElementById(
-            'sidebarPendingCount'
-        ).textContent =
-            pendingTasks.length;
-
-
-        document.getElementById(
-            'sidebarFollowupCount'
-        ).textContent =
-            globalFollowupTasks.length;
-
-
-        document.getElementById(
-            'sidebarVisitCount'
-        ).textContent =
-            visitTasks.length;
-
-
-        document.getElementById(
-            'followupCountBadge'
-        ).innerHTML = `
-
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-
-            <span>
-                ${globalFollowupTasks.length}
-                Active Follow-ups
-            </span>
-
-        `;
-
-
-        renderTable();
+        renderCustomerHistoryTimeline(
+            finalData
+        );
 
 
     } catch (error) {
 
         console.error(
-            'Error loading follow-ups:',
+            "Failed to load lead:",
             error
         );
 
 
         document.getElementById(
-            'followupTableBody'
+            "customerHistoryTimeline"
         ).innerHTML = `
 
-            <tr>
+            <div class="text-center py-14">
 
-                <td
-                    colspan="5"
-                    class="text-center py-12 text-rose-500"
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 mb-4">
+
+                    <i class="fa-solid fa-circle-exclamation text-xl"></i>
+
+                </div>
+
+                <p class="text-sm font-bold text-slate-700">
+                    Failed to load customer history
+                </p>
+
+                <p class="text-xs text-slate-400 mt-1">
+                    ${escapeHtml(error.message)}
+                </p>
+
+                <button
+                    onclick="loadLeadData()"
+                    class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold"
                 >
+                    <i class="fa-solid fa-rotate-right mr-1"></i>
+                    Try Again
+                </button>
 
-                    <i class="fa-solid fa-circle-exclamation text-xl mb-2"></i>
-
-                    <p class="text-xs font-medium">
-                        Failed to load follow-up records.
-                    </p>
-
-                    <p class="text-[10px] text-slate-400 mt-1">
-                        ${escapeHtml(error.message)}
-                    </p>
-
-                </td>
-
-            </tr>
+            </div>
 
         `;
 
     }
 
 }
+
+
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+function showError(message) {
+
+    document.getElementById(
+        "customerHistoryTimeline"
+    ).innerHTML = `
+
+        <div class="text-center py-14 text-rose-500">
+
+            <i class="fa-solid fa-circle-exclamation text-2xl mb-3"></i>
+
+            <p class="text-sm font-semibold">
+                ${escapeHtml(message)}
+            </p>
+
+        </div>
+
+    `;
+
+}
+
 
 
 /* ============================================================
@@ -1318,11 +1254,16 @@ function logoutUser() {
 }
 
 
+
 /* ============================================================
    START
 ============================================================ */
 
-loadFollowUps();
+if (leadId) {
+
+    loadLeadData();
+
+}
 
 </script>
 
