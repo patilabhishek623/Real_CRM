@@ -258,20 +258,20 @@
             <form id="callDispositionForm" onsubmit="submitCallDisposition(event)" class="space-y-6">
                 <!-- Question 1: Call Connected Status -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-bold text-slate-900">1. Was the Call Connected?</label>
+                    <label class="block text-sm font-bold text-slate-900">Was the Call Connected?</label>
                     <select id="selectCallConnected" onchange="toggleConnectionFields()" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
                         <option value="">-- Choose Call Status --</option>
-                        <option value="Call Not Connected">🔴 Call Not Connected</option>
-                        <option value="Call Connected">🟢 Call Connected</option>
+                        <option value="Yes">Yes (Call Connected)</option>
+                        <option value="No">No (Call Not Connected)</option>
                     </select>
                 </div>
 
-                <!-- Conditional Container if Connected or Follow-up -->
+                <!-- Conditional Container if Connected (Yes/No) -->
                 <div id="dispositionDependentFields" class="space-y-6 hidden">
                     
-                    <!-- Question 2: Select Disposition Category -->
+                    <!-- 1. Select Call Disposition Category -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-900">2. Select Call Disposition Category</label>
+                        <label class="block text-sm font-bold text-slate-900">1. Select Call Disposition Category</label>
                         <select id="selectCategory" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
                             <option value="">-- Choose Category --</option>
                             <option value="Call Not Connected">🔴 Call Not Connected</option>
@@ -280,9 +280,9 @@
                         </select>
                     </div>
 
-                    <!-- Question 3: Select Specific Remark / Detail -->
+                    <!-- 2. Select Specific Remark / Detail -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-900">3. Select Specific Remark / Detail</label>
+                        <label class="block text-sm font-bold text-slate-900">2. Select Specific Remark / Detail</label>
                         <select id="selectSpecificRemark" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
                             <option value="">-- Choose Specific Remark --</option>
                             <option value="Interested – Wants Project Details">Interested – Wants Project Details</option>
@@ -301,29 +301,29 @@
                         </select>
                     </div>
 
-                    <!-- Question 4: Lead Temperature (Hot, Warm, Cold) -->
+                    <!-- Lead Temperature (Hot, Warm, Cold) -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-900">4. Select Lead Temperature</label>
+                        <label class="block text-sm font-bold text-slate-900">Lead Temperature</label>
                         <div class="grid grid-cols-3 gap-3">
                             <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
                                 <input type="radio" name="leadTemperature" value="Hot Lead" class="mb-1 text-primary-600 focus:ring-primary-500">
-                                <span class="text-xs font-bold text-rose-600"><i class="fa-solid fa-fire mr-1"></i> Hot Lead</span>
+                                <span class="text-xs font-bold text-rose-600"><i class="fa-solid fa-fire mr-1"></i> Hot</span>
                             </label>
                             <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
                                 <input type="radio" name="leadTemperature" value="Warm Lead" checked class="mb-1 text-primary-600 focus:ring-primary-500">
-                                <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-sun mr-1"></i> Warm Lead</span>
+                                <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-sun mr-1"></i> Warm</span>
                             </label>
                             <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
                                 <input type="radio" name="leadTemperature" value="Cold Lead" class="mb-1 text-primary-600 focus:ring-primary-500">
-                                <span class="text-xs font-bold text-blue-600"><i class="fa-solid fa-snowflake mr-1"></i> Cold Lead</span>
+                                <span class="text-xs font-bold text-blue-600"><i class="fa-solid fa-snowflake mr-1"></i> Cold</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Question 5: Visit Scheduled or Not -->
+                    <!-- Visit Scheduled or Not -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-2">
-                            <label class="block text-sm font-bold text-slate-900">5. Site Visit Scheduled?</label>
+                            <label class="block text-sm font-bold text-slate-900">Site Visit Scheduled?</label>
                             <select id="selectVisitScheduled" onchange="toggleVisitFields()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
                                 <option value="No">No</option>
                                 <option value="Yes">Yes</option>
@@ -338,10 +338,10 @@
                         </div>
                     </div>
 
-                    <!-- Question 6: Follow-Up Required Yes/No with Time & Date -->
+                    <!-- Follow-Up Required Yes/No with Time & Date -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-100">
                         <div class="space-y-2">
-                            <label class="block text-sm font-bold text-slate-900">6. Follow-Up Required?</label>
+                            <label class="block text-sm font-bold text-slate-900">Follow-Up Required?</label>
                             <select id="selectFollowUpReq" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
@@ -672,16 +672,16 @@
             document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
         }
 
-        // Toggle Form Fields based on Call Connection Status
+        // Toggle Form Fields based on Call Connection Status (Yes/No)
         function toggleConnectionFields() {
             const val = document.getElementById('selectCallConnected').value;
             const container = document.getElementById('dispositionDependentFields');
             const catSelect = document.getElementById('selectCategory');
             
-            if (val === 'Call Connected') {
+            if (val === 'Yes') {
                 container.classList.remove('hidden');
                 catSelect.value = 'Call Connected — Interested';
-            } else if (val === 'Call Not Connected') {
+            } else if (val === 'No') {
                 container.classList.remove('hidden');
                 catSelect.value = 'Call Not Connected';
                 document.getElementById('selectSpecificRemark').value = 'Incoming Calls Not Available';
@@ -794,14 +794,17 @@
             const call = callsDatabase.find(c => c.id === currentSelectedLeadId);
             if (!call) return;
 
-            const callConnected = document.getElementById('selectCallConnected').value;
+            const callConnectedVal = document.getElementById('selectCallConnected').value;
+            const callConnectedText = callConnectedVal === 'Yes' ? 'Call Connected' : 'Call Not Connected';
             const category = document.getElementById('selectCategory').value;
             const remark = document.getElementById('selectSpecificRemark').value;
+            
             const tempRadios = document.getElementsByName('leadTemperature');
             let temperature = 'Warm Lead';
             for (const r of tempRadios) {
                 if (r.checked) temperature = r.value;
             }
+
             const visitScheduled = document.getElementById('selectVisitScheduled').value;
             const visitDate = document.getElementById('inputVisitDate').value;
             const visitTime = document.getElementById('inputVisitTime').value;
@@ -821,10 +824,10 @@
 
             const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
 
-            // Save new entry
+            // Save new entry matching exact schema
             call.history[targetKey] = {
                 title: "Call Log - " + category,
-                call_connected: callConnected,
+                call_connected: callConnectedText,
                 remark: remark || "Disposition recorded successfully.",
                 followUpRequired: followUpReq,
                 followUpOption: "Custom Scheduled",
@@ -846,7 +849,7 @@
             };
 
             // Update main call summary
-            call.connectedStatus = callConnected;
+            call.connectedStatus = callConnectedText;
             call.remark = remark;
             call.leadQuality = temperature;
             if (followUpDate) {
