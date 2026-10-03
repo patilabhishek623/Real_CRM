@@ -22,857 +22,967 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 18px;
+        }
+
+        @media (max-width: 640px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased">
 
-    <!-- HEADER -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+<header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
 
-            <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-3">
 
-                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-calendar-days text-lg"></i>
-                </div>
-
-                <div>
-                    <span class="text-xl font-extrabold tracking-tight text-slate-900">
-                        Real_<span class="text-emerald-600">Crm</span>
-                    </span>
-
-                    <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">
-                        Lead Management
-                    </span>
-                </div>
-
+            <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid fa-calendar-days text-lg"></i>
             </div>
 
-            <div class="flex items-center gap-3 sm:gap-4">
+            <div>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">
+                    Real_<span class="text-emerald-600">Crm</span>
+                </span>
+
+                <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">
+                    Lead Management
+                </span>
+            </div>
+
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-4">
+
+            <span
+                id="activeUserBadge"
+                class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"
+            ></span>
+
+            <a
+                href="/"
+                onclick="logoutUser()"
+                class="group inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition-all"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+
+    <!-- SIDEBAR -->
+    <aside class="md:col-span-1">
+
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
+
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
+                Member Menu
+            </p>
+
+            <a
+                href="teammember.html"
+                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition"
+            >
+                <i class="fa-solid fa-house w-5 text-slate-400"></i>
+                Dashboard
+            </a>
+
+            <a
+                href="assignedmembertask.html"
+                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition"
+            >
+                <i class="fa-solid fa-list-check w-5 text-slate-400"></i>
+                Assigned Tasks
 
                 <span
-                    id="activeUserBadge"
-                    class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60 shadow-2xs"
-                ></span>
-
-                <a
-                    href="/"
-                    onclick="logoutUser()"
-                    class="group inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-200 shadow-2xs"
+                    id="sidebarPendingCount"
+                    class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200"
                 >
-                    <i class="fa-solid fa-right-from-bracket transition-transform group-hover:-translate-x-0.5"></i>
-                    <span>Logout</span>
-                </a>
+                    0
+                </span>
+            </a>
 
-            </div>
+            <a
+                href="followups.html"
+                class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm"
+            >
+                <i class="fa-solid fa-calendar-days w-5 text-emerald-100"></i>
+                Follow Ups
+
+                <span
+                    id="sidebarFollowupCount"
+                    class="ml-auto bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full"
+                >
+                    0
+                </span>
+            </a>
+
+            <a
+                href="visits.html"
+                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition"
+            >
+                <i class="fa-solid fa-map-location-dot w-5 text-slate-400"></i>
+                Visits
+
+                <span
+                    id="sidebarVisitCount"
+                    class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2 py-0.5 rounded-full border border-teal-200"
+                >
+                    0
+                </span>
+            </a>
+
         </div>
-    </header>
+
+    </aside>
 
 
-    <!-- MAIN LAYOUT -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+    <!-- MAIN -->
+    <main class="md:col-span-3">
 
-        <!-- SIDEBAR -->
-        <aside class="md:col-span-1 space-y-2">
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
 
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm/5 space-y-1.5 sticky top-24">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
 
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
-                    Member Menu
-                </p>
+                <div>
 
-                <!-- Dashboard -->
-                <a
-                    href="teammember.html"
-                    class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
-                >
-                    <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
-                    Dashboard
-                </a>
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900">
+                        Scheduled Follow-Ups
+                    </h1>
 
-                <!-- Assigned Tasks -->
-                <a
-                    href="assignedmembertask.html"
-                    class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
-                >
-                    <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
-
-                    Assigned Tasks
-
-                    <span
-                        id="sidebarPendingCount"
-                        class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200"
-                    >
-                        0
-                    </span>
-                </a>
-
-                <!-- Follow Ups -->
-                <a
-                    href="followups.html"
-                    class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm shadow-emerald-500/20 transition"
-                >
-                    <i class="fa-solid fa-calendar-days w-5 text-emerald-100 text-base"></i>
-
-                    Follow Ups
-
-                    <span
-                        id="sidebarFollowupCount"
-                        class="ml-auto bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full"
-                    >
-                        0
-                    </span>
-                </a>
-
-                <!-- Visits -->
-                <a
-                    href="visits.html"
-                    class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
-                >
-                    <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
-
-                    Visits
-
-                    <span
-                        id="sidebarVisitCount"
-                        class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-teal-200"
-                    >
-                        0
-                    </span>
-                </a>
-
-            </div>
-        </aside>
-
-
-        <!-- MAIN -->
-        <main class="md:col-span-3 space-y-6">
-
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm/5">
-
-                <!-- TITLE -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
-
-                    <div>
-
-                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">
-                            Scheduled Follow-Ups
-                        </h1>
-
-                        <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                            Click any lead name to record call connection status and remarks.
-                        </p>
-
-                    </div>
-
-                    <div
-                        id="followupCountBadge"
-                        class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60 shadow-2xs"
-                    >
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>0 Active Follow-ups</span>
-                    </div>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                        Click any lead name to view and record the complete call log.
+                    </p>
 
                 </div>
 
-
-                <!-- FILTER TABS -->
-                <div class="flex flex-wrap gap-2 mt-6">
-
-                    <button
-                        onclick="switchTab('lapsed')"
-                        id="tab-lapsed"
-                        class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm"
-                    >
-                        <span>Lapsed Calls</span>
-
-                        <span
-                            id="badge-lapsed"
-                            class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]"
-                        >
-                            0
-                        </span>
-                    </button>
-
-
-                    <button
-                        onclick="switchTab('today')"
-                        id="tab-today"
-                        class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                    >
-                        <span>Today</span>
-
-                        <span
-                            id="badge-today"
-                            class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
-                        >
-                            0
-                        </span>
-                    </button>
-
-
-                    <button
-                        onclick="switchTab('tomorrow')"
-                        id="tab-tomorrow"
-                        class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                    >
-                        <span>Tomorrow</span>
-
-                        <span
-                            id="badge-tomorrow"
-                            class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
-                        >
-                            0
-                        </span>
-                    </button>
-
-
-                    <button
-                        onclick="switchTab('other')"
-                        id="tab-other"
-                        class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                    >
-                        <span>Other / Upcoming</span>
-
-                        <span
-                            id="badge-other"
-                            class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
-                        >
-                            0
-                        </span>
-                    </button>
-
-                </div>
-
-
-                <!-- TABLE -->
-                <div class="overflow-x-auto mt-6">
-
-                    <table class="w-full text-left border-collapse">
-
-                        <thead>
-
-                            <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-
-                                <th class="py-3.5 px-4">
-                                    Lead Name
-                                </th>
-
-                                <th class="py-3.5 px-4">
-                                    Contact Number
-                                </th>
-
-                                <th class="py-3.5 px-4">
-                                    Follow-Up Option
-                                </th>
-
-                                <th class="py-3.5 px-4">
-                                    Date & Time
-                                </th>
-
-                                <th class="py-3.5 px-4">
-                                    Call Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody
-                            id="followupTableBody"
-                            class="divide-y divide-slate-100 text-sm"
-                        >
-
-                            <tr>
-
-                                <td
-                                    colspan="5"
-                                    class="text-center py-12 text-slate-400"
-                                >
-
-                                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
-
-                                    <p class="text-xs font-medium">
-                                        Loading follow-ups...
-                                    </p>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
+                <div
+                    id="followupCountBadge"
+                    class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200"
+                >
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>0 Active Follow-ups</span>
                 </div>
 
             </div>
 
-        </main>
 
-    </div>
+            <!-- TABS -->
+            <div class="flex flex-wrap gap-2 mt-6">
+
+                <button
+                    onclick="switchTab('lapsed')"
+                    id="tab-lapsed"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-rose-600 text-white border-rose-600"
+                >
+                    Lapsed Calls
+                    <span id="badge-lapsed" class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">
+                        0
+                    </span>
+                </button>
+
+                <button
+                    onclick="switchTab('today')"
+                    id="tab-today"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200"
+                >
+                    Today
+                    <span id="badge-today" class="bg-slate-200 px-2 py-0.5 rounded-full text-[10px]">
+                        0
+                    </span>
+                </button>
+
+                <button
+                    onclick="switchTab('tomorrow')"
+                    id="tab-tomorrow"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200"
+                >
+                    Tomorrow
+                    <span id="badge-tomorrow" class="bg-slate-200 px-2 py-0.5 rounded-full text-[10px]">
+                        0
+                    </span>
+                </button>
+
+                <button
+                    onclick="switchTab('other')"
+                    id="tab-other"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200"
+                >
+                    Other / Upcoming
+                    <span id="badge-other" class="bg-slate-200 px-2 py-0.5 rounded-full text-[10px]">
+                        0
+                    </span>
+                </button>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="overflow-x-auto mt-6">
+
+                <table class="w-full text-left border-collapse">
+
+                    <thead>
+
+                        <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+
+                            <th class="py-3.5 px-4">
+                                Lead Name
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Contact Number
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Follow-Up Option
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Date & Time
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Call Log
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                        id="followupTableBody"
+                        class="divide-y divide-slate-100 text-sm"
+                    >
+
+                        <tr>
+
+                            <td colspan="5" class="text-center py-12 text-slate-400">
+
+                                <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
+
+                                <p class="text-xs font-medium">
+                                    Loading follow-ups...
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
 
 
 <script>
 
-    /* ============================================================
-       SESSION
-    ============================================================ */
+const currentUsername =
+    localStorage.getItem('crm_username');
 
-    const currentUsername = localStorage.getItem('crm_username');
 
-    if (!currentUsername) {
+if (!currentUsername) {
 
-        alert('No active session found. Please log in again.');
+    alert('No active session found. Please log in again.');
 
-        window.location.href = '/';
+    window.location.href = '/';
 
+}
+
+
+document.getElementById('activeUserBadge').innerHTML = `
+    <i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i>
+    User:
+    <b class="text-slate-900 ml-1">
+        ${escapeHtml(currentUsername)}
+    </b>
+`;
+
+
+let globalFollowupTasks = [];
+
+let currentActiveTab = 'lapsed';
+
+
+/* ============================================================
+   HELPERS
+============================================================ */
+
+function valueOrDash(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        String(value).trim() === ''
+    ) {
+        return '—';
+    }
+
+    return String(value);
+
+}
+
+
+function valueOrEmpty(value) {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+        return '';
+    }
+
+    return String(value).trim();
+
+}
+
+
+function isYes(value) {
+
+    return String(value || '')
+        .trim()
+        .toLowerCase() === 'yes';
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+function formatDateString(date) {
+
+    const d = new Date(date);
+
+    if (Number.isNaN(d.getTime())) {
+        return '';
+    }
+
+    let month = String(d.getMonth() + 1);
+
+    let day = String(d.getDate());
+
+    const year = d.getFullYear();
+
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+
+    if (day.length < 2) {
+        day = '0' + day;
+    }
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* ============================================================
+   DATE PARSER
+============================================================ */
+
+function parseTaskTargetDate(task) {
+
+    let dateStr =
+        valueOrEmpty(task.followUpDate);
+
+    let timeStr =
+        valueOrEmpty(task.followUpTime) || '00:00';
+
+
+    if (!dateStr) {
+        return null;
     }
 
 
-    document.getElementById('activeUserBadge').innerHTML = `
-        <i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i>
-        User:
-        <b class="text-slate-900 ml-1">
-            ${escapeHtml(currentUsername)}
-        </b>
-    `;
+    if (
+        dateStr.length > 10 &&
+        dateStr.includes(':')
+    ) {
 
-
-    /* ============================================================
-       GLOBAL DATA
-    ============================================================ */
-
-    let globalFollowupTasks = [];
-
-    let currentActiveTab = 'lapsed';
-
-
-    /* ============================================================
-       EMPTY VALUE HELPER
-    ============================================================ */
-
-    function valueOrEmpty(value) {
-
-        if (
-            value === undefined ||
-            value === null ||
-            value === 'undefined' ||
-            value === 'null'
-        ) {
-            return '';
-        }
-
-        return String(value).trim();
-
-    }
-
-
-    /* ============================================================
-       YES / NO HELPER
-    ============================================================ */
-
-    function isYes(value) {
-
-        return String(value || '')
-            .trim()
-            .toLowerCase() === 'yes';
-
-    }
-
-
-    /* ============================================================
-       HTML ESCAPE
-    ============================================================ */
-
-    function escapeHtml(value) {
-
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-
-    }
-
-
-    /* ============================================================
-       DATE FORMAT
-    ============================================================ */
-
-    function formatDateString(date) {
-
-        const d = new Date(date);
-
-        if (Number.isNaN(d.getTime())) {
-            return '';
-        }
-
-        let month = '' + (d.getMonth() + 1);
-
-        let day = '' + d.getDate();
-
-        let year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [year, month, day].join('-');
-
-    }
-
-
-    /* ============================================================
-       PARSE FOLLOW-UP DATE
-    ============================================================ */
-
-    function parseTaskTargetDate(task) {
-
-        let dateStr = valueOrEmpty(task.followUpDate);
-
-        let timeStr = valueOrEmpty(task.followUpTime);
-
-        if (!timeStr) {
-            timeStr = '00:00';
-        }
-
-
-        /*
-         * Supports:
-         *
-         * 2026-10-05
-         *
-         * 2026-10-05T00:10
-         *
-         * 2026-10-0500:10
-         */
-
-        if (dateStr.length > 10 && dateStr.includes(':')) {
-
-            const parts = dateStr.match(
+        const parts =
+            dateStr.match(
                 /^(\d{4}-\d{2}-\d{2})[T ]?(\d{2}:\d{2})/
             );
 
-            if (parts) {
+        if (parts) {
 
-                dateStr = parts[1];
+            dateStr = parts[1];
 
-                timeStr = parts[2];
-
-            }
+            timeStr = parts[2];
 
         }
-
-
-        if (!dateStr) {
-            return null;
-        }
-
-
-        /*
-         * Ensure HH:mm format.
-         */
-
-        if (/^\d{2}:\d{2}$/.test(timeStr) === false) {
-
-            timeStr = '00:00';
-
-        }
-
-
-        const result = new Date(`${dateStr}T${timeStr}:00`);
-
-
-        if (Number.isNaN(result.getTime())) {
-            return null;
-        }
-
-
-        return result;
 
     }
 
 
-    /* ============================================================
-       LAPSED DETAILS
-    ============================================================ */
+    if (!/^\d{2}:\d{2}$/.test(timeStr)) {
+        timeStr = '00:00';
+    }
 
-    function getLapsedDetails(targetDate) {
+
+    const result =
+        new Date(`${dateStr}T${timeStr}:00`);
+
+
+    if (Number.isNaN(result.getTime())) {
+        return null;
+    }
+
+
+    return result;
+
+}
+
+
+/* ============================================================
+   LAPSED
+============================================================ */
+
+function getLapsedDetails(targetDate) {
+
+    if (!targetDate) {
+        return null;
+    }
+
+    const diffMs =
+        new Date() - targetDate;
+
+
+    if (diffMs <= 0) {
+        return null;
+    }
+
+
+    const diffDays =
+        Math.floor(
+            diffMs /
+            (1000 * 60 * 60 * 24)
+        );
+
+
+    const diffHours =
+        Math.floor(
+            (
+                diffMs %
+                (1000 * 60 * 60 * 24)
+            ) /
+            (1000 * 60 * 60)
+        );
+
+
+    if (diffDays > 0) {
+
+        return `${diffDays}d ${diffHours}h Lapsed`;
+
+    }
+
+
+    const diffMinutes =
+        Math.floor(
+            (
+                diffMs %
+                (1000 * 60 * 60)
+            ) /
+            (1000 * 60)
+        );
+
+
+    return `${diffHours}h ${diffMinutes}m Lapsed`;
+
+}
+
+
+/* ============================================================
+   HISTORY
+============================================================ */
+
+function getLatestCallLog(task) {
+
+    if (
+        Array.isArray(task.history) &&
+        task.history.length
+    ) {
+
+        const callLogs =
+            task.history.filter(item =>
+                String(item?.title || '')
+                    .trim()
+                    .toLowerCase() === 'call log'
+            );
+
+
+        if (callLogs.length) {
+
+            return callLogs[callLogs.length - 1];
+
+        }
+
+    }
+
+
+    /*
+     * Also support the call-log fields directly
+     * on the task.
+     */
+
+    return task;
+
+}
+
+
+/* ============================================================
+   CALL LOG DETAILS
+============================================================ */
+
+function callLogDetails(task) {
+
+    const log =
+        getLatestCallLog(task);
+
+
+    return `
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 min-w-[360px] max-w-[520px]">
+
+            <div class="flex items-center gap-2 mb-3">
+
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="text-xs font-bold text-slate-800">
+                        ${escapeHtml(
+                            valueOrDash(log.title || 'Call Log')
+                        )}
+                    </div>
+
+                    <div class="text-[10px] text-slate-400">
+                        Complete Call Log
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-grid">
+
+                ${detailItem(
+                    'Call Connected',
+                    log.call_connected
+                )}
+
+                ${detailItem(
+                    'Remark',
+                    log.remark
+                )}
+
+                ${detailItem(
+                    'Follow-Up Required',
+                    log.followUpRequired
+                )}
+
+                ${detailItem(
+                    'Follow-Up Option',
+                    log.followUpOption
+                )}
+
+                ${detailItem(
+                    'Follow-Up Date',
+                    log.followUpDate
+                )}
+
+                ${detailItem(
+                    'Follow-Up Time',
+                    log.followUpTime
+                )}
+
+                ${detailItem(
+                    'Visit Scheduled',
+                    log.visitScheduled
+                )}
+
+                ${detailItem(
+                    'Visit Date',
+                    log.visitDate
+                )}
+
+                ${detailItem(
+                    'Visit Time',
+                    log.visitTime
+                )}
+
+                ${detailItem(
+                    'Visit Building',
+                    log.visitBuilding
+                )}
+
+                ${detailItem(
+                    'Visit Location',
+                    log.visitLocation
+                )}
+
+                ${detailItem(
+                    'Visit Note',
+                    log.visitNote
+                )}
+
+                ${detailItem(
+                    'Visitor Coming',
+                    log.visitorComing
+                )}
+
+                ${detailItem(
+                    'Reschedule Reason',
+                    log.rescheduleReason
+                )}
+
+                ${detailItem(
+                    'Visit Interest Customer',
+                    log.visitInterestCustomer
+                )}
+
+                ${detailItem(
+                    'Reschedule Visit Choice',
+                    log.rescheduleVisitChoice
+                )}
+
+                ${detailItem(
+                    'Lead Status',
+                    log.leadStatus
+                )}
+
+                ${detailItem(
+                    'Close Reason',
+                    log.closeReason
+                )}
+
+                ${detailItem(
+                    'Logged At',
+                    formatLoggedAt(log.loggedAt)
+                )}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   DETAIL ITEM
+============================================================ */
+
+function detailItem(label, value) {
+
+    return `
+
+        <div class="border-b border-slate-200/70 pb-2">
+
+            <div class="text-[9px] uppercase tracking-wider font-bold text-slate-400 mb-0.5">
+                ${escapeHtml(label)}
+            </div>
+
+            <div class="text-xs font-semibold text-slate-700 break-words">
+                ${escapeHtml(valueOrDash(value))}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   LOGGED AT
+============================================================ */
+
+function formatLoggedAt(value) {
+
+    if (!value) {
+        return '—';
+    }
+
+
+    let dateValue = value;
+
+
+    /*
+     * MongoDB extended JSON:
+     *
+     * {
+     *   "$date": "2026-10-03T18:34:59.751Z"
+     * }
+     */
+
+    if (
+        typeof value === 'object' &&
+        value.$date
+    ) {
+
+        dateValue = value.$date;
+
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (Number.isNaN(date.getTime())) {
+        return valueOrDash(value);
+    }
+
+
+    return date.toLocaleString();
+
+}
+
+
+/* ============================================================
+   TAB SWITCH
+============================================================ */
+
+function switchTab(tab) {
+
+    currentActiveTab = tab;
+
+
+    [
+        'lapsed',
+        'today',
+        'tomorrow',
+        'other'
+    ].forEach(name => {
+
+        const btn =
+            document.getElementById(
+                `tab-${name}`
+            );
+
+
+        if (name === tab) {
+
+            btn.className =
+                name === 'lapsed'
+                ?
+                'px-4 py-2 text-xs font-bold rounded-xl border bg-rose-600 text-white border-rose-600'
+                :
+                'px-4 py-2 text-xs font-bold rounded-xl border bg-emerald-600 text-white border-emerald-600';
+
+        } else {
+
+            btn.className =
+                'px-4 py-2 text-xs font-bold rounded-xl border bg-slate-100 text-slate-600 border-slate-200';
+
+        }
+
+    });
+
+
+    renderTable();
+
+}
+
+
+/* ============================================================
+   RENDER TABLE
+============================================================ */
+
+function renderTable() {
+
+    const now =
+        new Date();
+
+
+    const todayStr =
+        formatDateString(now);
+
+
+    const tomorrow =
+        new Date();
+
+
+    tomorrow.setDate(
+        tomorrow.getDate() + 1
+    );
+
+
+    const tomorrowStr =
+        formatDateString(tomorrow);
+
+
+    const lapsedTasks = [];
+
+    const todayTasks = [];
+
+    const tomorrowTasks = [];
+
+    const otherTasks = [];
+
+
+    globalFollowupTasks.forEach(task => {
+
+        const targetDate =
+            parseTaskTargetDate(task);
+
 
         if (!targetDate) {
-            return null;
-        }
 
-        const now = new Date();
-
-        const diffMs = now - targetDate;
-
-
-        if (diffMs <= 0) {
-            return null;
-        }
-
-
-        const diffDays = Math.floor(
-            diffMs / (1000 * 60 * 60 * 24)
-        );
-
-
-        const diffHours = Math.floor(
-            (diffMs % (1000 * 60 * 60 * 24))
-            / (1000 * 60 * 60)
-        );
-
-
-        const diffMinutes = Math.floor(
-            (diffMs % (1000 * 60 * 60))
-            / (1000 * 60)
-        );
-
-
-        if (diffDays > 0) {
-
-            return `${diffDays}d ${diffHours}h Lapsed`;
-
-        }
-
-
-        if (diffHours > 0) {
-
-            return `${diffHours}h ${diffMinutes}m Lapsed`;
-
-        }
-
-
-        return `${diffMinutes}m Lapsed`;
-
-    }
-
-
-    /* ============================================================
-       SWITCH TAB
-    ============================================================ */
-
-    function switchTab(tab) {
-
-        currentActiveTab = tab;
-
-
-        [
-            'lapsed',
-            'today',
-            'tomorrow',
-            'other'
-        ].forEach(t => {
-
-            const btn = document.getElementById(`tab-${t}`);
-
-            if (!btn) {
-                return;
-            }
-
-
-            if (t === tab) {
-
-                if (t === 'lapsed') {
-
-                    btn.className =
-                        "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm";
-
-                } else {
-
-                    btn.className =
-                        "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-emerald-600 text-white border-emerald-600 shadow-sm";
-
-                }
-
-            } else {
-
-                btn.className =
-                    "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200";
-
-            }
-
-        });
-
-
-        renderTable();
-
-    }
-
-
-    /* ============================================================
-       GET CALL STATUS
-    ============================================================ */
-
-    function getCallStatus(task) {
-
-        /*
-         * Supports direct task field:
-         *
-         * task.call_connected
-         *
-         * and latest history:
-         *
-         * task.history[]
-         */
-
-        if (valueOrEmpty(task.call_connected)) {
-
-            return valueOrEmpty(task.call_connected);
-
-        }
-
-
-        if (
-            Array.isArray(task.history) &&
-            task.history.length > 0
-        ) {
-
-            const callLogs = task.history.filter(item =>
-                String(item?.title || '')
-                    .toLowerCase() === 'call log'
-            );
-
-
-            if (callLogs.length > 0) {
-
-                const latest =
-                    callLogs[callLogs.length - 1];
-
-                return valueOrEmpty(
-                    latest.call_connected
-                );
-
-            }
-
-        }
-
-
-        return '';
-
-    }
-
-
-    /* ============================================================
-       GET LATEST CALL REMARK
-    ============================================================ */
-
-    function getLatestCallRemark(task) {
-
-        if (valueOrEmpty(task.remark)) {
-
-            return valueOrEmpty(task.remark);
-
-        }
-
-
-        if (
-            Array.isArray(task.history) &&
-            task.history.length > 0
-        ) {
-
-            const callLogs = task.history.filter(item =>
-                String(item?.title || '')
-                    .toLowerCase() === 'call log'
-            );
-
-
-            if (callLogs.length > 0) {
-
-                const latest =
-                    callLogs[callLogs.length - 1];
-
-                return valueOrEmpty(
-                    latest.remark
-                );
-
-            }
-
-        }
-
-
-        return '';
-
-    }
-
-
-    /* ============================================================
-       RENDER TABLE
-    ============================================================ */
-
-    function renderTable() {
-
-        const now = new Date();
-
-        const todayStr =
-            formatDateString(now);
-
-
-        const tomorrowDate =
-            new Date();
-
-
-        tomorrowDate.setDate(
-            tomorrowDate.getDate() + 1
-        );
-
-
-        const tomorrowStr =
-            formatDateString(tomorrowDate);
-
-
-        const lapsedTasks = [];
-
-        const todayTasks = [];
-
-        const tomorrowTasks = [];
-
-        const otherTasks = [];
-
-
-        globalFollowupTasks.forEach(task => {
-
-            const targetDate =
-                parseTaskTargetDate(task);
-
-
-            /*
-             * Invalid/missing follow-up date.
-             *
-             * Keep it in Other / Upcoming rather
-             * than incorrectly marking it lapsed.
-             */
-
-            if (!targetDate) {
-
-                otherTasks.push(task);
-
-                return;
-
-            }
-
-
-            const dateString =
-                formatDateString(targetDate);
-
-
-            if (targetDate < now) {
-
-                lapsedTasks.push(task);
-
-            }
-
-            else if (dateString === todayStr) {
-
-                todayTasks.push(task);
-
-            }
-
-            else if (dateString === tomorrowStr) {
-
-                tomorrowTasks.push(task);
-
-            }
-
-            else {
-
-                otherTasks.push(task);
-
-            }
-
-        });
-
-
-        /* COUNTERS */
-
-        document.getElementById('badge-lapsed').textContent =
-            lapsedTasks.length;
-
-
-        document.getElementById('badge-today').textContent =
-            todayTasks.length;
-
-
-        document.getElementById('badge-tomorrow').textContent =
-            tomorrowTasks.length;
-
-
-        document.getElementById('badge-other').textContent =
-            otherTasks.length;
-
-
-        /* SELECT CURRENT TAB */
-
-        let activeList = lapsedTasks;
-
-
-        if (currentActiveTab === 'today') {
-            activeList = todayTasks;
-        }
-
-
-        if (currentActiveTab === 'tomorrow') {
-            activeList = tomorrowTasks;
-        }
-
-
-        if (currentActiveTab === 'other') {
-            activeList = otherTasks;
-        }
-
-
-        const tbody =
-            document.getElementById('followupTableBody');
-
-
-        /* NO RECORDS */
-
-        if (activeList.length === 0) {
-
-            tbody.innerHTML = `
-                <tr>
-
-                    <td
-                        colspan="5"
-                        class="text-center py-16 text-slate-400"
-                    >
-
-                        <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-slate-100">
-
-                            <i class="fa-solid fa-clipboard-check text-xl"></i>
-
-                        </div>
-
-                        <p class="text-sm font-semibold text-slate-700">
-                            No records found!
-                        </p>
-
-                        <p class="text-xs text-slate-400 mt-0.5">
-                            There are no follow-ups found in
-                            ${escapeHtml(currentActiveTab)}.
-                        </p>
-
-                    </td>
-
-                </tr>
-            `;
+            otherTasks.push(task);
 
             return;
 
         }
 
 
-        /* RENDER ROWS */
+        const dateStr =
+            formatDateString(targetDate);
 
-        tbody.innerHTML = activeList.map(task => {
+
+        if (targetDate < now) {
+
+            lapsedTasks.push(task);
+
+        }
+
+        else if (dateStr === todayStr) {
+
+            todayTasks.push(task);
+
+        }
+
+        else if (dateStr === tomorrowStr) {
+
+            tomorrowTasks.push(task);
+
+        }
+
+        else {
+
+            otherTasks.push(task);
+
+        }
+
+    });
+
+
+    document.getElementById('badge-lapsed').textContent =
+        lapsedTasks.length;
+
+
+    document.getElementById('badge-today').textContent =
+        todayTasks.length;
+
+
+    document.getElementById('badge-tomorrow').textContent =
+        tomorrowTasks.length;
+
+
+    document.getElementById('badge-other').textContent =
+        otherTasks.length;
+
+
+    let activeList =
+        lapsedTasks;
+
+
+    if (currentActiveTab === 'today') {
+        activeList = todayTasks;
+    }
+
+
+    if (currentActiveTab === 'tomorrow') {
+        activeList = tomorrowTasks;
+    }
+
+
+    if (currentActiveTab === 'other') {
+        activeList = otherTasks;
+    }
+
+
+    const tbody =
+        document.getElementById(
+            'followupTableBody'
+        );
+
+
+    if (!activeList.length) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    class="text-center py-16 text-slate-400"
+                >
+
+                    <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-slate-100">
+
+                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+
+                    </div>
+
+                    <p class="text-sm font-semibold text-slate-700">
+                        No records found!
+                    </p>
+
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        There are no follow-ups found in
+                        ${escapeHtml(currentActiveTab)}.
+                    </p>
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        activeList.map(task => {
 
             const targetDate =
                 parseTaskTargetDate(task);
@@ -883,57 +993,48 @@
 
 
             const taskId =
-                task._id ||
-                task.id;
+                task._id || task.id || '';
 
 
             const leadName =
-                valueOrEmpty(task.name) ||
-                'Unnamed Lead';
+                valueOrDash(task.name);
 
 
             const contactNumber =
-                valueOrEmpty(task.contactNumber);
+                valueOrEmpty(
+                    task.contactNumber
+                );
 
 
             const followUpOption =
-                valueOrEmpty(task.followUpOption) ||
-                'Standard Follow-Up';
+                valueOrDash(
+                    task.followUpOption
+                );
 
 
             const followUpDate =
-                valueOrEmpty(task.followUpDate) ||
-                'Not Set';
+                valueOrDash(
+                    task.followUpDate
+                );
 
 
             const followUpTime =
-                valueOrEmpty(task.followUpTime);
-
-
-            const callStatus =
-                getCallStatus(task);
-
-
-            const callRemark =
-                getLatestCallRemark(task);
-
-
-            const safeId =
-                encodeURIComponent(taskId || '');
+                valueOrDash(
+                    task.followUpTime
+                );
 
 
             return `
 
-                <tr class="hover:bg-slate-50/60 transition-colors group">
+                <tr class="hover:bg-slate-50/60 transition-colors align-top">
 
-                    <!-- LEAD -->
+                    <!-- LEAD NAME -->
 
                     <td class="py-4 px-4">
 
                         <a
-                            href="lead-response.html?id=${safeId}"
-                            class="font-semibold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-slate-300 hover:decoration-emerald-500"
-                            title="Open Customer History Timeline"
+                            href="lead-response.html?id=${encodeURIComponent(taskId)}"
+                            class="font-semibold text-slate-900 hover:text-emerald-600 underline decoration-slate-300"
                         >
                             ${escapeHtml(leadName)}
                         </a>
@@ -951,7 +1052,7 @@
                             `
                             <a
                                 href="tel:${encodeURIComponent(contactNumber)}"
-                                class="inline-flex items-center gap-1.5 hover:text-emerald-600 transition"
+                                class="inline-flex items-center gap-1.5 hover:text-emerald-600"
                             >
 
                                 <i class="fa-solid fa-phone text-xs text-slate-400"></i>
@@ -963,7 +1064,7 @@
                             :
                             `
                             <span class="text-slate-400 italic">
-                                N/A
+                                —
                             </span>
                             `
                         }
@@ -971,15 +1072,13 @@
                     </td>
 
 
-                    <!-- FOLLOW-UP OPTION -->
+                    <!-- FOLLOW-UP -->
 
                     <td class="py-4 px-4">
 
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50/80 text-amber-700 font-semibold rounded-xl text-xs border border-amber-200/60 shadow-2xs"
-                        >
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 font-semibold rounded-xl text-xs border border-amber-200">
 
-                            <i class="fa-solid fa-tag text-[10px] text-amber-500"></i>
+                            <i class="fa-solid fa-tag text-[10px]"></i>
 
                             ${escapeHtml(followUpOption)}
 
@@ -992,26 +1091,21 @@
 
                     <td class="py-4 px-4 text-slate-600">
 
-                        <div class="inline-flex items-center gap-2 font-medium flex-wrap">
+                        <div class="flex flex-wrap gap-2 items-center">
 
-                            <span
-                                class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs"
-                            >
+                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">
                                 ${escapeHtml(followUpDate)}
                             </span>
 
-                            <span class="text-xs text-slate-400 font-normal">
+                            <span class="text-xs text-slate-400">
                                 ${escapeHtml(followUpTime)}
                             </span>
-
 
                             ${
                                 lapsedLabel
                                 ?
                                 `
-                                <span
-                                    class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200 ml-1"
-                                >
+                                <span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200">
 
                                     <i class="fa-solid fa-clock-rotate-left mr-1"></i>
 
@@ -1028,69 +1122,11 @@
                     </td>
 
 
-                    <!-- CALL STATUS -->
+                    <!-- COMPLETE CALL LOG -->
 
                     <td class="py-4 px-4">
 
-                        ${
-                            callStatus
-                            ?
-                            `
-                            <div class="space-y-1">
-
-                                <span
-                                    class="
-                                        inline-flex
-                                        items-center
-                                        gap-1.5
-                                        px-2.5
-                                        py-1
-                                        rounded-lg
-                                        text-[10px]
-                                        font-bold
-                                        border
-                                        ${
-                                            callStatus
-                                                .toLowerCase()
-                                                .includes('not connected')
-                                            ?
-                                            'bg-rose-50 text-rose-600 border-rose-200'
-                                            :
-                                            'bg-emerald-50 text-emerald-600 border-emerald-200'
-                                        }
-                                    "
-                                >
-
-                                    <i class="fa-solid fa-phone"></i>
-
-                                    ${escapeHtml(callStatus)}
-
-                                </span>
-
-                                ${
-                                    callRemark
-                                    ?
-                                    `
-                                    <div
-                                        class="text-[10px] text-slate-400 max-w-[180px] truncate"
-                                        title="${escapeHtml(callRemark)}"
-                                    >
-                                        ${escapeHtml(callRemark)}
-                                    </div>
-                                    `
-                                    :
-                                    ''
-                                }
-
-                            </div>
-                            `
-                            :
-                            `
-                            <span class="text-xs text-slate-400 italic">
-                                Not recorded
-                            </span>
-                            `
-                        }
+                        ${callLogDetails(task)}
 
                     </td>
 
@@ -1100,18 +1136,19 @@
 
         }).join('');
 
-    }
+}
 
 
-    /* ============================================================
-       LOAD FOLLOW-UPS
-    ============================================================ */
+/* ============================================================
+   LOAD DATA
+============================================================ */
 
-    async function loadFollowUps() {
+async function loadFollowUps() {
 
-        try {
+    try {
 
-            const res = await fetch(
+        const response =
+            await fetch(
                 `/api/member-tasks/${encodeURIComponent(currentUsername)}`,
                 {
                     method: 'GET',
@@ -1123,180 +1160,169 @@
             );
 
 
-            if (!res.ok) {
+        if (!response.ok) {
 
-                throw new Error(
-                    `Server returned ${res.status}`
-                );
-
-            }
-
-
-            const data =
-                await res.json();
-
-
-            if (!data.success) {
-
-                throw new Error(
-                    data.message ||
-                    'Unable to load tasks.'
-                );
-
-            }
-
-
-            const tasks =
-                Array.isArray(data.tasks)
-                    ? data.tasks
-                    : [];
-
-
-            /*
-             * IMPORTANT:
-             *
-             * A follow-up is active when:
-             *
-             * followUpRequired = Yes
-             *
-             * Case-insensitive.
-             */
-
-            globalFollowupTasks =
-                tasks.filter(task =>
-                    isYes(task.followUpRequired)
-                );
-
-
-            /*
-             * Assigned Tasks count
-             */
-
-            const pendingTasks =
-                tasks.filter(task => {
-
-                    const status =
-                        valueOrEmpty(task.status)
-                            .toLowerCase();
-
-                    return status !== 'completed';
-
-                });
-
-
-            /*
-             * Visit count
-             */
-
-            const visitTasks =
-                tasks.filter(task =>
-                    isYes(task.visitRequired)
-                    ||
-                    isYes(task.visitScheduled)
-                );
-
-
-            /* UPDATE SIDEBAR */
-
-            document.getElementById(
-                'sidebarPendingCount'
-            ).textContent =
-                pendingTasks.length;
-
-
-            document.getElementById(
-                'sidebarFollowupCount'
-            ).textContent =
-                globalFollowupTasks.length;
-
-
-            document.getElementById(
-                'sidebarVisitCount'
-            ).textContent =
-                visitTasks.length;
-
-
-            /* UPDATE MAIN COUNT */
-
-            document.getElementById(
-                'followupCountBadge'
-            ).innerHTML = `
-
-                <span
-                    class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
-                ></span>
-
-                <span>
-                    ${globalFollowupTasks.length}
-                    Active Follow-ups
-                </span>
-
-            `;
-
-
-            /* RENDER */
-
-            renderTable();
-
-
-        } catch (error) {
-
-            console.error(
-                'Error loading follow-ups:',
-                error
+            throw new Error(
+                `Server returned ${response.status}`
             );
-
-
-            document.getElementById(
-                'followupTableBody'
-            ).innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="5"
-                        class="text-center py-12 text-rose-500"
-                    >
-
-                        <i
-                            class="fa-solid fa-circle-exclamation text-xl mb-1"
-                        ></i>
-
-                        <p class="text-xs font-medium">
-                            Failed to load follow-up records.
-                        </p>
-
-                        <p class="text-[10px] text-slate-400 mt-1">
-                            ${escapeHtml(error.message)}
-                        </p>
-
-                    </td>
-
-                </tr>
-
-            `;
 
         }
 
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success ||
+            !Array.isArray(data.tasks)
+        ) {
+
+            throw new Error(
+                data.message ||
+                'No task data returned from server.'
+            );
+
+        }
+
+
+        const tasks =
+            data.tasks;
+
+
+        /*
+         * Follow-ups:
+         *
+         * Yes / yes / YES all work.
+         */
+
+        globalFollowupTasks =
+            tasks.filter(task =>
+                isYes(
+                    task.followUpRequired
+                )
+            );
+
+
+        /*
+         * Pending tasks.
+         */
+
+        const pendingTasks =
+            tasks.filter(task => {
+
+                const status =
+                    valueOrEmpty(
+                        task.status
+                    ).toLowerCase();
+
+                return status !== 'completed';
+
+            });
+
+
+        /*
+         * Visits.
+         */
+
+        const visitTasks =
+            tasks.filter(task =>
+                isYes(task.visitRequired) ||
+                isYes(task.visitScheduled)
+            );
+
+
+        document.getElementById(
+            'sidebarPendingCount'
+        ).textContent =
+            pendingTasks.length;
+
+
+        document.getElementById(
+            'sidebarFollowupCount'
+        ).textContent =
+            globalFollowupTasks.length;
+
+
+        document.getElementById(
+            'sidebarVisitCount'
+        ).textContent =
+            visitTasks.length;
+
+
+        document.getElementById(
+            'followupCountBadge'
+        ).innerHTML = `
+
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+
+            <span>
+                ${globalFollowupTasks.length}
+                Active Follow-ups
+            </span>
+
+        `;
+
+
+        renderTable();
+
+
+    } catch (error) {
+
+        console.error(
+            'Error loading follow-ups:',
+            error
+        );
+
+
+        document.getElementById(
+            'followupTableBody'
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    class="text-center py-12 text-rose-500"
+                >
+
+                    <i class="fa-solid fa-circle-exclamation text-xl mb-2"></i>
+
+                    <p class="text-xs font-medium">
+                        Failed to load follow-up records.
+                    </p>
+
+                    <p class="text-[10px] text-slate-400 mt-1">
+                        ${escapeHtml(error.message)}
+                    </p>
+
+                </td>
+
+            </tr>
+
+        `;
+
     }
 
-
-    /* ============================================================
-       LOGOUT
-    ============================================================ */
-
-    function logoutUser() {
-
-        localStorage.clear();
-
-    }
+}
 
 
-    /* ============================================================
-       START
-    ============================================================ */
+/* ============================================================
+   LOGOUT
+============================================================ */
 
-    loadFollowUps();
+function logoutUser() {
+
+    localStorage.clear();
+
+}
+
+
+/* ============================================================
+   START
+============================================================ */
+
+loadFollowUps();
 
 </script>
 
