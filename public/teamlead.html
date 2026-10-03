@@ -111,7 +111,7 @@
                         <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Team Lead Control Hub
                     </div>
                     <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight">Welcome back, <span class="text-blue-400">Team Lead</span></h1>
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-xl">Monitor your registered team members, inspect isolated MongoDB task collections, and assign leads securely.</p>
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-xl">Monitor your registered team members, check task progress, and assign leads securely.</p>
                 </div>
                 <div class="hidden lg:block relative z-10">
                     <div class="w-20 h-20 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center text-blue-400 text-3xl shadow-inner">
@@ -146,21 +146,21 @@
                 </div>
             </div>
 
-            <!-- Active Registered Team Members List Card -->
+            <!-- Active Registered Team Members List Card with Task Progress -->
             <div class="corporate-card rounded-2xl p-6 sm:p-8 space-y-4">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
                     <div>
                         <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
-                            <i class="fa-solid fa-users-gear text-blue-600"></i> Registered Team Members & Collections
+                            <i class="fa-solid fa-users-gear text-blue-600"></i> Member Task Performance & Status
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Securely mapped MongoDB collections (`tasks_[username]`) for workspace tracking.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Real-time breakdown of assigned vs. completed tasks per member collection.</p>
                     </div>
                 </div>
                 
                 <div class="p-4 sm:p-5 bg-slate-50/80 border border-slate-200/80 rounded-2xl">
-                    <div id="memberListContainer" class="flex flex-col sm:flex-row flex-wrap gap-3">
+                    <div id="memberListContainer" class="space-y-3">
                         <div class="flex items-center gap-2 text-xs text-slate-400 py-4">
-                            <i class="fa-solid fa-spinner animate-spin text-blue-600 text-sm"></i> Fetching team members...
+                            <i class="fa-solid fa-spinner animate-spin text-blue-600 text-sm"></i> Fetching team performance data...
                         </div>
                     </div>
                 </div>
@@ -209,20 +209,47 @@
 
                 if (data.success && data.members.length > 0) {
                     countElem.textContent = `${data.members.length} Active Member${data.members.length > 1 ? 's' : ''}`;
-                    data.members.forEach(m => {
+                    
+                    // Iterate through members and fetch their respective tasks to calculate assigned vs completed counts
+                    for (const m of data.members) {
+                        let assignedCount = 0;
+                        let completedCount = 0;
+
+                        try {
+                            const taskRes = await fetch(`/api/member-tasks/${encodeURIComponent(m.username)}`);
+                            const taskData = await taskRes.json();
+                            if (taskData.success && taskData.tasks) {
+                                assignedCount = taskData.tasks.length;
+                                // Count tasks marked as Completed
+                                completedCount = taskData.tasks.filter(t => t.status === 'Completed').res || taskData.tasks.filter(t => t.status === 'Completed').length;
+                            }
+                        } catch (err) {
+                            console.error(`Failed to fetch tasks for ${m.username}`);
+                        }
+
                         const badge = document.createElement('div');
-                        badge.className = 'w-full sm:w-auto px-4 py-3 bg-white text-slate-800 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-2xs flex items-center gap-3 transition hover:border-blue-300 hover:shadow-xs';
+                        badge.className = 'w-full p-4 bg-white text-slate-800 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition hover:border-blue-300 hover:shadow-xs';
                         badge.innerHTML = `
-                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                ${m.username.charAt(0).toUpperCase()}
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    ${m.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <span class="font-bold text-slate-900 text-sm block">${m.username}</span>
+                                    <span class="text-[10px] text-slate-400 font-mono">tasks_${m.username.trim().replace(/[^a-zA-Z0-9_]/g, '_')}</span>
+                                </div>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="font-bold text-slate-900 block truncate">${m.username}</span>
-                                <span class="text-[10px] text-slate-400 font-mono block truncate">tasks_${m.username.trim().replace(/[^a-zA-Z0-9_]/g, '_')}</span>
+                            <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                                <div class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-100 text-[11px] font-bold">
+                                    <i class="fa-solid fa-list-check mr-1"></i> Assigned: ${assignedCount}
+                                </div>
+                                <div class="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 text-[11px] font-bold">
+                                    <i class="fa-solid fa-circle-check mr-1"></i> Completed: ${completedCount}
+                                </div>
                             </div>
                         `;
                         container.appendChild(badge);
-                    });
+                    }
                 } else {
                     countElem.textContent = '0 Members';
                     container.innerHTML = '<span class="text-xs text-slate-400 italic py-4 block text-center w-full">No team members created yet. Use the sidebar menu to add one.</span>';
