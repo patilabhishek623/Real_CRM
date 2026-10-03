@@ -179,7 +179,7 @@
                             <th class="py-3 px-4">Scheduled Date & Time</th>
                             <th class="py-3 px-4">Category Status</th>
                             <th class="py-3 px-4">Last Remark</th>
-                            <th class="py-3 px-4 text-right">Actions</th>
+                            <th class="py-3 px-4 text-right">Timeline & Complete</th>
                         </tr>
                     </thead>
                     <tbody id="callsTableBody" class="divide-y divide-slate-200 text-sm">
@@ -215,17 +215,16 @@
         </div>
     </footer>
 
-    <!-- Call Log / Edit Modal -->
+    <!-- Call Log Modal (Schedule New Call) -->
     <div id="callModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all">
             <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-                <h3 id="modalTitle" class="font-bold text-lg"><i class="fa-solid fa-phone mr-2 text-primary-400"></i> Log Follow-Up Call</h3>
+                <h3 id="modalTitle" class="font-bold text-lg"><i class="fa-solid fa-phone mr-2 text-primary-400"></i> Schedule New Follow-Up Call</h3>
                 <button onclick="closeCallModal()" class="text-slate-400 hover:text-white transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
             <form id="callForm" onsubmit="saveCall(event)" class="p-6 space-y-4">
-                <input type="hidden" id="modalCallId">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Lead Name *</label>
@@ -279,7 +278,7 @@
 
             <!-- Footer -->
             <div class="bg-white px-6 py-4 border-t border-slate-200 flex items-center justify-between">
-                <span class="text-xs text-slate-500"><i class="fa-solid fa-circle-info text-primary-500 mr-1"></i> Showing all database call records (Call 1 to Call 4)</span>
+                <span class="text-xs text-slate-500"><i class="fa-solid fa-circle-info text-primary-500 mr-1"></i> Showing database records (Call 1 to Call 4)</span>
                 <button onclick="closeTimelineModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition">Close Timeline</button>
             </div>
         </div>
@@ -315,7 +314,6 @@
                 datetime: formatDatetimeLocal(d1),
                 remark: "Requested revised floor plan and parking allotment details.",
                 completed: false,
-                // Full call history timeline records
                 history: {
                     call1: {
                         date: formatDatetimeLocal(d1),
@@ -354,9 +352,9 @@
                         remark: "Customer called inquiring about sea-facing inventory availability.",
                         agent: LOGGED_IN_USER
                     },
-                    call2: null, // Absent
-                    call3: null, // Absent
-                    call4: null  // Absent
+                    call2: null,
+                    call3: null,
+                    call4: null
                 }
             },
             {
@@ -488,11 +486,11 @@
                         </td>
                         <td class="py-3.5 px-4">${badgeHtml}</td>
                         <td class="py-3.5 px-4 text-slate-600 text-xs max-w-xs truncate" title="${call.remark || ''}">${call.remark || 'No remarks recorded'}</td>
-                        <td class="py-3.5 px-4 text-right space-x-1">
-                            <button onclick="openTimelineModal('${call.id}')" title="Customer Timeline (Call 1, Call 2...)" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition"><i class="fa-solid fa-timeline"></i></button>
-                            ${!call.completed ? `<button onclick="markComplete('${call.id}')" title="Mark Completed" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition"><i class="fa-solid fa-check"></i></button>` : ''}
-                            <button onclick="editCall('${call.id}')" title="Edit Call" class="p-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteCall('${call.id}')" title="Delete Call" class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-3.5 px-4 text-right space-x-2">
+                            <button onclick="openTimelineModal('${call.id}')" title="View Customer History Timeline (Call 1, Call 2...)" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
+                                <i class="fa-solid fa-timeline mr-1.5"></i> Timeline
+                            </button>
+                            ${!call.completed ? `<button onclick="markComplete('${call.id}')" title="Mark Completed" class="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-semibold transition"><i class="fa-solid fa-check mr-1.5"></i> Done</button>` : ''}
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -513,7 +511,6 @@
             const container = document.getElementById('timelineContainer');
             container.innerHTML = '';
 
-            // Define sequence steps we want to show explicitly (Call 1, Call 2, Call 3, Call 4)
             const steps = [
                 { key: 'call1', label: 'Call 1 (Initial Contact)', icon: 'fa-phone-volume', color: 'bg-blue-500' },
                 { key: 'call2', label: 'Call 2 (Follow-Up)', icon: 'fa-phone', color: 'bg-primary-600' },
@@ -521,7 +518,7 @@
                 { key: 'call4', label: 'Call 4 (Closing / Site Visit)', icon: 'fa-building-user', color: 'bg-emerald-600' }
             ];
 
-            steps.forEach((step, index) => {
+            steps.forEach((step) => {
                 const historyData = call.history && call.history[step.key];
                 const isPresent = historyData !== null && historyData !== undefined;
 
@@ -529,7 +526,6 @@
                 itemDiv.className = "flex items-start space-x-4 relative";
 
                 if (isPresent) {
-                    // Present data card
                     itemDiv.innerHTML = `
                         <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full ${step.color} text-white flex items-center justify-center shadow-md">
                             <i class="fa-solid ${step.icon} text-sm"></i>
@@ -544,7 +540,6 @@
                         </div>
                     `;
                 } else {
-                    // Absent data label state
                     itemDiv.innerHTML = `
                         <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center">
                             <i class="fa-solid fa-ban text-xs"></i>
@@ -600,28 +595,11 @@
         }
 
         function openNewCallModal() {
-            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-phone mr-2 text-primary-400"></i> Schedule New Follow-Up Call';
-            document.getElementById('modalCallId').value = '';
             document.getElementById('modalLeadName').value = '';
             document.getElementById('modalPhone').value = '';
             document.getElementById('modalProperty').value = '';
             document.getElementById('modalDatetime').value = formatDatetimeLocal(now);
             document.getElementById('modalRemark').value = '';
-            document.getElementById('callModal').classList.remove('hidden');
-        }
-
-        function editCall(id) {
-            const call = callsDatabase.find(c => c.id === id);
-            if (!call) return;
-            
-            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen mr-2 text-primary-400"></i> Edit Follow-Up Call';
-            document.getElementById('modalCallId').value = call.id;
-            document.getElementById('modalLeadName').value = call.leadName;
-            document.getElementById('modalPhone').value = call.phone;
-            document.getElementById('modalProperty').value = call.property;
-            document.getElementById('modalDatetime').value = call.datetime;
-            document.getElementById('modalRemark').value = call.remark;
-            document.getElementById('callModal').classList.add('hidden'); // placeholder
             document.getElementById('callModal').classList.remove('hidden');
         }
 
@@ -631,41 +609,29 @@
 
         function saveCall(event) {
             event.preventDefault();
-            const id = document.getElementById('modalCallId').value;
             const leadName = document.getElementById('modalLeadName').value.trim();
             const phone = document.getElementById('modalPhone').value.trim();
             const property = document.getElementById('modalProperty').value.trim();
             const datetime = document.getElementById('modalDatetime').value;
             const remark = document.getElementById('modalRemark').value.trim();
 
-            if (id) {
-                const call = callsDatabase.find(c => c.id === id);
-                if (call) {
-                    call.leadName = leadName;
-                    call.phone = phone;
-                    call.property = property;
-                    call.datetime = datetime;
-                    call.remark = remark;
+            const newCall = {
+                id: 'CALL-' + (Math.floor(Math.random() * 900) + 200),
+                user: LOGGED_IN_USER,
+                leadName,
+                phone,
+                property,
+                datetime,
+                remark,
+                completed: false,
+                history: {
+                    call1: { date: datetime, status: 'Scheduled', remark: remark, agent: LOGGED_IN_USER },
+                    call2: null,
+                    call3: null,
+                    call4: null
                 }
-            } else {
-                const newCall = {
-                    id: 'CALL-' + (Math.floor(Math.random() * 900) + 200),
-                    user: LOGGED_IN_USER,
-                    leadName,
-                    phone,
-                    property,
-                    datetime,
-                    remark,
-                    completed: false,
-                    history: {
-                        call1: { date: datetime, status: 'Scheduled', remark: remark, agent: LOGGED_IN_USER },
-                        call2: null,
-                        call3: null,
-                        call4: null
-                    }
-                };
-                callsDatabase.unshift(newCall);
-            }
+            };
+            callsDatabase.unshift(newCall);
 
             closeCallModal();
             renderCalls();
@@ -675,13 +641,6 @@
             const call = callsDatabase.find(c => c.id === id);
             if (call) {
                 call.completed = true;
-                renderCalls();
-            }
-        }
-
-        function deleteCall(id) {
-            if (confirm("Are you sure you want to delete this follow-up call from database?")) {
-                callsDatabase = callsDatabase.filter(c => c.id !== id);
                 renderCalls();
             }
         }
