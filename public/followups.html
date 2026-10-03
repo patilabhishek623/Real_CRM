@@ -27,7 +27,6 @@
             </div>
             <div class="flex items-center gap-3 sm:gap-4">
                 <span id="activeUserBadge" class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60 shadow-2xs"></span>
-                <!-- Safe Back Link -->
                 <a href="followups.html" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition-all">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Back to Follow-Ups</span>
@@ -59,11 +58,11 @@
 
         <!-- Navigation Tabs -->
         <div class="flex gap-2 border-b border-slate-200 pb-3">
-            <button onclick="switchTab('wizard')" id="tabBtn-wizard" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-2">
+            <button type="button" onclick="switchTab('wizard')" id="tabBtn-wizard" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-2">
                 <i class="fa-solid fa-phone-volume"></i>
                 <span>Call Input Wizard</span>
             </button>
-            <button onclick="switchTab('history')" id="tabBtn-history" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2">
+            <button type="button" onclick="switchTab('history')" id="tabBtn-history" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2">
                 <i class="fa-solid fa-clock-rotate-left"></i>
                 <span>Call History</span>
                 <span id="historyCountBadge" class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full text-[10px]">0</span>
@@ -192,7 +191,8 @@
                         currentLeadData = data.tasks[0];
                         leadId = currentLeadData._id || currentLeadData.id;
                     } else {
-                        currentLeadData = data.tasks.find(t => (t._id || t.id) == leadId);
+                        // Match using string conversion to handle string vs number ID differences
+                        currentLeadData = data.tasks.find(t => String(t._id || t.id) === String(leadId));
                     }
                     
                     if (currentLeadData) {
@@ -227,7 +227,7 @@
                         document.getElementById('historyCountBadge').textContent = historyLogs.length;
                         renderCustomerTimeline(historyLogs);
                     } else {
-                        document.getElementById('customerTimelineContainer').innerHTML = `<div class="text-xs text-rose-500 font-semibold text-center py-8">Lead record not found.</div>`;
+                        document.getElementById('customerTimelineContainer').innerHTML = `<div class="text-xs text-rose-500 font-semibold text-center py-8">Lead record not found for ID: ${leadId}</div>`;
                     }
                 }
             } catch (err) {
@@ -346,7 +346,6 @@
 
                 if (response.ok) {
                     alert('Call response saved successfully!');
-                    // Instead of a hard reload that disrupts browser history, redirect cleanly or reload
                     window.location.href = 'followups.html';
                 } else {
                     alert(result.message || 'Failed to save call response.');
