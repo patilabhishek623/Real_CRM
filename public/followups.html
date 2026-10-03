@@ -57,45 +57,30 @@
                 <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-history text-emerald-600"></i> Customer History & Call Logs
                 </h2>
-                <span id="histTitleBadge" class="text-[10px] font-bold uppercase bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg">Call Log</span>
+                <span class="text-xs text-slate-400 font-medium">Previous interaction record</span>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+            <div id="customerHistoryContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                <!-- Dynamically populated history grid -->
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Call Connected</span>
+                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Call Status</span>
                     <span id="histCallConnected" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Follow-Up Required</span>
-                    <span id="histFollowUpRequired" class="font-bold text-slate-700 mt-0.5 block">-</span>
                 </div>
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span class="text-slate-400 block font-semibold uppercase text-[10px]">Follow-Up Option</span>
                     <span id="histFollowUpOption" class="font-bold text-slate-700 mt-0.5 block">-</span>
                 </div>
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Follow-Up Date & Time</span>
-                    <span id="histFollowUpDateTime" class="font-bold text-slate-700 mt-0.5 block">-</span>
+                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Follow-Up Schedule</span>
+                    <span id="histFollowUpSchedule" class="font-bold text-slate-700 mt-0.5 block">-</span>
+                </div>
+                <div class="sm:col-span-2 md:col-span-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Remarks</span>
+                    <span id="histRemark" class="font-medium text-slate-800 mt-0.5 block italic">-</span>
                 </div>
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visit Scheduled</span>
                     <span id="histVisitScheduled" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visit Date & Time</span>
-                    <span id="histVisitDateTime" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visit Building</span>
-                    <span id="histVisitBuilding" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visit Location</span>
-                    <span id="histVisitLocation" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visitor Coming</span>
-                    <span id="histVisitorComing" class="font-bold text-slate-700 mt-0.5 block">-</span>
                 </div>
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span class="text-slate-400 block font-semibold uppercase text-[10px]">Lead Status</span>
@@ -104,26 +89,6 @@
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span class="text-slate-400 block font-semibold uppercase text-[10px]">Close Reason</span>
                     <span id="histCloseReason" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Reschedule Reason</span>
-                    <span id="histRescheduleReason" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visit Interest Customer</span>
-                    <span id="histVisitInterestCustomer" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Reschedule Visit Choice</span>
-                    <span id="histRescheduleVisitChoice" class="font-bold text-slate-700 mt-0.5 block">-</span>
-                </div>
-                <div class="sm:col-span-2 md:col-span-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Remarks</span>
-                    <span id="histRemark" class="font-medium text-slate-800 mt-0.5 block italic">-</span>
-                </div>
-                <div class="sm:col-span-2 md:col-span-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Visit Note</span>
-                    <span id="histVisitNote" class="font-medium text-slate-800 mt-0.5 block italic">-</span>
                 </div>
             </div>
         </div>
@@ -243,26 +208,16 @@
                         document.getElementById('quickCallAction').innerHTML = `<a href="tel:${task.contactNumber}" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200 flex items-center gap-2"><i class="fa-solid fa-phone"></i> Call Now</a>`;
                     }
 
-                    // Populate Full Customer History & Call Log Fields
-                    document.getElementById('histTitleBadge').textContent = task.title || 'Call Log';
+                    // Populate Customer History & Call Log Details
                     document.getElementById('histCallConnected').textContent = task.call_connected || 'Call Not Connected';
-                    document.getElementById('histFollowUpRequired').textContent = task.followUpRequired || 'Yes';
                     document.getElementById('histFollowUpOption').textContent = task.followUpOption || 'Call Next Week';
-                    document.getElementById('histFollowUpDateTime').textContent = `${task.followUpDate || 'N/A'} ${task.followUpTime || ''}`;
+                    document.getElementById('histFollowUpSchedule').textContent = `${task.followUpDate || 'N/A'} (${task.followUpTime || 'N/A'})`;
+                    document.getElementById('histRemark').textContent = task.remark || 'Incoming Calls Not Available';
                     document.getElementById('histVisitScheduled').textContent = task.visitScheduled || 'No';
-                    document.getElementById('histVisitDateTime').textContent = `${task.visitDate || 'N/A'} ${task.visitTime || ''}`;
-                    document.getElementById('histVisitBuilding').textContent = task.visitBuilding || 'N/A';
-                    document.getElementById('histVisitLocation').textContent = task.visitLocation || 'N/A';
-                    document.getElementById('histVisitorComing').textContent = task.visitorComing || 'N/A';
                     document.getElementById('histLeadStatus').textContent = task.leadStatus || 'Pending';
                     document.getElementById('histCloseReason').textContent = task.closeReason || 'N/A';
-                    document.getElementById('histRescheduleReason').textContent = task.rescheduleReason || 'N/A';
-                    document.getElementById('histVisitInterestCustomer').textContent = task.visitInterestCustomer || 'N/A';
-                    document.getElementById('histRescheduleVisitChoice').textContent = task.rescheduleVisitChoice || 'N/A';
-                    document.getElementById('histRemark').textContent = task.remark || 'Incoming Calls Not Available';
-                    document.getElementById('histVisitNote').textContent = task.visitNote || 'N/A';
 
-                    // Prefill form remark if available
+                    // Prefill form if needed or set defaults matching sample data
                     if(task.remark && task.remark !== 'Incoming Calls Not Available') {
                         document.getElementById('remark').value = task.remark;
                     }
