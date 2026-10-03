@@ -1,1276 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Follow-Up Leads - Real_Crm</title>
-
+    <title>Follow-Up Calls Dashboard - Real Estate CRM</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        rel="stylesheet"
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
         }
-    </style>
+    </script>
 </head>
-
-
-<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased">
-
-
-<!-- ============================================================
-     HEADER
-============================================================ -->
-
-<header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-
-        <div class="flex items-center space-x-3">
-
-            <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-
-                <i class="fa-solid fa-calendar-days text-lg"></i>
-
-            </div>
-
-
-            <div>
-
-                <span class="text-xl font-extrabold tracking-tight text-slate-900">
-
-                    Real_<span class="text-emerald-600">Crm</span>
-
-                </span>
-
-                <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">
-
-                    Lead Management
-
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="flex items-center gap-3 sm:gap-4">
-
-            <span
-                id="activeUserBadge"
-                class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"
-            ></span>
-
-
-            <a
-                href="/"
-                onclick="localStorage.clear()"
-                class="group inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-200"
-            >
-
-                <i class="fa-solid fa-right-from-bracket transition-transform group-hover:-translate-x-0.5"></i>
-
-                <span>Logout</span>
-
-            </a>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<!-- ============================================================
-     MAIN LAYOUT
-============================================================ -->
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
-
-
-    <!-- ========================================================
-         SIDEBAR
-    ======================================================== -->
-
-    <aside class="md:col-span-1 space-y-2">
-
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
-
-            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
-                Member Menu
-            </p>
-
-
-            <!-- Dashboard -->
-
-            <a
-                href="teammember.html"
-                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
-            >
-
-                <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
-
-                Dashboard
-
-            </a>
-
-
-            <!-- Assigned Tasks -->
-
-            <a
-                href="assignedmembertask.html"
-                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
-            >
-
-                <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
-
-                Assigned Tasks
-
-                <span
-                    id="sidebarPendingCount"
-                    class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200"
-                >
-                    0
-                </span>
-
-            </a>
-
-
-            <!-- Follow Ups -->
-
-            <a
-                href="followups.html"
-                class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm shadow-emerald-500/20 transition"
-            >
-
-                <i class="fa-solid fa-calendar-days w-5 text-emerald-100 text-base"></i>
-
-                Follow Ups
-
-                <span
-                    id="sidebarFollowupCount"
-                    class="ml-auto bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full"
-                >
-                    0
-                </span>
-
-            </a>
-
-
-            <!-- Visits -->
-
-            <a
-                href="visits.html"
-                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
-            >
-
-                <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
-
-                Visits
-
-                <span
-                    id="sidebarVisitCount"
-                    class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-teal-200"
-                >
-                    0
-                </span>
-
-            </a>
-
-        </div>
-
-    </aside>
-
-
-
-    <!-- ========================================================
-         CONTENT
-    ======================================================== -->
-
-    <main class="md:col-span-3 space-y-6">
-
-
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
-
-
-            <!-- HEADER -->
-
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
-
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-primary-600 text-white p-2 rounded-lg shadow">
+                    <i class="fa-solid fa-headset text-xl"></i>
+                </div>
                 <div>
-
-                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900">
-                        Scheduled Follow-Ups
-                    </h1>
-
-                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                        Click any lead name to view the complete customer history.
-                    </p>
-
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">CRM Follow-Up Hub</h1>
+                    <p class="text-xs text-slate-500">Real Estate Lead Management</p>
                 </div>
-
-
-                <div
-                    id="followupCountBadge"
-                    class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60"
-                >
-
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-
-                    <span>0 Active Follow-ups</span>
-
+            </div>
+            
+            <!-- Logged-in User Profile -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex flex-col text-right">
+                    <span class="text-sm font-semibold text-slate-700" id="currentUserName">Abhishek Patil</span>
+                    <span class="text-xs text-slate-500">Senior Sales Executive</span>
                 </div>
+                <div class="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold border border-primary-200 shadow-inner" id="currentUserAvatar">
+                    AP
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Welcome Banner & Quick Actions -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900">Follow-Up Call Management</h2>
+                <p class="text-sm text-slate-600">Track overdue calls, plan your day, and manage upcoming leads efficiently.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="refreshData()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+                    <i class="fa-solid fa-rotate mr-2 text-slate-500"></i> Refresh
+                </button>
+                <button onclick="openNewCallModal()" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg shadow transition">
+                    <i class="fa-solid fa-plus mr-2"></i> Schedule Call
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Statistics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <!-- Lapsed / Overdue -->
+            <div onclick="filterTab('lapsed')" id="card-lapsed" class="cursor-pointer bg-white p-5 rounded-xl border border-rose-100 shadow-sm hover:shadow-md transition border-l-4 border-l-rose-500 group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-rose-600">Lapsed / Overdue</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="count-lapsed">0</h3>
+                    </div>
+                    <div class="p-3 bg-rose-50 rounded-lg text-rose-600 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 flex items-center">
+                    <span class="text-rose-600 font-medium mr-1">Requires action</span> past scheduled time
+                </p>
             </div>
 
-
-
-            <!-- =================================================
-                 FILTER TABS
-            ================================================== -->
-
-            <div class="flex flex-wrap gap-2 mt-6">
-
-
-                <!-- Lapsed -->
-
-                <button
-                    onclick="switchTab('lapsed')"
-                    id="tab-lapsed"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm"
-                >
-
-                    <span>Lapsed Calls</span>
-
-                    <span
-                        id="badge-lapsed"
-                        class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]"
-                    >
-                        0
-                    </span>
-
-                </button>
-
-
-
-                <!-- Today -->
-
-                <button
-                    onclick="switchTab('today')"
-                    id="tab-today"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                >
-
-                    <span>Today</span>
-
-                    <span
-                        id="badge-today"
-                        class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
-                    >
-                        0
-                    </span>
-
-                </button>
-
-
-
-                <!-- Tomorrow -->
-
-                <button
-                    onclick="switchTab('tomorrow')"
-                    id="tab-tomorrow"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                >
-
-                    <span>Tomorrow</span>
-
-                    <span
-                        id="badge-tomorrow"
-                        class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
-                    >
-                        0
-                    </span>
-
-                </button>
-
-
-
-                <!-- Other -->
-
-                <button
-                    onclick="switchTab('other')"
-                    id="tab-other"
-                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                >
-
-                    <span>Other / Upcoming</span>
-
-                    <span
-                        id="badge-other"
-                        class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
-                    >
-                        0
-                    </span>
-
-                </button>
-
+            <!-- Due Today -->
+            <div onclick="filterTab('today')" id="card-today" class="cursor-pointer bg-white p-5 rounded-xl border border-amber-100 shadow-sm hover:shadow-md transition border-l-4 border-l-amber-500 group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-amber-600">Due Today</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="count-today">0</h3>
+                    </div>
+                    <div class="p-3 bg-amber-50 rounded-lg text-amber-600 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-clock text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 flex items-center">
+                    <span class="text-amber-600 font-medium mr-1">Priority focus</span> for today
+                </p>
             </div>
 
+            <!-- Due Tomorrow -->
+            <div onclick="filterTab('tomorrow')" id="card-tomorrow" class="cursor-pointer bg-white p-5 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition border-l-4 border-l-blue-500 group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-blue-600">Due Tomorrow</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="count-tomorrow">0</h3>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-lg text-blue-600 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-calendar-day text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 flex items-center">
+                    <span class="text-blue-600 font-medium mr-1">Scheduled</span> for tomorrow
+                </p>
+            </div>
 
+            <!-- All Follow-ups -->
+            <div onclick="filterTab('all')" id="card-all" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition border-l-4 border-l-slate-600 group ring-2 ring-primary-500 ring-offset-2" id="summary-card-all">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-600">All Database Calls</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="count-all">0</h3>
+                    </div>
+                    <div class="p-3 bg-slate-100 rounded-lg text-slate-600 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-database text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 flex items-center">
+                    <span class="text-slate-600 font-medium mr-1">Total active</span> assigned to you
+                </p>
+            </div>
+        </div>
 
-            <!-- =================================================
-                 TABLE
-            ================================================== -->
+        <!-- Filter & Search Toolbar -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <!-- Tabs Navigation -->
+            <div class="flex flex-wrap items-center gap-2" id="filterTabs">
+                <button onclick="filterTab('all')" data-tab="all" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white shadow-sm transition">
+                    All Calls <span class="ml-1 px-1.5 py-0.5 text-xs bg-slate-700 rounded-full" id="badge-all">0</span>
+                </button>
+                <button onclick="filterTab('lapsed')" data-tab="lapsed" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                    Lapsed <span class="ml-1 px-1.5 py-0.5 text-xs bg-rose-100 text-rose-700 rounded-full" id="badge-lapsed">0</span>
+                </button>
+                <button onclick="filterTab('today')" data-tab="today" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                    Today <span class="ml-1 px-1.5 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full" id="badge-today">0</span>
+                </button>
+                <button onclick="filterTab('tomorrow')" data-tab="tomorrow" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                    Tomorrow <span class="ml-1 px-1.5 py-0.5 text-xs bg-blue-100 text-blue-700 rounded-full" id="badge-tomorrow">0</span>
+                </button>
+            </div>
 
-            <div class="overflow-x-auto mt-6">
+            <!-- Search Box -->
+            <div class="relative w-full md:w-72">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search lead, phone, property..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+            </div>
+        </div>
 
+        <!-- Calls Table Section -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-
                     <thead>
-
-                        <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-
-                            <th class="py-3.5 px-4">
-                                Lead Name
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Contact Number
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Follow-Up Option
-                            </th>
-
-                            <th class="py-3.5 px-4">
-                                Date & Time
-                            </th>
-
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
+                            <th class="py-3 px-4">Lead Name / Contact</th>
+                            <th class="py-3 px-4">Property / Requirement</th>
+                            <th class="py-3 px-4">Scheduled Date & Time</th>
+                            <th class="py-3 px-4">Category Status</th>
+                            <th class="py-3 px-4">Last Remark</th>
+                            <th class="py-3 px-4 text-right">Actions</th>
                         </tr>
-
                     </thead>
-
-
-                    <tbody
-                        id="followupTableBody"
-                        class="divide-y divide-slate-100 text-sm"
-                    >
-
-                        <tr>
-
-                            <td
-                                colspan="4"
-                                class="text-center py-12 text-slate-400"
-                            >
-
-                                <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
-
-                                <p class="text-xs font-medium">
-                                    Loading follow-ups...
-                                </p>
-
-                            </td>
-
-                        </tr>
-
+                    <tbody id="callsTableBody" class="divide-y divide-slate-200 text-sm">
+                        <!-- Dynamic rows injected here -->
                     </tbody>
-
                 </table>
-
             </div>
 
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden py-16 px-4 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-700">No follow-up calls found</h3>
+                <p class="text-sm text-slate-500 mt-1">There are no calls matching the selected filter or search criteria.</p>
+            </div>
+
+            <!-- Table Footer / Pagination info -->
+            <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+                <span id="tableCountInfo">Showing 0 calls</span>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> Database synchronized with logged-in user (<span id="footerUser">Abhishek Patil</span>)
+                </div>
+            </div>
         </div>
 
     </main>
 
-</div>
-
-
-
-<script>
-
-
-/* ============================================================
-   USER SESSION
-============================================================ */
-
-const currentUsername =
-    localStorage.getItem("crm_username");
-
-
-if (!currentUsername) {
-
-    alert(
-        "No active session found. Please log in again."
-    );
-
-    window.location.href = "/";
-
-}
-
-
-document.getElementById(
-    "activeUserBadge"
-).innerHTML = `
-
-    <i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i>
-
-    User:
-
-    <b class="text-slate-900 ml-1">
-        ${escapeHtml(currentUsername)}
-    </b>
-
-`;
-
-
-
-/* ============================================================
-   VARIABLES
-============================================================ */
-
-let globalFollowupTasks = [];
-
-let currentActiveTab = "lapsed";
-
-
-
-/* ============================================================
-   HTML ESCAPE
-============================================================ */
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-
-/* ============================================================
-   DATE FORMAT
-============================================================ */
-
-function formatDateString(date) {
-
-    const d =
-        new Date(date);
-
-
-    if (isNaN(d.getTime())) {
-
-        return "";
-
-    }
-
-
-    let month =
-        String(d.getMonth() + 1);
-
-
-    let day =
-        String(d.getDate());
-
-
-    const year =
-        d.getFullYear();
-
-
-    if (month.length < 2) {
-
-        month =
-            "0" + month;
-
-    }
-
-
-    if (day.length < 2) {
-
-        day =
-            "0" + day;
-
-    }
-
-
-    return [
-        year,
-        month,
-        day
-    ].join("-");
-
-}
-
-
-
-/* ============================================================
-   PARSE FOLLOW-UP DATE
-============================================================ */
-
-function parseTaskTargetDate(task) {
-
-    let dateStr =
-        task.followUpDate || "";
-
-
-    let timeStr =
-        task.followUpTime || "00:00";
-
-
-    /*
-     * Support combined date/time values
-     */
-
-    if (
-        dateStr.length > 10 &&
-        dateStr.includes(":")
-    ) {
-
-        const parts =
-            dateStr.match(
-                /^(\d{4}-\d{2}-\d{2})[T ]?(\d{2}:\d{2})/
-            );
-
-
-        if (parts) {
-
-            dateStr =
-                parts[1];
-
-            timeStr =
-                parts[2];
-
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            Real Estate CRM Call Management System &copy; 2026. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Call Log / Edit Modal -->
+    <div id="callModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all">
+            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                <h3 id="modalTitle" class="font-bold text-lg"><i class="fa-solid fa-phone mr-2 text-primary-400"></i> Log Follow-Up Call</h3>
+                <button onclick="closeCallModal()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form id="callForm" onsubmit="saveCall(event)" class="p-6 space-y-4">
+                <input type="hidden" id="modalCallId">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Lead Name *</label>
+                        <input type="text" id="modalLeadName" required placeholder="e.g. Rajesh Sharma" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Phone Number *</label>
+                        <input type="text" id="modalPhone" required placeholder="+91 98765 43210" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Property / Requirement</label>
+                        <input type="text" id="modalProperty" placeholder="e.g. 3 BHK Luxury Villa" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Scheduled Date & Time *</label>
+                        <input type="datetime-local" id="modalDatetime" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Call Remarks / Notes</label>
+                    <textarea id="modalRemark" rows="3" placeholder="Discussed pricing, site visit scheduled for weekend..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"></textarea>
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeCallModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium shadow transition">Save Call</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Logged-in user context
+        const LOGGED_IN_USER = "Abhishek Patil";
+        
+        // Helper to format dates for datetime-local input
+        function formatDatetimeLocal(date) {
+            const pad = (n) => n < 10 ? '0' + n : n;
+            return date.getFullYear() + '-' +
+                pad(date.getMonth() + 1) + '-' +
+                pad(date.getDate()) + 'T' +
+                pad(date.getHours()) + ':' +
+                pad(date.getMinutes());
         }
 
-    }
+        // Generate dynamic relative sample dates based on current time (October 4, 2026)
+        const now = new Date(2026, 9, 4, 14, 30, 0); // Oct 4, 2026, 2:30 PM
+        
+        const yesterdayDate = new Date(now);
+        yesterdayDate.setDate(now.getDate() - 1);
+        yesterdayDate.setHours(11, 0, 0);
 
+        const threeDaysAgoDate = new Date(now);
+        threeDaysAgoDate.setDate(now.getDate() - 3);
+        threeDaysAgoDate.setHours(16, 15, 0);
 
-    if (!dateStr) {
+        const todayMorning = new Date(now);
+        todayMorning.setHours(10, 0, 0);
 
-        return new Date(NaN);
+        const todayEvening = new Date(now);
+        todayEvening.setHours(17, 30, 0);
 
-    }
+        const tomorrowDate = new Date(now);
+        tomorrowDate.setDate(now.getDate() + 1);
+        tomorrowDate.setHours(12, 0, 0);
 
+        const futureDate = new Date(now);
+        futureDate.setDate(now.getDate() + 5);
+        futureDate.setHours(14, 0, 0);
 
-    return new Date(
-        `${dateStr}T${timeStr}:00`
-    );
+        // Initial Mock Database for Logged-In User
+        let callsDatabase = [
+            {
+                id: "CALL-101",
+                user: LOGGED_IN_USER,
+                leadName: "Vikram Malhotra",
+                phone: "+91 98211 44556",
+                property: "4 BHK Penthouse - Bandra West",
+                datetime: formatDatetimeLocal(threeDaysAgoDate),
+                remark: "Requested revised floor plan and parking allotment details. Lapsed follow-up.",
+                completed: false
+            },
+            {
+                id: "CALL-102",
+                user: LOGGED_IN_USER,
+                leadName: "Sunita Deshmukh",
+                phone: "+91 97001 22334",
+                property: "3 BHK Sea View Apartment - Worli",
+                datetime: formatDatetimeLocal(yesterdayDate),
+                remark: "Bank loan pre-approval discussed. Awaiting confirmation call.",
+                completed: false
+            },
+            {
+                id: "CALL-103",
+                user: LOGGED_IN_USER,
+                leadName: "Ananya Iyer",
+                phone: "+91 98199 88776",
+                property: "2 BHK Luxury Suite - Lower Parel",
+                datetime: formatDatetimeLocal(todayMorning),
+                remark: "Call scheduled to confirm site visit timing for Sunday afternoon.",
+                completed: false
+            },
+            {
+                id: "CALL-104",
+                user: LOGGED_IN_USER,
+                leadName: "Rohan Kulkarni",
+                phone: "+91 99200 11223",
+                property: "Commercial Office Space - BKC",
+                datetime: formatDatetimeLocal(todayEvening),
+                remark: "Follow up regarding commercial lease agreement and maintenance terms.",
+                completed: false
+            },
+            {
+                id: "CALL-105",
+                user: LOGGED_IN_USER,
+                leadName: "Meera Singhania",
+                phone: "+91 98333 55443",
+                property: "Duplex Villa - Juhu Scheme",
+                datetime: formatDatetimeLocal(tomorrowDate),
+                remark: "Send brochure and price sheet before call tomorrow noon.",
+                completed: false
+            },
+            {
+                id: "CALL-106",
+                user: LOGGED_IN_USER,
+                leadName: "Dr. Ramesh Shinde",
+                phone: "+91 98200 77889",
+                property: "3 BHK Apartment - Powai Lake",
+                datetime: formatDatetimeLocal(futureDate),
+                remark: "Interested in Q1 2027 possession handover projects.",
+                completed: false
+            },
+            {
+                id: "CALL-107",
+                user: LOGGED_IN_USER,
+                leadName: "Karan Johari",
+                phone: "+91 98765 12345",
+                property: "1 BHK Studio - Andheri East",
+                datetime: formatDatetimeLocal(yesterdayDate),
+                remark: "Customer missed call. Need to reschedule.",
+                completed: true // Completed call example
+            }
+        ];
 
-}
+        let currentFilter = 'all';
+        let searchQuery = '';
 
-
-
-/* ============================================================
-   LAPSED DETAILS
-============================================================ */
-
-function getLapsedDetails(
-    targetDate
-) {
-
-    const now =
-        new Date();
-
-
-    const diffMs =
-        now - targetDate;
-
-
-    if (diffMs <= 0) {
-
-        return null;
-
-    }
-
-
-    const diffDays =
-        Math.floor(
-            diffMs /
-            (1000 * 60 * 60 * 24)
-        );
-
-
-    const diffHours =
-        Math.floor(
-            (
-                diffMs %
-                (1000 * 60 * 60 * 24)
-            ) /
-            (1000 * 60 * 60)
-        );
-
-
-    if (diffDays > 0) {
-
-        return `${diffDays}d ${diffHours}h Lapsed`;
-
-    }
-
-
-    return `${diffHours}h Lapsed`;
-
-}
-
-
-
-/* ============================================================
-   SWITCH TAB
-============================================================ */
-
-function switchTab(tab) {
-
-    currentActiveTab =
-        tab;
-
-
-    [
-        "lapsed",
-        "today",
-        "tomorrow",
-        "other"
-    ].forEach(type => {
-
-        const button =
-            document.getElementById(
-                `tab-${type}`
-            );
-
-
-        if (type === tab) {
-
-            if (type === "lapsed") {
-
-                button.className =
-                    "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm";
-
+        // Helper: Determine category of a call based on scheduled datetime relative to 'now'
+        function getCallCategory(call) {
+            if (call.completed) return 'completed';
+            
+            const callDate = new Date(call.datetime);
+            
+            // Normalize dates to compare calendar days
+            const callDateOnly = new Date(callDate.getFullYear(), callDate.getMonth(), callDate.getDate());
+            const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            const diffDays = Math.round((callDateOnly - nowDateOnly) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) {
+                return 'lapsed'; // Past date
+            } else if (diffDays === 0) {
+                return 'today'; // Same calendar day
+            } else if (diffDays === 1) {
+                return 'tomorrow'; // Next calendar day
             } else {
+                return 'upcoming'; // 2+ days in future
+            }
+        }
 
-                button.className =
-                    "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-emerald-600 text-white border-emerald-600 shadow-sm";
+        // Format Date string nicely for display
+        function formatDisplayDate(dateStr) {
+            const d = new Date(dateStr);
+            const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return d.toLocaleDateString('en-US', options);
+        }
 
+        // Initialize dashboard
+        function initDashboard() {
+            document.getElementById('currentUserName').innerText = LOGGED_IN_USER;
+            document.getElementById('footerUser').innerText = LOGGED_IN_USER;
+            renderCalls();
+        }
+
+        // Render statistics counts & table rows
+        function renderCalls() {
+            // Filter by logged-in user
+            const userCalls = callsDatabase.filter(c => c.user === LOGGED_IN_USER);
+
+            // Calculate counts for active (not completed) calls primarily, but show all in 'all'
+            const activeCalls = userCalls.filter(c => !c.completed);
+            
+            const counts = {
+                all: userCalls.length,
+                lapsed: activeCalls.filter(c => getCallCategory(c) === 'lapsed').length,
+                today: activeCalls.filter(c => getCallCategory(c) === 'today').length,
+                tomorrow: activeCalls.filter(c => getCallCategory(c) === 'tomorrow').length,
+            };
+
+            // Update badges & card numbers
+            document.getElementById('count-all').innerText = counts.all;
+            document.getElementById('count-lapsed').innerText = counts.lapsed;
+            document.getElementById('count-today').innerText = counts.today;
+            document.getElementById('count-tomorrow').innerText = counts.tomorrow;
+
+            document.getElementById('badge-all').innerText = counts.all;
+            document.getElementById('badge-lapsed').innerText = counts.lapsed;
+            document.getElementById('badge-today').innerText = counts.today;
+            document.getElementById('badge-tomorrow').innerText = counts.tomorrow;
+
+            // Filter data according to currentFilter and search
+            let filtered = userCalls.filter(call => {
+                const category = getCallCategory(call);
+                
+                // Tab filter logic
+                if (currentFilter === 'lapsed' && (category !== 'lapsed' || call.completed)) return false;
+                if (currentFilter === 'today' && (category !== 'today' || call.completed)) return false;
+                if (currentFilter === 'tomorrow' && (category !== 'tomorrow' || call.completed)) return false;
+                if (currentFilter === 'all' && call.completed) return false; // Hide completed in default 'all' view for clarity
+
+                // Search query matching
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    const matchName = call.leadName.toLowerCase().includes(q);
+                    const matchPhone = call.phone.toLowerCase().includes(q);
+                    const matchProp = (call.property || '').toLowerCase().includes(q);
+                    const matchRemark = (call.remark || '').toLowerCase().includes(q);
+                    if (!matchName && !matchPhone && !matchProp && !matchRemark) return false;
+                }
+
+                return true;
+            });
+
+            // Render Table Rows
+            const tbody = document.getElementById('callsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                
+                filtered.forEach(call => {
+                    const category = getCallCategory(call);
+                    let badgeHtml = '';
+
+                    if (call.completed) {
+                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check mr-1.5"></i> Completed</span>`;
+                    } else if (category === 'lapsed') {
+                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Lapsed / Overdue</span>`;
+                    } else if (category === 'today') {
+                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"><i class="fa-solid fa-clock mr-1.5"></i> Due Today</span>`;
+                    } else if (category === 'tomorrow') {
+                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800"><i class="fa-solid fa-calendar-day mr-1.5"></i> Due Tomorrow</span>`;
+                    } else {
+                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"><i class="fa-solid fa-calendar mr-1.5"></i> Upcoming</span>`;
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-4">
+                            <div class="font-bold text-slate-900">${call.leadName}</div>
+                            <div class="text-xs text-slate-500"><i class="fa-solid fa-phone text-xs mr-1 text-slate-400"></i> ${call.phone}</div>
+                        </td>
+                        <td class="py-3.5 px-4 text-slate-700 font-medium">${call.property || 'General Inquiry'}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="text-slate-900 font-semibold text-xs">${formatDisplayDate(call.datetime)}</div>
+                        </td>
+                        <td class="py-3.5 px-4">${badgeHtml}</td>
+                        <td class="py-3.5 px-4 text-slate-600 text-xs max-w-xs truncate" title="${call.remark || ''}">${call.remark || 'No remarks recorded'}</td>
+                        <td class="py-3.5 px-4 text-right space-x-2">
+                            ${!call.completed ? `<button onclick="markComplete('${call.id}')" title="Mark Completed" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition"><i class="fa-solid fa-check"></i></button>` : ''}
+                            <button onclick="editCall('${call.id}')" title="Edit Call" class="p-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteCall('${call.id}')" title="Delete Call" class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
 
-        } else {
-
-            button.className =
-                "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200";
-
+            document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
         }
 
-    });
-
-
-    renderTable();
-
-}
-
-
-
-/* ============================================================
-   RENDER TABLE
-============================================================ */
-
-function renderTable() {
-
-    const now =
-        new Date();
-
-
-    const todayStr =
-        formatDateString(now);
-
-
-    const tomorrowDate =
-        new Date();
-
-
-    tomorrowDate.setDate(
-        tomorrowDate.getDate() + 1
-    );
-
-
-    const tomorrowStr =
-        formatDateString(
-            tomorrowDate
-        );
-
-
-    const lapsedTasks = [];
-
-    const todayTasks = [];
-
-    const tomorrowTasks = [];
-
-    const otherTasks = [];
-
-
-
-    globalFollowupTasks.forEach(task => {
-
-        const targetDate =
-            parseTaskTargetDate(task);
-
-
-        if (
-            isNaN(targetDate.getTime())
-        ) {
-
-            otherTasks.push(task);
-
-            return;
-
-        }
-
-
-        const dateString =
-            formatDateString(
-                targetDate
-            );
-
-
-        if (targetDate < now) {
-
-            lapsedTasks.push(task);
-
-        }
-
-        else if (
-            dateString === todayStr
-        ) {
-
-            todayTasks.push(task);
-
-        }
-
-        else if (
-            dateString === tomorrowStr
-        ) {
-
-            tomorrowTasks.push(task);
-
-        }
-
-        else {
-
-            otherTasks.push(task);
-
-        }
-
-    });
-
-
-
-    /* ========================================================
-       BADGES
-    ======================================================== */
-
-    document.getElementById(
-        "badge-lapsed"
-    ).textContent =
-        lapsedTasks.length;
-
-
-    document.getElementById(
-        "badge-today"
-    ).textContent =
-        todayTasks.length;
-
-
-    document.getElementById(
-        "badge-tomorrow"
-    ).textContent =
-        tomorrowTasks.length;
-
-
-    document.getElementById(
-        "badge-other"
-    ).textContent =
-        otherTasks.length;
-
-
-
-    /* ========================================================
-       ACTIVE LIST
-    ======================================================== */
-
-    let activeList =
-        lapsedTasks;
-
-
-    if (
-        currentActiveTab === "today"
-    ) {
-
-        activeList =
-            todayTasks;
-
-    }
-
-
-    if (
-        currentActiveTab === "tomorrow"
-    ) {
-
-        activeList =
-            tomorrowTasks;
-
-    }
-
-
-    if (
-        currentActiveTab === "other"
-    ) {
-
-        activeList =
-            otherTasks;
-
-    }
-
-
-
-    const tbody =
-        document.getElementById(
-            "followupTableBody"
-        );
-
-
-
-    /* ========================================================
-       EMPTY STATE
-    ======================================================== */
-
-    if (!activeList.length) {
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="4"
-                    class="text-center py-16"
-                >
-
-                    <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-slate-100">
-
-                        <i class="fa-solid fa-clipboard-check text-xl"></i>
-
-                    </div>
-
-
-                    <p class="text-sm font-semibold text-slate-700">
-
-                        No records found!
-
-                    </p>
-
-
-                    <p class="text-xs text-slate-400 mt-1">
-
-                        There are no follow-ups found in
-                        ${escapeHtml(currentActiveTab)}.
-
-                    </p>
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
-
-
-
-    /* ========================================================
-       TABLE ROWS
-       
-       IMPORTANT:
-       There is NO Call Log column here.
-       
-       Call Log is shown ONLY inside
-       Customer History Timeline.
-    ======================================================== */
-
-    tbody.innerHTML =
-        activeList
-            .map(task => {
-
-                const targetDate =
-                    parseTaskTargetDate(task);
-
-
-                const lapsedLabel =
-                    getLapsedDetails(
-                        targetDate
-                    );
-
-
-                const taskId =
-                    task._id ||
-                    task.id;
-
-
-                const name =
-                    task.name ||
-                    task.customerName ||
-                    task.leadName ||
-                    "Unnamed Lead";
-
-
-                const contact =
-                    task.contactNumber ||
-                    task.phone ||
-                    task.mobile ||
-                    "";
-
-
-                const followUpOption =
-                    task.followUpOption ||
-                    "—";
-
-
-                const followUpDate =
-                    task.followUpDate ||
-                    "—";
-
-
-                const followUpTime =
-                    task.followUpTime ||
-                    "—";
-
-
-
-                return `
-
-                    <tr class="hover:bg-slate-50/60 transition-colors group">
-
-
-                        <!-- LEAD NAME -->
-
-                        <td class="py-4 px-4">
-
-                            <a
-                                href="lead-response.html?id=${encodeURIComponent(taskId)}"
-                                class="font-semibold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-slate-300 hover:decoration-emerald-500"
-                            >
-
-                                ${escapeHtml(name)}
-
-                            </a>
-
-                        </td>
-
-
-
-                        <!-- CONTACT -->
-
-                        <td class="py-4 px-4 text-slate-600">
-
-                            ${
-                                contact
-                                ?
-                                `
-                                    <a
-                                        href="tel:${encodeURIComponent(contact)}"
-                                        class="inline-flex items-center gap-1.5 hover:text-emerald-600 transition"
-                                    >
-
-                                        <i class="fa-solid fa-phone text-xs text-slate-400"></i>
-
-                                        ${escapeHtml(contact)}
-
-                                    </a>
-                                `
-                                :
-                                `
-                                    <span class="text-slate-400 italic">
-                                        —
-                                    </span>
-                                `
-                            }
-
-                        </td>
-
-
-
-                        <!-- FOLLOW-UP OPTION -->
-
-                        <td class="py-4 px-4">
-
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50/80 text-amber-700 font-semibold rounded-xl text-xs border border-amber-200/60">
-
-                                <i class="fa-solid fa-tag text-[10px] text-amber-500"></i>
-
-                                ${escapeHtml(followUpOption)}
-
-                            </span>
-
-                        </td>
-
-
-
-                        <!-- DATE / TIME -->
-
-                        <td class="py-4 px-4 text-slate-600">
-
-                            <div class="inline-flex items-center gap-2 font-medium flex-wrap">
-
-
-                                <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">
-
-                                    ${escapeHtml(followUpDate)}
-
-                                </span>
-
-
-                                <span class="text-xs text-slate-400 font-normal">
-
-                                    ${escapeHtml(followUpTime)}
-
-                                </span>
-
-
-                                ${
-                                    lapsedLabel
-                                    ?
-                                    `
-                                        <span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200 ml-1">
-
-                                            <i class="fa-solid fa-clock-rotate-left mr-1"></i>
-
-                                            ${escapeHtml(lapsedLabel)}
-
-                                        </span>
-                                    `
-                                    :
-                                    ""
-                                }
-
-                            </div>
-
-                        </td>
-
-
-                    </tr>
-
-                `;
-
-            })
-            .join("");
-
-}
-
-
-
-/* ============================================================
-   LOAD FOLLOW-UPS
-============================================================ */
-
-async function loadFollowUps() {
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/member-tasks/${encodeURIComponent(currentUsername)}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json"
-                    },
-                    cache: "no-store"
+        // Tab Filtering Handler
+        function filterTab(tabName) {
+            currentFilter = tabName;
+            
+            // Highlight active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabName) {
+                    btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white shadow-sm transition";
+                } else {
+                    btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
                 }
-            );
+            });
 
+            // Highlight summary card borders
+            ['all', 'lapsed', 'today', 'tomorrow'].forEach(t => {
+                const card = document.getElementById(`card-${t}`);
+                if (t === tabName) {
+                    card.classList.add('ring-2', 'ring-primary-500', 'ring-offset-2');
+                } else {
+                    card.classList.remove('ring-2', 'ring-primary-500', 'ring-offset-2');
+                }
+            });
 
-        if (!response.ok) {
-
-            throw new Error(
-                `Server returned ${response.status}`
-            );
-
+            renderCalls();
         }
 
-
-        const data =
-            await response.json();
-
-
-
-        if (
-            !data.success ||
-            !Array.isArray(data.tasks)
-        ) {
-
-            throw new Error(
-                "Invalid follow-up response from server."
-            );
-
+        // Search Input Handler
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.trim();
+            renderCalls();
         }
 
+        // Refresh Data
+        function refreshData() {
+            renderCalls();
+        }
 
+        // Modal Controls
+        function openNewCallModal() {
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-phone mr-2 text-primary-400"></i> Schedule New Follow-Up Call';
+            document.getElementById('modalCallId').value = '';
+            document.getElementById('modalLeadName').value = '';
+            document.getElementById('modalPhone').value = '';
+            document.getElementById('modalProperty').value = '';
+            document.getElementById('modalDatetime').value = formatDatetimeLocal(now);
+            document.getElementById('modalRemark').value = '';
+            document.getElementById('callModal').classList.remove('hidden');
+        }
 
-        const tasks =
-            data.tasks;
+        function editCall(id) {
+            const call = callsDatabase.find(c => c.id === id);
+            if (!call) return;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen mr-2 text-primary-400"></i> Edit Follow-Up Call';
+            document.getElementById('modalCallId').value = call.id;
+            document.getElementById('modalLeadName').value = call.leadName;
+            document.getElementById('modalPhone').value = call.phone;
+            document.getElementById('modalProperty').value = call.property;
+            document.getElementById('modalDatetime').value = call.datetime;
+            document.getElementById('modalRemark').value = call.remark;
+            document.getElementById('callModal').classList.remove('hidden');
+        }
 
+        function closeCallModal() {
+            document.getElementById('callModal').classList.add('hidden');
+        }
 
+        // Save (Create or Update) Call
+        function saveCall(event) {
+            event.preventDefault();
+            const id = document.getElementById('modalCallId').value;
+            const leadName = document.getElementById('modalLeadName').value.trim();
+            const phone = document.getElementById('modalPhone').value.trim();
+            const property = document.getElementById('modalProperty').value.trim();
+            const datetime = document.getElementById('modalDatetime').value;
+            const remark = document.getElementById('modalRemark').value.trim();
 
-        /*
-         * Only follow-ups are displayed.
-         */
+            if (id) {
+                // Update existing
+                const call = callsDatabase.find(c => c.id === id);
+                if (call) {
+                    call.leadName = leadName;
+                    call.phone = phone;
+                    call.property = property;
+                    call.datetime = datetime;
+                    call.remark = remark;
+                }
+            } else {
+                // Create new
+                const newCall = {
+                    id: 'CALL-' + (Math.floor(Math.random() * 900) + 200),
+                    user: LOGGED_IN_USER,
+                    leadName,
+                    phone,
+                    property,
+                    datetime,
+                    remark,
+                    completed: false
+                };
+                callsDatabase.unshift(newCall);
+            }
 
-        globalFollowupTasks =
-            tasks.filter(task => {
+            closeCallModal();
+            renderCalls();
+        }
 
-                return (
-                    String(
-                        task.followUpRequired || ""
-                    ).toLowerCase() === "yes"
-                );
+        // Mark Completed
+        function markComplete(id) {
+            const call = callsDatabase.find(c => c.id === id);
+            if (call) {
+                call.completed = true;
+                renderCalls();
+            }
+        }
 
-            });
+        // Delete Call
+        function deleteCall(id) {
+            if (confirm("Are you sure you want to delete this follow-up call from database?")) {
+                callsDatabase = callsDatabase.filter(c => c.id !== id);
+                renderCalls();
+            }
+        }
 
-
-
-        /*
-         * Sidebar counts
-         */
-
-        const pendingTasks =
-            tasks.filter(task => {
-
-                return (
-                    !task.status ||
-                    String(task.status)
-                        .toLowerCase() !==
-                    "completed"
-                );
-
-            });
-
-
-        const visitTasks =
-            tasks.filter(task => {
-
-                return (
-                    String(
-                        task.visitRequired || ""
-                    ).toLowerCase() === "yes"
-                );
-
-            });
-
-
-
-        document.getElementById(
-            "sidebarPendingCount"
-        ).textContent =
-            pendingTasks.length;
-
-
-        document.getElementById(
-            "sidebarFollowupCount"
-        ).textContent =
-            globalFollowupTasks.length;
-
-
-        document.getElementById(
-            "sidebarVisitCount"
-        ).textContent =
-            visitTasks.length;
-
-
-
-        /*
-         * Header count
-         */
-
-        document.getElementById(
-            "followupCountBadge"
-        ).innerHTML = `
-
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-
-            <span>
-                ${globalFollowupTasks.length}
-                Active Follow-ups
-            </span>
-
-        `;
-
-
-
-        renderTable();
-
-
-    } catch (error) {
-
-        console.error(
-            "Error loading follow-ups:",
-            error
-        );
-
-
-        document.getElementById(
-            "followupTableBody"
-        ).innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="4"
-                    class="text-center py-12 text-rose-500"
-                >
-
-                    <i class="fa-solid fa-circle-exclamation text-xl mb-2"></i>
-
-                    <p class="text-xs font-medium">
-                        Failed to load follow-up records.
-                    </p>
-
-                    <p class="text-[11px] text-slate-400 mt-1">
-                        ${escapeHtml(error.message)}
-                    </p>
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-}
-
-
-
-/* ============================================================
-   START
-============================================================ */
-
-loadFollowUps();
-
-</script>
-
+        // Initial load
+        window.onload = initDashboard;
+    </script>
 </body>
-
 </html>
