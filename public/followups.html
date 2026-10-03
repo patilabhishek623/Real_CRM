@@ -27,10 +27,11 @@
             </div>
             <div class="flex items-center gap-3 sm:gap-4">
                 <span id="activeUserBadge" class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60 shadow-2xs"></span>
-                <a href="followups.html" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition-all">
+                <!-- Back Button with explicit handler -->
+                <button type="button" onclick="goBack()" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition-all cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Back to Follow-Ups</span>
-                </a>
+                </button>
             </div>
         </div>
     </header>
@@ -162,6 +163,15 @@
 
         let currentLeadData = null;
 
+        function goBack() {
+            // Check if there is history to go back to, otherwise fallback to followups.html
+            if (document.referrer && document.referrer.includes('followups.html')) {
+                history.back();
+            } else {
+                window.location.href = 'followups.html';
+            }
+        }
+
         function switchTab(tabName) {
             const wizardTab = document.getElementById('tabContent-wizard');
             const historyTab = document.getElementById('tabContent-history');
@@ -191,7 +201,6 @@
                         currentLeadData = data.tasks[0];
                         leadId = currentLeadData._id || currentLeadData.id;
                     } else {
-                        // Match using string conversion to handle string vs number ID differences
                         currentLeadData = data.tasks.find(t => String(t._id || t.id) === String(leadId));
                     }
                     
