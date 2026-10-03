@@ -67,7 +67,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
                     <div>
                         <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Scheduled Follow-Ups</h1>
-                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Click any lead name to record call connection status and remarks.</p>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Click any lead name to record call connection status and remarks[cite: 1].</p>
                     </div>
                     <div id="followupCountBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60 shadow-2xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                <!-- Timeline Filter Tabs (Default: Today) -->
+                <!-- Reordered Tabs: Today first, then Tomorrow, Other, and Lapsed -->
                 <div class="flex flex-wrap gap-2 mt-6">
                     <button onclick="switchTab('today')" id="tab-today" class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-emerald-600 text-white border-emerald-600 shadow-sm">
                         <span>Today</span>
@@ -129,7 +129,7 @@
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b class="text-slate-900 ml-1">${currentUsername}</b>`;
 
         let globalFollowupTasks = [];
-        let currentActiveTab = 'today'; // Default view set to Today
+        let currentActiveTab = 'today'; // Default selected view is Today[cite: 1]
 
         function formatDateString(date) {
             const d = new Date(date);
@@ -173,7 +173,7 @@
 
         function switchTab(tab) {
             currentActiveTab = tab;
-            ['lapsed', 'today', 'tomorrow', 'other'].forEach(t => {
+            ['today', 'tomorrow', 'other', 'lapsed'].forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
                 if (t === tab) {
                     btn.className = "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-emerald-600 text-white border-emerald-600 shadow-sm";
@@ -212,10 +212,10 @@
                 }
             });
 
-            document.getElementById('badge-lapsed').textContent = lapsedTasks.length;
             document.getElementById('badge-today').textContent = todayTasks.length;
             document.getElementById('badge-tomorrow').textContent = tomorrowTasks.length;
             document.getElementById('badge-other').textContent = otherTasks.length;
+            document.getElementById('badge-lapsed').textContent = lapsedTasks.length;
 
             let activeList = todayTasks;
             if (currentActiveTab === 'tomorrow') activeList = tomorrowTasks;
@@ -245,7 +245,7 @@
                 return `
                     <tr class="hover:bg-slate-50/60 transition-colors group">
                         <td class="py-4 px-4">
-                            <a href="lead-response.html?id=${taskId}" class="font-semibold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-slate-300 hover:decoration-emerald-500">${t.name}</a>
+                            <a href="lead-response.html?id=${taskId}" class="font-semibold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-slate-300 hover:decoration-emerald-500">${t.name}[cite: 1]</a>
                         </td>
                         <td class="py-4 px-4 text-slate-600">
                             ${t.contactNumber ? `<a href="tel:${t.contactNumber}" class="inline-flex items-center gap-1.5 hover:text-emerald-600 transition"><i class="fa-solid fa-phone text-xs text-slate-400"></i> ${t.contactNumber}</a>` : '<span class="text-slate-400 italic">N/A</span>'}
