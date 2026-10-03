@@ -41,131 +41,26 @@
         </div>
     </header>
 
-    <div class="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-6 w-full flex-grow space-y-6">
+    <div class="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-6 w-full flex-grow space-y-6">
         
         <!-- Page Title & Overview -->
         <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <h1 class="text-xl font-bold text-slate-900">Interaction Timeline</h1>
-                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Detailed breakdown of the selected call log entry.</p>
+                <h1 class="text-xl font-bold text-slate-900">Interaction History</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Complete chronological breakdown of recorded call logs and follow-up activities.</p>
             </div>
             <a href="teammember.html" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
                 <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
             </a>
         </div>
 
-        <!-- Full Detail Call Log Card -->
-        <div class="corporate-card rounded-2xl p-5 sm:p-8 space-y-6">
-            
-            <!-- Card Header -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-base border border-emerald-100 shadow-2xs flex-shrink-0">
-                        <i class="fa-solid fa-phone-volume"></i>
-                    </div>
-                    <div>
-                        <h4 id="callTitle" class="font-bold text-slate-900 text-base">Call Log</h4>
-                        <p class="text-xs text-slate-500 font-medium">Record Entry Details</p>
-                    </div>
-                </div>
-                <span id="callConnectedBadge" class="px-3 py-1.5 bg-rose-50 text-rose-700 font-bold rounded-xl text-xs uppercase border border-rose-200 flex items-center gap-1.5 shadow-2xs">
-                    <i class="fa-solid fa-phone-slash text-[10px]"></i> Call Not Connected
-                </span>
-            </div>
-
-            <!-- Sections Container -->
-            <div class="space-y-5">
-                
-                <!-- Section 1: Call & Remark Details -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-comment-dots text-emerald-600"></i> Call & Remarks
-                    </h5>
-                    <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Remark</span>
-                        <p id="callRemark" class="text-slate-800 font-medium text-sm">Incoming Calls Not Available</p>
-                    </div>
-                </div>
-
-                <!-- Section 2: Follow-Up Information -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-calendar-check text-emerald-600"></i> Follow-Up Schedule
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Required</span>
-                            <span id="followUpRequired" class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-xs border border-emerald-200">
-                                <i class="fa-solid fa-check text-[10px]"></i> Yes
-                            </span>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Option</span>
-                            <span id="followUpOption" class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs border border-amber-200">
-                                <i class="fa-solid fa-tag text-[10px] text-amber-500"></i> Call Next Week
-                            </span>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1 sm:col-span-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Scheduled Date & Time</span>
-                            <div class="flex items-center gap-2 font-semibold text-slate-800 text-sm">
-                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-calendar text-slate-400 mr-1.5"></i> <span id="formattedFollowUpDate">02/10/2026</span></span>
-                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-clock text-slate-400 mr-1.5"></i> <span id="callTime">00:04</span></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 3: Visit Information -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Site Visit Details
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Scheduled</span>
-                            <span id="visitScheduled" class="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-200/60 text-slate-700 font-bold rounded-lg text-xs border border-slate-300">
-                                No
-                            </span>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Date & Time</span>
-                            <p id="visitDateTime" class="text-slate-400 italic font-medium">Not Scheduled</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Building / Location</span>
-                            <p id="visitLocation" class="text-slate-400 italic font-medium">N/A</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visitor Coming / Interest</span>
-                            <p id="visitorInterest" class="text-slate-400 italic font-medium">N/A</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1 sm:col-span-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Note / Reschedule Choice</span>
-                            <p id="visitNote" class="text-slate-400 italic font-medium">No notes or reschedule preferences recorded.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 4: Lead Status & Closing -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-flag text-emerald-600"></i> Status & Closing
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Lead Status</span>
-                            <p id="leadStatus" class="text-slate-500 italic font-medium">Open / Unspecified</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Close Reason</span>
-                            <p id="closeReason" class="text-slate-500 italic font-medium">N/A</p>
-                        </div>
-                    </div>
-                </div>
-
+        <!-- Dynamic Timeline Feed Container -->
+        <div id="timelineContainer" class="space-y-4">
+            <div class="text-center py-12 text-slate-400">
+                <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
+                <p class="text-xs font-medium">Loading history timeline...</p>
             </div>
         </div>
-
     </div>
 
     <!-- Mobile Sticky Bottom Navigation Bar -->
@@ -196,84 +91,152 @@
         }
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b class="text-slate-900 ml-1">${currentUsername}</b>`;
 
-        // Helper function to convert YYYY-MM-DD into DD/MM/YYYY format
-        function formatDateToDMY(dateStr) {
-            if (!dateStr || !dateStr.includes('-')) return dateStr || 'Not Set';
-            const parts = dateStr.split('-');
-            if (parts.length === 3) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        // Function to load and render all call records dynamically (call1, call2, call3, etc.)
+        async function loadCustomerHistory() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const leadId = urlParams.get('id');
+
+            const container = document.getElementById('timelineContainer');
+
+            if (!leadId) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl p-8 text-center border border-slate-200 text-slate-400">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl mb-2 text-amber-500"></i>
+                        <p class="text-sm font-semibold text-slate-700">No Lead ID Specified</p>
+                        <p class="text-xs text-slate-400 mt-1">Please select a valid lead from your dashboard or task list.</p>
+                    </div>`;
+                return;
             }
-            return dateStr;
+
+            try {
+                // Fetch lead/task details containing the call logs
+                const res = await fetch(`/api/task/${leadId}`);
+                const data = await res.json();
+
+                if (data.success && data.task) {
+                    const task = data.task;
+                    
+                    // Filter keys that match 'call' followed by numbers (call1, call2, call3...)
+                    const callKeys = Object.keys(task).filter(key => /^call\d+$/i.test(key));
+
+                    if (callKeys.length === 0) {
+                        container.innerHTML = `
+                            <div class="bg-white rounded-2xl p-8 text-center border border-slate-200 text-slate-400">
+                                <i class="fa-solid fa-comment-slash text-2xl mb-2 text-slate-300"></i>
+                                <p class="text-sm font-semibold text-slate-700">No Call Logs Found</p>
+                                <p class="text-xs text-slate-400 mt-1">There are no interaction logs recorded for this lead yet.</p>
+                            </div>`;
+                        return;
+                    }
+
+                    // Sort call keys numerically (call1, call2, call3...)
+                    callKeys.sort((a, b) => {
+                        const numA = parseInt(a.replace(/\D/g, '')) || 0;
+                        const numB = parseInt(b.replace(/\D/g, '')) || 0;
+                        return numA - numB;
+                    });
+
+                    // Render each call record attractively
+                    container.innerHTML = callKeys.map(key => {
+                        const call = task[key];
+                        if (!call || typeof call !== 'object') return '';
+
+                        const isConnected = call.call_connected && call.call_connected.toLowerCase().includes('connect');
+                        const connectionBadgeClass = isConnected 
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                            : 'bg-rose-50 text-rose-700 border-rose-200';
+                        const connectionIcon = isConnected ? 'fa-phone' : 'fa-phone-slash';
+
+                        return `
+                            <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
+                                <!-- Card Header -->
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3.5 border-b border-slate-100">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm border border-emerald-100 shadow-2xs flex-shrink-0">
+                                            <i class="fa-solid fa-phone-volume"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-sm">${call.title || 'Call Log'}</h4>
+                                            <p class="text-[11px] text-slate-500 font-medium">Interaction Record #${key}</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 font-bold rounded-lg text-[10px] uppercase border flex items-center gap-1.5 shadow-2xs ${connectionBadgeClass}">
+                                        <i class="fa-solid ${connectionIcon} text-[9px]"></i> ${call.call_connected || 'N/A'}
+                                    </span>
+                                </div>
+
+                                <!-- Data Fields Grid -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                    
+                                    <!-- Remark -->
+                                    <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 space-y-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Call Remark</span>
+                                        <p class="text-slate-700 font-medium">${call.remark || '<span class="text-slate-400 italic">No remarks provided</span>'}</p>
+                                    </div>
+
+                                    <!-- Follow-Up Option -->
+                                    <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 space-y-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Option</span>
+                                        ${call.followUpOption ? `
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-[11px] border border-amber-200 shadow-2xs">
+                                                <i class="fa-solid fa-tag text-[9px] text-amber-500"></i> ${call.followUpOption}
+                                            </span>` : '<p class="text-slate-400 italic font-medium">N/A</p>'}
+                                    </div>
+
+                                    <!-- Follow-Up Date & Time -->
+                                    <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 space-y-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Scheduled Follow-Up Date & Time</span>
+                                        <div class="flex items-center gap-2 font-semibold text-slate-700 flex-wrap">
+                                            <span class="bg-white px-2 py-1 rounded-md border border-slate-200 shadow-2xs"><i class="fa-regular fa-calendar text-slate-400 mr-1"></i> ${call.followUpDate || 'Not Set'}</span>
+                                            <span class="bg-white px-2 py-1 rounded-md border border-slate-200 shadow-2xs"><i class="fa-regular fa-clock text-slate-400 mr-1"></i> ${call.followUpTime || 'N/A'}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Follow-Up Required Status -->
+                                    <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 space-y-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Required</span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-[11px] border border-emerald-200 shadow-2xs">
+                                            <i class="fa-solid fa-check text-[9px]"></i> ${call.followUpRequired || 'No'}
+                                        </span>
+                                    </div>
+
+                                    <!-- Site Visit Scheduled Status -->
+                                    <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 space-y-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Site Visit Scheduled</span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-slate-200/60 text-slate-700 font-bold rounded-md text-[11px] border border-slate-300">
+                                            ${call.visitScheduled || 'No'}
+                                        </span>
+                                    </div>
+
+                                    <!-- Additional Metadata (Visit Details / Lead Status if filled) -->
+                                    <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 space-y-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Lead Status / Close Reason</span>
+                                        <p class="text-slate-700 font-medium">${call.leadStatus || call.closeReason || '<span class="text-slate-400 italic">Open / Ongoing</span>'}</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                } else {
+                    container.innerHTML = `
+                        <div class="bg-white rounded-2xl p-8 text-center border border-slate-200 text-rose-500">
+                            <i class="fa-solid fa-circle-exclamation text-xl mb-1"></i>
+                            <p class="text-xs font-medium">Failed to retrieve history logs for this lead.</p>
+                        </div>`;
+                }
+            } catch (err) {
+                console.error('Error fetching history timeline:', err);
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl p-8 text-center border border-slate-200 text-rose-500">
+                        <i class="fa-solid fa-circle-exclamation text-xl mb-1"></i>
+                        <p class="text-xs font-medium">An error occurred while loading history records.</p>
+                    </div>`;
+            }
         }
 
-        // Example data mapping demonstration
-        const sampleCallData = {
-            "title": "Call Log",
-            "call_connected": "Call Not Connected",
-            "remark": "Incoming Calls Not Available",
-            "followUpRequired": "Yes",
-            "followUpOption": "Call Next Week",
-            "followUpDate": "2026-10-02",
-            "followUpTime": "00:04",
-            "visitScheduled": "No",
-            "visitDate": "",
-            "visitTime": "",
-            "visitBuilding": "",
-            "visitLocation": "",
-            "visitNote": "",
-            "visitorComing": "",
-            "rescheduleReason": "",
-            "visitInterestCustomer": "",
-            "rescheduleVisitChoice": "",
-            "leadStatus": "",
-            "closeReason": ""
-        };
-
-        // Function to populate data dynamically with DD/MM/YYYY formatting
-        function populateCallDetails(call) {
-            document.getElementById('callTitle').textContent = call.title || 'Call Log';
-            document.getElementById('callRemark').textContent = call.remark || 'No remarks provided';
-            document.getElementById('followUpRequired').innerHTML = `<i class="fa-solid fa-check text-[10px]"></i> ${call.followUpRequired || 'No'}`;
-            document.getElementById('followUpOption').innerHTML = `<i class="fa-solid fa-tag text-[10px] text-amber-500"></i> ${call.followUpOption || 'N/A'}`;
-            
-            // Format Date to DD/MM/YYYY
-            document.getElementById('formattedFollowUpDate').textContent = formatDateToDMY(call.followUpDate);
-            document.getElementById('callTime').textContent = call.followUpTime || 'N/A';
-            document.getElementById('visitScheduled').textContent = call.visitScheduled || 'No';
-
-            if (call.visitDate) {
-                document.getElementById('visitDateTime').textContent = `${formatDateToDMY(call.visitDate)} ${call.visitTime || ''}`;
-                document.getElementById('visitDateTime').className = "text-slate-800 font-semibold";
-            }
-
-            if (call.visitBuilding || call.visitLocation) {
-                document.getElementById('visitLocation').textContent = `${call.visitBuilding || ''} ${call.visitLocation || ''}`.trim();
-                document.getElementById('visitLocation').className = "text-slate-800 font-semibold";
-            }
-
-            if (call.visitorComing || call.visitInterestCustomer) {
-                document.getElementById('visitorInterest').textContent = `${call.visitorComing || ''} ${call.visitInterestCustomer || ''}`.trim();
-                document.getElementById('visitorInterest').className = "text-slate-800 font-semibold";
-            }
-
-            if (call.visitNote || call.rescheduleReason || call.rescheduleVisitChoice) {
-                document.getElementById('visitNote').textContent = `${call.visitNote || ''} ${call.rescheduleReason || ''} ${call.rescheduleVisitChoice || ''}`.trim();
-                document.getElementById('visitNote').className = "text-slate-800 font-medium";
-            }
-
-            if (call.leadStatus) {
-                document.getElementById('leadStatus').textContent = call.leadStatus;
-                document.getElementById('leadStatus').className = "text-slate-800 font-semibold";
-            }
-
-            if (call.closeReason) {
-                document.getElementById('closeReason').textContent = call.closeReason;
-                document.getElementById('closeReason').className = "text-slate-800 font-semibold";
-            }
-        }
-
-        // Initialize with sample data view
-        populateCallDetails(sampleCallData);
+        loadCustomerHistory();
     </script>
 </body>
 </html>
