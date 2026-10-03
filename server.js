@@ -497,6 +497,48 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     }
 });
 
+// --- API: Get Follow-ups for a specific member (Extracts every call where followUpRequired === 'Yes') ---
+app.get('/api/followups/:username', async (req, res) => {
+    try {
+        const MemberTaskModel = getMemberTaskModel(req.params.username.trim());
+        const tasks = await MemberTaskModel.find();
+        let followups = [];
+
+        tasks.forEach(t => {
+            let i = 1;
+            // Loop through all call records (call1, call2, call3, ...)
+            while (t[`call${i}`]) {
+                const call = t[`call${i}`];
+                
+                // If this specific call has follow-up required 'Yes' and a date, add it as a follow-up item
+                if (call.followUpRequired === 'Yes' && call.followUpDate) {
+                    followups.push({
+                        taskId: t._id,
+                        callId: `call${i}`, // Identifies which call generated this follow-up
+                        name: t.name || 'Untitled Lead',
+                        contactNumber: t.contactNumber || '',
+                        property: t.description || '',
+                        callNumber: `Call ${i}`,
+                        callConnected: call.call_connected || '',
+                        leadStatus: call.leadStatus || '',
+                        followUpDate: call.followUpDate,
+                        followUpTime: call.followUpTime || '10:00',
+                        followUpOption: call.followUpOption || '',
+                        remark: call.remark || '',
+                        history: t
+                    });
+                }
+                i++;
+            }
+        });
+
+        res.json({ success: true, followups });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Error fetching follow-ups' });
+    }
+});
+
 // Use dynamic port assigned by Render/Environment with fallback to 3000 for local testing
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => { console.log(`Server running at port ${PORT}`); });
