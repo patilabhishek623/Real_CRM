@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Follow-Up Calls & Customer Timeline - Real Estate CRM</title>
+    <title>Follow-Up Calls & Customer Profile - Real Estate CRM</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-900 leading-tight">CRM Follow-Up Hub</h1>
-                    <p class="text-xs text-slate-500">Real Estate Lead Management & Timelines</p>
+                    <p class="text-xs text-slate-500">Real Estate Lead Management & History</p>
                 </div>
             </div>
             
@@ -54,14 +54,14 @@
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+    <!-- Main Container (Dashboard View) -->
+    <main id="dashboardView" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
 
         <!-- Welcome Banner & Quick Actions -->
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Follow-Up Call Management</h2>
-                <p class="text-sm text-slate-600">Track overdue calls, plan your day, and inspect customer call timelines.</p>
+                <p class="text-sm text-slate-600">Track overdue calls, plan your day, and click any lead name to inspect details.</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="refreshData()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
@@ -179,7 +179,6 @@
                             <th class="py-3 px-4">Scheduled Date & Time</th>
                             <th class="py-3 px-4">Category Status</th>
                             <th class="py-3 px-4">Last Remark</th>
-                            <th class="py-3 px-4 text-right">Timeline</th>
                         </tr>
                     </thead>
                     <tbody id="callsTableBody" class="divide-y divide-slate-200 text-sm">
@@ -206,6 +205,71 @@
             </div>
         </div>
 
+    </main>
+
+    <!-- Customer Profile / Details View (Hidden by default, shown when lead name is clicked) -->
+    <main id="profileView" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full hidden">
+        <!-- Back Button & Header -->
+        <div class="mb-6 flex items-center justify-between">
+            <button onclick="backToDashboard()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back to All Calls
+            </button>
+            <div class="flex items-center space-x-3">
+                <span class="px-3 py-1 bg-primary-50 text-primary-700 text-xs font-semibold rounded-full border border-primary-200" id="profilePropertyBadge">Property</span>
+            </div>
+        </div>
+
+        <!-- Customer Summary Card -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 rounded-full bg-primary-600 text-white flex items-center justify-center text-xl font-bold shadow" id="profileLeadAvatar">
+                    VN
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900" id="profileLeadName">Vikram Malhotra</h2>
+                    <p class="text-sm text-slate-500 flex items-center mt-0.5">
+                        <i class="fa-solid fa-phone mr-1.5 text-slate-400"></i> <span id="profileLeadPhone">+91 98211 44556</span>
+                        <span class="mx-2">&bull;</span>
+                        <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> <span id="profileLeadProperty">4 BHK Penthouse</span>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div id="profileCategoryBadge"></div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation for Profile View -->
+        <div class="flex border-b border-slate-200 mb-6">
+            <button onclick="switchProfileTab('connected')" id="tabBtnConnected" class="profile-tab-btn px-6 py-3 border-b-2 border-primary-600 text-primary-600 font-semibold text-sm transition flex items-center">
+                <i class="fa-solid fa-phone-volume mr-2"></i> Call Connected Details
+            </button>
+            <button onclick="switchProfileTab('history')" id="tabBtnHistory" class="profile-tab-btn px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm transition flex items-center">
+                <i class="fa-solid fa-history mr-2"></i> Call History (Timeline)
+            </button>
+        </div>
+
+        <!-- Tab Content: Call Connected -->
+        <div id="tabContentConnected" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center">
+                <i class="fa-solid fa-circle-info text-primary-600 mr-2"></i> Latest Call Connection Status & Metrics
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="connectedDetailsGrid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Tab Content: Call History -->
+        <div id="tabContentHistory" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-6 flex items-center">
+                    <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs (Call 1 to Call 4)
+                </h3>
+                <div class="space-y-6" id="historyTimelineContainer">
+                    <!-- Injected via JS including requested call1 schema -->
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -257,33 +321,6 @@
         </div>
     </div>
 
-    <!-- Customer History Timeline Modal -->
-    <div id="timelineModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-            <!-- Header -->
-            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-                <div>
-                    <h3 id="timelineModalTitle" class="font-bold text-lg"><i class="fa-solid fa-timeline mr-2 text-primary-400"></i> Customer History Timeline</h3>
-                    <p class="text-xs text-slate-400" id="timelineModalSubtitle">Complete interaction logs for lead</p>
-                </div>
-                <button onclick="closeTimelineModal()" class="text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            
-            <!-- Timeline Body (Scrollable) -->
-            <div class="p-6 overflow-y-auto space-y-6 flex-grow bg-slate-50/50" id="timelineContainer">
-                <!-- Injected via JavaScript -->
-            </div>
-
-            <!-- Footer -->
-            <div class="bg-white px-6 py-4 border-t border-slate-200 flex items-center justify-between">
-                <span class="text-xs text-slate-500"><i class="fa-solid fa-circle-info text-primary-500 mr-1"></i> Showing database records (Call 1 to Call 4)</span>
-                <button onclick="closeTimelineModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition">Close Timeline</button>
-            </div>
-        </div>
-    </div>
-
     <!-- JavaScript Application Logic -->
     <script>
         const LOGGED_IN_USER = "Abhishek Patil";
@@ -303,7 +340,7 @@
         const d2 = new Date(now); d2.setDate(now.getDate() - 2); d2.setHours(15, 30);
         const d3 = new Date(now); d3.setHours(10, 0);
 
-        // Mock Database with Multi-Call Timeline History (call1, call2, call3, call4)
+        // Mock Database with Multi-Call Timeline History including the exact requested call1 schema
         let callsDatabase = [
             {
                 id: "CALL-101",
@@ -314,26 +351,77 @@
                 datetime: formatDatetimeLocal(d1),
                 remark: "Requested revised floor plan and parking allotment details.",
                 completed: false,
+                connectedStatus: "Call Connected",
+                callDuration: "04:15 mins",
+                leadQuality: "Hot Lead",
                 history: {
                     call1: {
-                        date: formatDatetimeLocal(d1),
-                        status: "Completed",
-                        remark: "Initial inquiry received. Shared floor plans and brochure over WhatsApp.",
-                        agent: LOGGED_IN_USER
+                        title: "Call Log",
+                        call_connected: "Call Not Connected",
+                        remark: "Incoming Calls Not Available",
+                        followUpRequired: "Yes",
+                        followUpOption: "Call Next Week",
+                        followUpDate: "2026-10-02",
+                        followUpTime: "00:04",
+                        visitScheduled: "No",
+                        visitDate: "",
+                        visitTime: "",
+                        visitBuilding: "",
+                        visitLocation: "",
+                        visitNote: "",
+                        visitorComing: "",
+                        rescheduleReason: "",
+                        visitInterestCustomer: "",
+                        rescheduleVisitChoice: "",
+                        leadStatus: "",
+                        closeReason: "",
+                        loggedAt: { date: "2026-10-02 00:04:00" }
                     },
                     call2: {
-                        date: formatDatetimeLocal(d2),
-                        status: "Completed",
+                        title: "Call Log - FollowUp",
+                        call_connected: "Call Connected",
                         remark: "Discussed pricing negotiation and bank financing options.",
-                        agent: LOGGED_IN_USER
+                        followUpRequired: "Yes",
+                        followUpOption: "Call Tomorrow",
+                        followUpDate: "2026-10-03",
+                        followUpTime: "11:30",
+                        visitScheduled: "Yes",
+                        visitDate: "2026-10-06",
+                        visitTime: "14:00",
+                        visitBuilding: "Bandra Towers Wing A",
+                        visitLocation: "Bandra West",
+                        visitNote: "Client requested car parking slot details.",
+                        visitorComing: "Self + Spouse",
+                        rescheduleReason: "",
+                        visitInterestCustomer: "Very Interested",
+                        rescheduleVisitChoice: "",
+                        leadStatus: "In Progress",
+                        closeReason: "",
+                        loggedAt: { date: "2026-10-02 15:30:00" }
                     },
                     call3: {
-                        date: formatDatetimeLocal(now),
-                        status: "Overdue / Pending",
+                        title: "Call Log - Final Review",
+                        call_connected: "Call Connected",
                         remark: "Scheduled call to finalize site visit slot.",
-                        agent: LOGGED_IN_USER
+                        followUpRequired: "No",
+                        followUpOption: "",
+                        followUpDate: "",
+                        followUpTime: "",
+                        visitScheduled: "Yes",
+                        visitDate: "2026-10-06",
+                        visitTime: "14:00",
+                        visitBuilding: "Bandra Towers Wing A",
+                        visitLocation: "Bandra West",
+                        visitNote: "Confirmed appointment.",
+                        visitorComing: "Self",
+                        rescheduleReason: "",
+                        visitInterestCustomer: "High",
+                        rescheduleVisitChoice: "",
+                        leadStatus: "Active",
+                        closeReason: "",
+                        loggedAt: { date: "2026-10-04 10:00:00" }
                     },
-                    call4: null // Absent data test case
+                    call4: null // Absent test case
                 }
             },
             {
@@ -345,12 +433,31 @@
                 datetime: formatDatetimeLocal(d2),
                 remark: "Bank loan pre-approval discussed.",
                 completed: false,
+                connectedStatus: "Call Connected",
+                callDuration: "02:45 mins",
+                leadQuality: "Warm Lead",
                 history: {
                     call1: {
-                        date: formatDatetimeLocal(d2),
-                        status: "Completed",
+                        title: "Call Log",
+                        call_connected: "Call Connected",
                         remark: "Customer called inquiring about sea-facing inventory availability.",
-                        agent: LOGGED_IN_USER
+                        followUpRequired: "Yes",
+                        followUpOption: "Call in 2 Days",
+                        followUpDate: "2026-10-04",
+                        followUpTime: "15:00",
+                        visitScheduled: "No",
+                        visitDate: "",
+                        visitTime: "",
+                        visitBuilding: "",
+                        visitLocation: "",
+                        visitNote: "",
+                        visitorComing: "",
+                        rescheduleReason: "",
+                        visitInterestCustomer: "",
+                        rescheduleVisitChoice: "",
+                        leadStatus: "Pending Bank Approval",
+                        closeReason: "",
+                        loggedAt: { date: "2026-10-02 11:00:00" }
                     },
                     call2: null,
                     call3: null,
@@ -366,12 +473,31 @@
                 datetime: formatDatetimeLocal(d3),
                 remark: "Call scheduled to confirm site visit timing for Sunday.",
                 completed: false,
+                connectedStatus: "Call Not Connected",
+                callDuration: "00:00 mins",
+                leadQuality: "New Lead",
                 history: {
                     call1: {
-                        date: formatDatetimeLocal(d3),
-                        status: "Scheduled / Due Today",
-                        remark: "First touchpoint scheduled for today morning.",
-                        agent: LOGGED_IN_USER
+                        title: "Call Log",
+                        call_connected: "Call Not Connected",
+                        remark: "Phone switched off. Ringing out.",
+                        followUpRequired: "Yes",
+                        followUpOption: "Call Later Today",
+                        followUpDate: "2026-10-04",
+                        followUpTime: "17:00",
+                        visitScheduled: "No",
+                        visitDate: "",
+                        visitTime: "",
+                        visitBuilding: "",
+                        visitLocation: "",
+                        visitNote: "",
+                        visitorComing: "",
+                        rescheduleReason: "",
+                        visitInterestCustomer: "",
+                        rescheduleVisitChoice: "",
+                        leadStatus: "Unresponsive",
+                        closeReason: "",
+                        loggedAt: { date: "2026-10-04 09:30:00" }
                     },
                     call2: null,
                     call3: null,
@@ -382,6 +508,7 @@
 
         let currentFilter = 'all';
         let searchQuery = '';
+        let currentSelectedLeadId = null;
 
         function getCallCategory(call) {
             if (call.completed) return 'completed';
@@ -399,6 +526,7 @@
         function formatDisplayDate(dateStr) {
             if (!dateStr) return 'N/A';
             const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
             const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
             return d.toLocaleDateString('en-US', options);
         }
@@ -477,8 +605,10 @@
                     tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
                     tr.innerHTML = `
                         <td class="py-3.5 px-4">
-                            <div class="font-bold text-slate-900">${call.leadName}</div>
-                            <div class="text-xs text-slate-500"><i class="fa-solid fa-phone text-xs mr-1 text-slate-400"></i> ${call.phone}</div>
+                            <a href="javascript:void(0)" onclick="openLeadProfile('${call.id}')" class="font-bold text-primary-600 hover:text-primary-800 hover:underline transition flex items-center">
+                                <i class="fa-solid fa-user-circle mr-2 text-primary-500"></i> ${call.leadName}
+                            </a>
+                            <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-xs mr-1 text-slate-400"></i> ${call.phone}</div>
                         </td>
                         <td class="py-3.5 px-4 text-slate-700 font-medium">${call.property || 'General Inquiry'}</td>
                         <td class="py-3.5 px-4">
@@ -486,11 +616,6 @@
                         </td>
                         <td class="py-3.5 px-4">${badgeHtml}</td>
                         <td class="py-3.5 px-4 text-slate-600 text-xs max-w-xs truncate" title="${call.remark || ''}">${call.remark || 'No remarks recorded'}</td>
-                        <td class="py-3.5 px-4 text-right">
-                            <button onclick="openTimelineModal('${call.id}')" title="View Customer History Timeline (Call 1, Call 2...)" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
-                                <i class="fa-solid fa-timeline mr-1.5"></i> Timeline
-                            </button>
-                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -499,22 +624,60 @@
             document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
         }
 
-        // Open Customer History Timeline Modal
-        function openTimelineModal(callId) {
+        // Open Lead Profile Page (Switches view & populates tabs)
+        function openLeadProfile(callId) {
             const call = callsDatabase.find(c => c.id === callId);
             if (!call) return;
+            currentSelectedLeadId = callId;
 
-            document.getElementById('timelineModalTitle').innerHTML = `<i class="fa-solid fa-timeline mr-2 text-primary-400"></i> Customer Timeline: ${call.leadName}`;
-            document.getElementById('timelineModalSubtitle').innerText = `${call.property} (${call.phone})`;
+            // Populate Profile Header
+            document.getElementById('profileLeadName').innerText = call.leadName;
+            document.getElementById('profileLeadPhone').innerText = call.phone;
+            document.getElementById('profileLeadProperty').innerText = call.property || 'General Inquiry';
+            document.getElementById('profilePropertyBadge').innerText = call.property ? call.property.split('-')[0].trim() : 'General';
+            
+            // Initials for avatar
+            const initials = call.leadName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('profileLeadAvatar').innerText = initials;
 
-            const container = document.getElementById('timelineContainer');
-            container.innerHTML = '';
+            const category = getCallCategory(call);
+            let badgeHtml = '';
+            if (category === 'lapsed') badgeHtml = `<span class="px-3 py-1 bg-rose-100 text-rose-800 text-xs font-semibold rounded-full">Lapsed / Overdue</span>`;
+            else if (category === 'today') badgeHtml = `<span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full">Due Today</span>`;
+            else if (category === 'tomorrow') badgeHtml = `<span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Due Tomorrow</span>`;
+            else badgeHtml = `<span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-full">Active</span>`;
+            document.getElementById('profileCategoryBadge').innerHTML = badgeHtml;
+
+            // Populate Tab 1: Call Connected Details
+            const connectedGrid = document.getElementById('connectedDetailsGrid');
+            connectedGrid.innerHTML = `
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-xs font-semibold uppercase text-slate-500">Connection Status</span>
+                    <p class="text-base font-bold text-slate-900 mt-1"><i class="fa-solid fa-phone text-primary-600 mr-2"></i> ${call.connectedStatus || 'Call Connected'}</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-xs font-semibold uppercase text-slate-500">Call Duration</span>
+                    <p class="text-base font-bold text-slate-900 mt-1"><i class="fa-solid fa-stopwatch text-amber-500 mr-2"></i> ${call.callDuration || '03:30 mins'}</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-xs font-semibold uppercase text-slate-500">Lead Quality</span>
+                    <p class="text-base font-bold text-slate-900 mt-1"><i class="fa-solid fa-fire text-rose-500 mr-2"></i> ${call.leadQuality || 'Warm Lead'}</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 sm:col-span-2 lg:col-span-3">
+                    <span class="text-xs font-semibold uppercase text-slate-500">Latest Remarks / Notes</span>
+                    <p class="text-sm font-medium text-slate-800 mt-1 bg-white p-3 rounded-lg border border-slate-100">"${call.remark || 'No remarks recorded.'}"</p>
+                </div>
+            `;
+
+            // Populate Tab 2: Call History Timeline (Call 1, Call 2, Call 3, Call 4)
+            const historyContainer = document.getElementById('historyTimelineContainer');
+            historyContainer.innerHTML = '';
 
             const steps = [
                 { key: 'call1', label: 'Call 1 (Initial Contact)', icon: 'fa-phone-volume', color: 'bg-blue-500' },
                 { key: 'call2', label: 'Call 2 (Follow-Up)', icon: 'fa-phone', color: 'bg-primary-600' },
                 { key: 'call3', label: 'Call 3 (Negotiation)', icon: 'fa-handshake', color: 'bg-amber-500' },
-                { key: 'call4', label: 'Call 4 (Closing / Site Visit)', icon: 'fa-building-user', color: 'bg-emerald-600' }
+                { key: 'call4', label: 'Call 4 (Closing)', icon: 'fa-building-user', color: 'bg-emerald-600' }
             ];
 
             steps.forEach((step) => {
@@ -529,13 +692,20 @@
                         <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full ${step.color} text-white flex items-center justify-center shadow-md">
                             <i class="fa-solid ${step.icon} text-sm"></i>
                         </div>
-                        <div class="flex-grow bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-bold uppercase tracking-wider text-slate-900">${step.label}</span>
-                                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">${historyData.status || 'Completed'}</span>
+                        <div class="flex-grow bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <span class="text-sm font-bold uppercase tracking-wider text-slate-900"><i class="fa-solid fa-file-lines text-primary-500 mr-1.5"></i> ${historyData.title || step.label}</span>
+                                <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">${historyData.call_connected}</span>
                             </div>
-                            <p class="text-xs text-slate-500 mb-2"><i class="fa-regular fa-clock mr-1"></i> ${formatDisplayDate(historyData.date)} &bull; Agent: <span class="font-medium text-slate-700">${historyData.agent || LOGGED_IN_USER}</span></p>
-                            <p class="text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-normal">"${historyData.remark}"</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                <div><strong class="text-slate-700">Follow-up Req:</strong> ${historyData.followUpRequired || 'N/A'}</div>
+                                <div><strong class="text-slate-700">Follow-up Option:</strong> ${historyData.followUpOption || 'N/A'}</div>
+                                <div><strong class="text-slate-700">Follow-up Date:</strong> ${historyData.followUpDate || 'N/A'} (${historyData.followUpTime || 'N/A'})</div>
+                                <div><strong class="text-slate-700">Visit Scheduled:</strong> ${historyData.visitScheduled || 'N/A'}</div>
+                                <div><strong class="text-slate-700">Visit Date:</strong> ${historyData.visitDate || 'None'}</div>
+                                <div><strong class="text-slate-700">Lead Status:</strong> ${historyData.leadStatus || 'Active'}</div>
+                            </div>
+                            <p class="text-sm text-slate-700 font-normal"><strong>Remark:</strong> "${historyData.remark}"</p>
                         </div>
                     `;
                 } else {
@@ -552,14 +722,38 @@
                         </div>
                     `;
                 }
-                container.appendChild(itemDiv);
+                historyContainer.appendChild(itemDiv);
             });
 
-            document.getElementById('timelineModal').classList.remove('hidden');
+            // Switch view
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('profileView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function closeTimelineModal() {
-            document.getElementById('timelineModal').classList.add('hidden');
+        function backToDashboard() {
+            document.getElementById('profileView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.remove('hidden');
+        }
+
+        // Switch between Call Connected and Call History tabs inside profile view
+        function switchProfileTab(tabName) {
+            const btnConnected = document.getElementById('tabBtnConnected');
+            const btnHistory = document.getElementById('tabBtnHistory');
+            const contentConnected = document.getElementById('tabContentConnected');
+            const contentHistory = document.getElementById('tabContentHistory');
+
+            if (tabName === 'connected') {
+                btnConnected.className = "profile-tab-btn px-6 py-3 border-b-2 border-primary-600 text-primary-600 font-semibold text-sm transition flex items-center";
+                btnHistory.className = "profile-tab-btn px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm transition flex items-center";
+                contentConnected.classList.remove('hidden');
+                contentHistory.classList.add('hidden');
+            } else {
+                btnHistory.className = "profile-tab-btn px-6 py-3 border-b-2 border-primary-600 text-primary-600 font-semibold text-sm transition flex items-center";
+                btnConnected.className = "profile-tab-btn px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm transition flex items-center";
+                contentHistory.classList.remove('hidden');
+                contentConnected.classList.add('hidden');
+            }
         }
 
         function filterTab(tabName) {
@@ -623,8 +817,32 @@
                 datetime,
                 remark,
                 completed: false,
+                connectedStatus: "Call Connected",
+                callDuration: "02:00 mins",
+                leadQuality: "New Lead",
                 history: {
-                    call1: { date: datetime, status: 'Scheduled', remark: remark, agent: LOGGED_IN_USER },
+                    call1: {
+                        title: "Call Log",
+                        call_connected: "Call Connected",
+                        remark: remark,
+                        followUpRequired: "Yes",
+                        followUpOption: "Call Tomorrow",
+                        followUpDate: datetime.split('T')[0],
+                        followUpTime: datetime.split('T')[1] || "10:00",
+                        visitScheduled: "No",
+                        visitDate: "",
+                        visitTime: "",
+                        visitBuilding: "",
+                        visitLocation: "",
+                        visitNote: "",
+                        visitorComing: "",
+                        rescheduleReason: "",
+                        visitInterestCustomer: "",
+                        rescheduleVisitChoice: "",
+                        leadStatus: "New",
+                        closeReason: "",
+                        loggedAt: { date: datetime }
+                    },
                     call2: null,
                     call3: null,
                     call4: null
