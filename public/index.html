@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -12,66 +12,66 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="h-full flex items-center justify-center p-4 sm:p-6 selection:bg-blue-600 selection:text-white">
+<body class="h-full flex items-center justify-center p-4 sm:p-6 relative selection:bg-blue-600 selection:text-white">
 
-    <!-- Ambient Background Glow Accents -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-48 -right-48 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-48 -left-48 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
+    <!-- Background Real Estate Image with Light Gradient Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2000&auto=format&fit=crop" alt="Luxury Real Estate Background" class="w-full h-full object-cover object-center">
+        <div class="absolute inset-0 bg-gradient-to-tr from-slate-900/70 via-blue-950/60 to-slate-950/70 backdrop-blur-xs"></div>
     </div>
 
-    <!-- Main Authentication Container -->
-    <div class="relative w-full max-w-md bg-slate-900/90 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl shadow-slate-950/80 p-6 sm:p-10 text-white">
+    <!-- Main Authentication Container (Light Glassmorphism Card) -->
+    <div class="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-2xl border border-white/40 rounded-3xl shadow-2xl shadow-slate-950/30 p-6 sm:p-10 text-slate-800">
         
         <!-- Enterprise Branding Header -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-xl shadow-blue-600/25 mb-4 border border-blue-400/20">
-                <i class="fa-solid fa-building-user text-2xl text-white"></i>
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg shadow-blue-600/25 mb-4 text-white">
+                <i class="fa-solid fa-building-user text-2xl"></i>
             </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 mb-2.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] font-bold uppercase tracking-wider text-blue-400">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 mb-2.5 bg-blue-50 border border-blue-200 rounded-full text-[10px] font-bold uppercase tracking-wider text-blue-700">
                 <i class="fa-solid fa-shield-halved text-[9px]"></i> Enterprise Real Estate Portal
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Real_Crm</h1>
-            <p class="text-slate-400 text-xs sm:text-sm mt-1">Sign in to manage leads, follow-ups & site visits</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">Real_Crm</h1>
+            <p class="text-slate-500 text-xs sm:text-sm mt-1">Sign in to manage leads, follow-ups & site visits</p>
         </div>
 
         <!-- Login Form -->
         <form id="loginForm" class="space-y-4 sm:space-y-5">
             <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Username / Agent ID</label>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">Username / Agent ID</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 text-sm">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 text-sm">
                         <i class="fa-solid fa-user-tie"></i>
                     </span>
                     <input type="text" id="username" required placeholder="Enter username (e.g. lead or member)" 
-                        class="w-full pl-11 pr-4 py-3 sm:py-3.5 bg-slate-950 border border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-white placeholder-slate-600 text-sm transition">
+                        class="w-full pl-11 pr-4 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 text-slate-900 placeholder-slate-400 text-sm transition">
                 </div>
             </div>
 
             <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">Password</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 text-sm">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 text-sm">
                         <i class="fa-solid fa-lock"></i>
                     </span>
                     <input type="password" id="password" required placeholder="••••••••" 
-                        class="w-full pl-11 pr-4 py-3 sm:py-3.5 bg-slate-950 border border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-white placeholder-slate-600 text-sm transition">
+                        class="w-full pl-11 pr-4 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 text-slate-900 placeholder-slate-400 text-sm transition">
                 </div>
             </div>
 
             <button type="submit" 
-                class="w-full py-3.5 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-2xl shadow-lg shadow-blue-600/25 transition-all duration-200 transform active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer mt-2">
+                class="w-full py-3.5 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-2xl shadow-lg shadow-blue-600/25 transition-all duration-200 transform active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer mt-2">
                 <span>Sign In to Workspace</span>
                 <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
             </button>
         </form>
 
         <!-- Error Notification Area -->
-        <div id="error" class="mt-4 text-center text-xs sm:text-sm font-semibold text-rose-400 min-h-[20px]"></div>
+        <div id="error" class="mt-4 text-center text-xs sm:text-sm font-semibold text-rose-600 min-h-[20px]"></div>
 
         <!-- Footer Help info -->
-        <div class="mt-8 text-center border-t border-slate-800/80 pt-5 text-xs text-slate-500">
-            Need assistance or credentials? Contact your <span class="text-slate-300 font-medium">System Team Lead</span>.
+        <div class="mt-8 text-center border-t border-slate-100 pt-5 text-xs text-slate-400">
+            Need assistance or credentials? Contact your <span class="text-slate-700 font-semibold">System Team Lead</span>.
         </div>
     </div>
 
