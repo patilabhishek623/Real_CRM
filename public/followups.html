@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Customer History Timeline - Real_Crm</title>
+    <title>Follow-Up Leads - Real_Crm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,17 +18,17 @@
         }
     </style>
 </head>
-<body class="bg-slate-50/90 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white pb-24 md:pb-8">
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white pb-24 md:pb-8">
 
-    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-clock-rotate-left text-base sm:text-lg"></i>
+                    <i class="fa-solid fa-calendar-days text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span> Hub</span>
-                    <span class="block text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400">Customer History</span>
+                    <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
+                    <span class="block text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400">Lead Management</span>
                 </div>
             </div>
             <div class="flex items-center gap-2 sm:gap-4">
@@ -41,149 +41,99 @@
         </div>
     </header>
 
-    <div class="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-6 w-full flex-grow space-y-6">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
         
-        <!-- Lead Profile Header Card with Call Now Action -->
-        <div class="corporate-card rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="space-y-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <h1 class="text-xl font-bold text-slate-900" id="leadName">Sneha Gupta</h1>
-                    <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-md text-[10px] border border-emerald-200 uppercase">Active Pipeline</span>
-                </div>
-                <p class="text-xs text-slate-500 flex items-center gap-1.5">
-                    <i class="fa-solid fa-phone text-slate-400"></i> <span id="leadPhone" class="font-semibold text-slate-700">9112233445</span>
-                    <span class="text-slate-300">•</span>
-                    <span class="text-[11px] text-slate-400">Source: Imported via Excel spreadsheet upload.</span>
-                </p>
-            </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-                <!-- CALL NOW BUTTON -->
-                <a href="tel:9112233445" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 transition-all transform active:scale-95">
-                    <i class="fa-solid fa-phone-volume animate-bounce"></i> Call Now
-                </a>
-                <a href="teammember.html" class="inline-flex items-center justify-center px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- Full Detail Call Log Card -->
-        <div class="corporate-card rounded-2xl p-5 sm:p-8 space-y-6">
-            
-            <!-- Card Header -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-base border border-emerald-100 shadow-2xs flex-shrink-0">
-                        <i class="fa-solid fa-phone-volume"></i>
-                    </div>
-                    <div>
-                        <h4 id="callTitle" class="font-bold text-slate-900 text-base">Call Log</h4>
-                        <p class="text-xs text-slate-500 font-medium">Record Entry Details</p>
-                    </div>
-                </div>
-                <span id="callConnectedBadge" class="px-3 py-1.5 bg-rose-50 text-rose-700 font-bold rounded-xl text-xs uppercase border border-rose-200 flex items-center gap-1.5 shadow-2xs">
-                    <i class="fa-solid fa-phone-slash text-[10px]"></i> Call Not Connected
-                </span>
-            </div>
-
-            <!-- Sections Container -->
-            <div class="space-y-5">
+        <aside class="hidden md:block md:col-span-1 space-y-2">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">Member Menu</p>
                 
-                <!-- Section 1: Call & Remark Details -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-comment-dots text-emerald-600"></i> Call & Remarks
-                    </h5>
-                    <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Remark</span>
-                        <p id="callRemark" class="text-slate-800 font-medium text-sm">Incoming Calls Not Available</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group">
+                    <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Dashboard
+                </a>
+                
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group">
+                    <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Assigned Tasks
+                    <span id="sidebarPendingCount" class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200">0</span>
+                </a>
+                
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm shadow-emerald-500/20 transition">
+                    <i class="fa-solid fa-calendar-days w-5 text-emerald-100 text-base"></i> Follow Ups
+                    <span id="sidebarFollowupCount" class="ml-auto bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">0</span>
+                </a>
+                
+                <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group">
+                    <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Visits
+                    <span id="sidebarVisitCount" class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-teal-200">0</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="md:col-span-3 space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-8 shadow-sm">
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Scheduled Follow-Ups</h1>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Click any lead name to record call connection status and remarks.</p>
+                    </div>
+                    <div id="followupCountBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60 shadow-2xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>0 Active Follow-ups</span>
                     </div>
                 </div>
 
-                <!-- Section 2: Follow-Up Information -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-calendar-check text-emerald-600"></i> Follow-Up Schedule
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Required</span>
-                            <span id="followUpRequired" class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-xs border border-emerald-200">
-                                <i class="fa-solid fa-check text-[10px]"></i> Yes
-                            </span>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Option</span>
-                            <span id="followUpOption" class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs border border-amber-200">
-                                <i class="fa-solid fa-tag text-[10px] text-amber-500"></i> Call Next Week
-                            </span>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1 sm:col-span-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Scheduled Date & Time</span>
-                            <div class="flex items-center gap-2 font-semibold text-slate-800 text-sm">
-                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-calendar text-slate-400 mr-1.5"></i> <span id="formattedFollowUpDate">02/10/2026</span></span>
-                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-clock text-slate-400 mr-1.5"></i> <span id="callTime">00:04</span></span>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Timeline Filter Tabs -->
+                <div class="flex flex-wrap gap-2 mt-6">
+                    <button onclick="switchTab('lapsed')" id="tab-lapsed" class="px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm">
+                        <span>Lapsed Calls</span>
+                        <span id="badge-lapsed" class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">0</span>
+                    </button>
+                    <button onclick="switchTab('today')" id="tab-today" class="px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200">
+                        <span>Today</span>
+                        <span id="badge-today" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]">0</span>
+                    </button>
+                    <button onclick="switchTab('tomorrow')" id="tab-tomorrow" class="px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200">
+                        <span>Tomorrow</span>
+                        <span id="badge-tomorrow" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]">0</span>
+                    </button>
+                    <button onclick="switchTab('other')" id="tab-other" class="px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200">
+                        <span>Other / Upcoming</span>
+                        <span id="badge-other" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]">0</span>
+                    </button>
                 </div>
 
-                <!-- Section 3: Visit Information -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Site Visit Details
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Scheduled</span>
-                            <span id="visitScheduled" class="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-200/60 text-slate-700 font-bold rounded-lg text-xs border border-slate-300">
-                                No
-                            </span>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Date & Time</span>
-                            <p id="visitDateTime" class="text-slate-400 italic font-medium">Not Scheduled</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Building / Location</span>
-                            <p id="visitLocation" class="text-slate-400 italic font-medium">N/A</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visitor Coming / Interest</span>
-                            <p id="visitorInterest" class="text-slate-400 italic font-medium">N/A</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1 sm:col-span-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Note / Reschedule Choice</span>
-                            <p id="visitNote" class="text-slate-400 italic font-medium">No notes or reschedule preferences recorded.</p>
-                        </div>
-                    </div>
+                <!-- Desktop Table View -->
+                <div class="hidden md:block overflow-x-auto mt-6">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                <th class="py-3.5 px-4">Lead Name</th>
+                                <th class="py-3.5 px-4">Contact Number</th>
+                                <th class="py-3.5 px-4">Follow-Up Option</th>
+                                <th class="py-3.5 px-4">Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="followupTableBody" class="divide-y divide-slate-100 text-sm">
+                            <tr>
+                                <td colspan="4" class="text-center py-12 text-slate-400">
+                                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
+                                    <p class="text-xs font-medium">Loading follow-ups...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <!-- Section 4: Lead Status & Closing -->
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-flag text-emerald-600"></i> Status & Closing
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Lead Status</span>
-                            <p id="leadStatus" class="text-slate-500 italic font-medium">Open / Unspecified</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Close Reason</span>
-                            <p id="closeReason" class="text-slate-500 italic font-medium">N/A</p>
-                        </div>
+                <!-- Mobile Card View (Visible on small screens only) -->
+                <div id="followupCardContainer" class="md:hidden space-y-3 mt-6">
+                    <div class="text-center py-12 text-slate-400">
+                        <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
+                        <p class="text-xs font-medium">Loading follow-ups...</p>
                     </div>
                 </div>
 
             </div>
-        </div>
-
-        <!-- Footer Branding -->
-        <div class="text-center pt-2 pb-4 text-xs text-slate-400 font-medium">
-            Real Estate CRM &copy; 2026
-        </div>
-
+        </main>
     </div>
 
     <!-- Mobile Sticky Bottom Navigation Bar -->
@@ -196,7 +146,7 @@
             <i class="fa-solid fa-list-check text-base"></i>
             <span>Tasks</span>
         </a>
-        <a href="followups.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+        <a href="followups.html" class="flex flex-col items-center text-emerald-600 font-bold text-[10px] gap-1">
             <i class="fa-solid fa-calendar-days text-base"></i>
             <span>Follow-ups</span>
         </a>
@@ -212,82 +162,221 @@
             alert('No active session found. Please log in again.');
             window.location.href = '/';
         }
+
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b class="text-slate-900 ml-1">${currentUsername}</b>`;
 
-        // Helper function to convert YYYY-MM-DD into DD/MM/YYYY format
-        function formatDateToDMY(dateStr) {
-            if (!dateStr || !dateStr.includes('-')) return dateStr || 'Not Set';
-            const parts = dateStr.split('-');
-            if (parts.length === 3) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-            return dateStr;
+        let globalFollowupTasks = [];
+        let currentActiveTab = 'lapsed'; // Default view to Lapsed to highlight missed items
+
+        function formatDateString(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            let year = d.getFullYear();
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            return [year, month, day].join('-');
         }
 
-        const sampleCallData = {
-            "title": "Call Log",
-            "call_connected": "Call Not Connected",
-            "remark": "Incoming Calls Not Available",
-            "followUpRequired": "Yes",
-            "followUpOption": "Call Next Week",
-            "followUpDate": "2026-10-02",
-            "followUpTime": "00:04",
-            "visitScheduled": "No",
-            "visitDate": "",
-            "visitTime": "",
-            "visitBuilding": "",
-            "visitLocation": "",
-            "visitNote": "",
-            "visitorComing": "",
-            "rescheduleReason": "",
-            "visitInterestCustomer": "",
-            "rescheduleVisitChoice": "",
-            "leadStatus": "",
-            "closeReason": ""
-        };
+        function parseTaskTargetDate(t) {
+            let dateStr = t.followUpDate || '';
+            let timeStr = t.followUpTime || '00:00';
 
-        function populateCallDetails(call) {
-            document.getElementById('callTitle').textContent = call.title || 'Call Log';
-            document.getElementById('callRemark').textContent = call.remark || 'No remarks provided';
-            document.getElementById('followUpRequired').innerHTML = `<i class="fa-solid fa-check text-[10px]"></i> ${call.followUpRequired || 'No'}`;
-            document.getElementById('followUpOption').innerHTML = `<i class="fa-solid fa-tag text-[10px] text-amber-500"></i> ${call.followUpOption || 'N/A'}`;
+            if (dateStr.length > 10 && dateStr.includes(':')) {
+                const parts = dateStr.match(/^(\d{4}-\d{2}-\d{2})(\d{2}:\d{2})$/);
+                if (parts) {
+                    dateStr = parts[1];
+                    timeStr = parts[2];
+                }
+            }
+
+            return new Date(`${dateStr}T${timeStr}:00`);
+        }
+
+        function getLapsedDetails(targetDate) {
+            const now = new Date();
+            const diffMs = now - targetDate;
+            if (diffMs <= 0) return null;
+
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            if (diffDays > 0) {
+                return `${diffDays}d ${diffHours}h Lapsed`;
+            } else {
+                return `${diffHours}h Lapsed`;
+            }
+        }
+
+        function switchTab(tab) {
+            currentActiveTab = tab;
+            ['lapsed', 'today', 'tomorrow', 'other'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    if (t === 'lapsed') {
+                        btn.className = "px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm";
+                    } else {
+                        btn.className = "px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-emerald-600 text-white border-emerald-600 shadow-sm";
+                    }
+                } else {
+                    btn.className = "px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200";
+                }
+            });
+            renderTable();
+        }
+
+        function renderTable() {
+            const now = new Date();
+            const todayStr = formatDateString(now);
             
-            document.getElementById('formattedFollowUpDate').textContent = formatDateToDMY(call.followUpDate);
-            document.getElementById('callTime').textContent = call.followUpTime || 'N/A';
-            document.getElementById('visitScheduled').textContent = call.visitScheduled || 'No';
+            const tomorrowDate = new Date();
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+            const tomorrowStr = formatDateString(tomorrowDate);
 
-            if (call.visitDate) {
-                document.getElementById('visitDateTime').textContent = `${formatDateToDMY(call.visitDate)} ${call.visitTime || ''}`;
-                document.getElementById('visitDateTime').className = "text-slate-800 font-semibold";
+            const lapsedTasks = [];
+            const todayTasks = [];
+            const tomorrowTasks = [];
+            const otherTasks = [];
+
+            globalFollowupTasks.forEach(t => {
+                const targetDate = parseTaskTargetDate(t);
+                const dStr = formatDateString(targetDate);
+
+                if (targetDate < now) {
+                    lapsedTasks.push(t);
+                } else if (dStr === todayStr) {
+                    todayTasks.push(t);
+                } else if (dStr === tomorrowStr) {
+                    tomorrowTasks.push(t);
+                } else {
+                    otherTasks.push(t);
+                }
+            });
+
+            document.getElementById('badge-lapsed').textContent = lapsedTasks.length;
+            document.getElementById('badge-today').textContent = todayTasks.length;
+            document.getElementById('badge-tomorrow').textContent = tomorrowTasks.length;
+            document.getElementById('badge-other').textContent = otherTasks.length;
+
+            let activeList = lapsedTasks;
+            if (currentActiveTab === 'today') activeList = todayTasks;
+            if (currentActiveTab === 'tomorrow') activeList = tomorrowTasks;
+            if (currentActiveTab === 'other') activeList = otherTasks;
+
+            const tbody = document.getElementById('followupTableBody');
+            const cardContainer = document.getElementById('followupCardContainer');
+
+            if (activeList.length === 0) {
+                const emptyHTML = `
+                    <div class="text-center py-12 text-slate-400">
+                        <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-slate-100">
+                            <i class="fa-solid fa-clipboard-check text-xl"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-700">No records found!</p>
+                        <p class="text-xs text-slate-400 mt-0.5">There are no follow-ups found in ${currentActiveTab}.</p>
+                    </div>`;
+                
+                tbody.innerHTML = `<tr><td colspan="4">${emptyHTML}</td></tr>`;
+                cardContainer.innerHTML = emptyHTML;
+                return;
             }
 
-            if (call.visitBuilding || call.visitLocation) {
-                document.getElementById('visitLocation').textContent = `${call.visitBuilding || ''} ${call.visitLocation || ''}`.trim();
-                document.getElementById('visitLocation').className = "text-slate-800 font-semibold";
-            }
+            // Render Desktop Table
+            tbody.innerHTML = activeList.map(t => {
+                const targetDate = parseTaskTargetDate(t);
+                const lapsedLabel = getLapsedDetails(targetDate);
+                const taskId = t._id || t.id;
 
-            if (call.visitorComing || call.visitInterestCustomer) {
-                document.getElementById('visitorInterest').textContent = `${call.visitorComing || ''} ${call.visitInterestCustomer || ''}`.trim();
-                document.getElementById('visitorInterest').className = "text-slate-800 font-semibold";
-            }
+                return `
+                    <tr class="hover:bg-slate-50/60 transition-colors group">
+                        <td class="py-4 px-4">
+                            <a href="lead-response.html?id=${taskId}" class="font-semibold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-slate-300 hover:decoration-emerald-500">${t.name}</a>
+                        </td>
+                        <td class="py-4 px-4 text-slate-600">
+                            ${t.contactNumber ? `<a href="tel:${t.contactNumber}" class="inline-flex items-center gap-1.5 hover:text-emerald-600 transition"><i class="fa-solid fa-phone text-xs text-slate-400"></i> ${t.contactNumber}</a>` : '<span class="text-slate-400 italic">N/A</span>'}
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50/80 text-amber-700 font-semibold rounded-xl text-xs border border-amber-200/60 shadow-2xs">
+                                <i class="fa-solid fa-tag text-[10px] text-amber-500"></i>
+                                ${t.followUpOption || 'Standard Follow-Up'}
+                            </span>
+                        </td>
+                        <td class="py-4 px-4 text-slate-600">
+                            <div class="inline-flex items-center gap-2 font-medium flex-wrap">
+                                <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">${t.followUpDate || 'Not Set'}</span>
+                                <span class="text-xs text-slate-400 font-normal">${t.followUpTime || ''}</span>
+                                ${lapsedLabel ? `<span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200 ml-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i>${lapsedLabel}</span>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
 
-            if (call.visitNote || call.rescheduleReason || call.rescheduleVisitChoice) {
-                document.getElementById('visitNote').textContent = `${call.visitNote || ''} ${call.rescheduleReason || ''} ${call.rescheduleVisitChoice || ''}`.trim();
-                document.getElementById('visitNote').className = "text-slate-800 font-medium";
-            }
+            // Render Mobile Cards
+            cardContainer.innerHTML = activeList.map(t => {
+                const targetDate = parseTaskTargetDate(t);
+                const lapsedLabel = getLapsedDetails(targetDate);
+                const taskId = t._id || t.id;
 
-            if (call.leadStatus) {
-                document.getElementById('leadStatus').textContent = call.leadStatus;
-                document.getElementById('leadStatus').className = "text-slate-800 font-semibold";
-            }
+                return `
+                    <div class="corporate-card p-4 rounded-xl space-y-3">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <a href="lead-response.html?id=${taskId}" class="font-bold text-slate-900 text-sm hover:text-emerald-600 underline">${t.name}</a>
+                                <p class="text-xs text-slate-500 mt-0.5">
+                                    ${t.contactNumber ? `<a href="tel:${t.contactNumber}" class="inline-flex items-center gap-1.5 text-slate-600 font-medium"><i class="fa-solid fa-phone text-emerald-600"></i> ${t.contactNumber}</a>` : 'N/A'}
+                                </p>
+                            </div>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 font-semibold rounded-lg text-[10px] border border-amber-200 flex-shrink-0">
+                                ${t.followUpOption || 'Follow-Up'}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-600">
+                            <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-700">
+                                <i class="fa-regular fa-clock mr-1 text-slate-400"></i> ${t.followUpDate || 'Not Set'} (${t.followUpTime || ''})
+                            </span>
+                            ${lapsedLabel ? `<span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200">${lapsedLabel}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-            if (call.closeReason) {
-                document.getElementById('closeReason').textContent = call.closeReason;
-                document.getElementById('closeReason').className = "text-slate-800 font-semibold";
+        async function loadFollowUps() {
+            try {
+                const res = await fetch(`/api/member-tasks/${encodeURIComponent(currentUsername)}`);
+                const data = await res.json();
+                
+                if (data.success && data.tasks) {
+                    const tasks = data.tasks;
+                    globalFollowupTasks = tasks.filter(t => t.followUpRequired && t.followUpRequired.toLowerCase() === 'yes');
+                    const pendingTasks = tasks.filter(t => !t.status || t.status.toLowerCase() !== 'completed');
+                    const visitTasks = tasks.filter(t => t.visitRequired && t.visitRequired.toLowerCase() === 'yes');
+
+                    document.getElementById('sidebarPendingCount').textContent = pendingTasks.length;
+                    document.getElementById('sidebarFollowupCount').textContent = globalFollowupTasks.length;
+                    document.getElementById('sidebarVisitCount').textContent = visitTasks.length;
+
+                    document.getElementById('followupCountBadge').innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>${globalFollowupTasks.length} Active Follow-ups</span>
+                    `;
+
+                    renderTable();
+                }
+            } catch (err) {
+                console.error('Error loading follow-ups:', err);
+                const errorHTML = `
+                    <div class="text-center py-12 text-rose-500">
+                        <i class="fa-solid fa-circle-exclamation text-xl mb-1"></i>
+                        <p class="text-xs font-medium">Failed to load follow-up records. Please refresh the page.</p>
+                    </div>`;
+                document.getElementById('followupTableBody').innerHTML = `<tr><td colspan="4">${errorHTML}</td></tr>`;
+                document.getElementById('followupCardContainer').innerHTML = errorHTML;
             }
         }
 
-        populateCallDetails(sampleCallData);
+        loadFollowUps();
     </script>
 </body>
 </html>
