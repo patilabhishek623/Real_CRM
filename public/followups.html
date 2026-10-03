@@ -158,7 +158,7 @@
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b class="text-slate-900 ml-1">${currentUsername}</b>`;
 
         const urlParams = new URLSearchParams(window.location.search);
-        const leadId = urlParams.get('id');
+        let leadId = urlParams.get('id');
 
         let currentLeadData = null;
 
@@ -182,25 +182,23 @@
         }
 
         async function loadLeadDetails() {
-            if (!leadId) {
-                alert('No Lead ID specified.');
-                window.location.href = 'followups.html';
-                return;
-            }
-
             try {
                 const res = await fetch(`/api/member-tasks/${encodeURIComponent(currentUsername)}`);
                 const data = await res.json();
 
-                if (data.success && data.tasks) {
-                    currentLeadData = data.tasks.find(t => (t._id || t.id) == leadId);
+                if (data.success && data.tasks && data.tasks.length > 0) {
+                    if (!leadId) {
+                        currentLeadData = data.tasks[0];
+                        leadId = currentLeadData._id || currentLeadData.id;
+                    } else {
+                        currentLeadData = data.tasks.find(t => (t._id || t.id) == leadId);
+                    }
                     
                     if (currentLeadData) {
                         document.getElementById('leadNameHeader').textContent = currentLeadData.name || 'Unnamed Lead';
                         document.getElementById('leadContactHeader').innerHTML = `<i class="fa-solid fa-phone text-xs mr-1"></i> ${currentLeadData.contactNumber || 'N/A'}`;
                         document.getElementById('leadSourceVal').textContent = currentLeadData.leadSource || 'Imported via Excel spreadsheet upload.';
                         
-                        // Collect history logs (checking array or fallback object)
                         let historyLogs = currentLeadData.history || currentLeadData.logs;
                         if (!historyLogs || historyLogs.length === 0) {
                             historyLogs = [
@@ -320,6 +318,11 @@
 
         document.getElementById('callLogForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            if (!leadId) {
+                alert('No Lead ID available to update.');
+                return;
+            }
 
             const payload = {
                 title: "Call Log",
