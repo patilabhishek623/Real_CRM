@@ -129,14 +129,12 @@ app.post('/api/add-member', async (req, res) => {
             return res.json({ success: false, message: 'Username already exists.' });
         }
 
-        // Create the team member user
         await User.create({
             username: trimmedUsername,
             password: password.trim(),
             role: 'teammember'
         });
 
-        // Initialize/provision their dedicated collection via helper function
         getMemberTaskModel(trimmedUsername);
 
         res.json({ 
@@ -167,6 +165,28 @@ app.post('/api/assign-task', async (req, res) => {
         res.json({ success: true, message: 'Task assigned successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Error assigning task.' });
+    }
+});
+
+// --- API: Assign Batch Tasks (Excel Upload) ---
+app.post('/api/assign-batch-tasks', async (req, res) => {
+    const { username, tasks } = req.body;
+    if (!username || !tasks || !Array.isArray(tasks)) {
+        return res.status(400).json({ success: false, message: 'Invalid payload or username.' });
+    }
+    try {
+        const MemberTaskModel = getMemberTaskModel(username);
+        const formattedTasks = tasks.map(t => ({
+            name: t.name || 'Untitled Lead',
+            contactNumber: t.contactNumber || '',
+            description: t.description || '',
+            status: 'Pending'
+        }));
+        await MemberTaskModel.insertMany(formattedTasks);
+        res.json({ success: true, message: `Successfully assigned ${formattedTasks.length} tasks to ${username}'s collection!` });
+    } catch (err) {
+        console.error('Error assigning batch tasks:', err);
+        res.status(500).json({ success: false, message: 'Error assigning batch tasks.' });
     }
 });
 
