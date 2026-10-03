@@ -179,7 +179,7 @@
                             <th class="py-3 px-4">Scheduled Date & Time</th>
                             <th class="py-3 px-4">Category Status</th>
                             <th class="py-3 px-4">Last Remark</th>
-                            <th class="py-3 px-4 text-right">Timeline & Complete</th>
+                            <th class="py-3 px-4 text-right">Timeline</th>
                         </tr>
                     </thead>
                     <tbody id="callsTableBody" class="divide-y divide-slate-200 text-sm">
@@ -486,11 +486,10 @@
                         </td>
                         <td class="py-3.5 px-4">${badgeHtml}</td>
                         <td class="py-3.5 px-4 text-slate-600 text-xs max-w-xs truncate" title="${call.remark || ''}">${call.remark || 'No remarks recorded'}</td>
-                        <td class="py-3.5 px-4 text-right space-x-2">
+                        <td class="py-3.5 px-4 text-right">
                             <button onclick="openTimelineModal('${call.id}')" title="View Customer History Timeline (Call 1, Call 2...)" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
                                 <i class="fa-solid fa-timeline mr-1.5"></i> Timeline
                             </button>
-                            ${!call.completed ? `<button onclick="markComplete('${call.id}')" title="Mark Completed" class="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-semibold transition"><i class="fa-solid fa-check mr-1.5"></i> Done</button>` : ''}
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -635,14 +634,6 @@
 
             closeCallModal();
             renderCalls();
-        }
-
-        function markComplete(id) {
-            const call = callsDatabase.find(c => c.id === id);
-            if (call) {
-                call.completed = true;
-                renderCalls();
-            }
         }
 
         window.onload = initDashboard;
