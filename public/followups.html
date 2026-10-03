@@ -45,11 +45,14 @@
             <div class="flex items-center space-x-4">
                 <div class="hidden sm:flex flex-col text-right">
                     <span class="text-sm font-semibold text-slate-700" id="currentUserName">Abhishek Patil</span>
-                    <span class="text-xs text-slate-500">Senior Sales Executive</span>
+                    <span class="text-xs text-slate-500" id="currentUserRole">Senior Sales Executive</span>
                 </div>
                 <div class="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold border border-primary-200 shadow-inner" id="currentUserAvatar">
                     AP
                 </div>
+                <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-rose-600 transition ml-2">
+                    <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -61,11 +64,11 @@
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Follow-Up Call Management</h2>
-                <p class="text-sm text-slate-600">Track overdue calls, plan your day, and click any lead name to inspect details.</p>
+                <p class="text-sm text-slate-600">Track overdue calls from MongoDB database, plan your day, and click any lead name to inspect details.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="refreshData()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
-                    <i class="fa-solid fa-rotate mr-2 text-slate-500"></i> Refresh
+                <button onclick="fetchDatabaseTasks()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+                    <i class="fa-solid fa-rotate mr-2 text-slate-500"></i> Refresh DB
                 </button>
                 <button onclick="openNewCallModal()" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg shadow transition">
                     <i class="fa-solid fa-plus mr-2"></i> Schedule Call
@@ -200,7 +203,7 @@
             <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
                 <span id="tableCountInfo">Showing 0 calls</span>
                 <div class="flex items-center space-x-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> Database synchronized with logged-in user (<span id="footerUser">Abhishek Patil</span>)
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> MongoDB Database synchronized with user (<span id="footerUser">Abhishek Patil</span>)
                 </div>
             </div>
         </div>
@@ -349,11 +352,11 @@
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-bold text-slate-900">Follow-Up Date</label>
-                            <input type="date" id="inputFollowUpDate" value="2026-10-06" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                            <input type="date" id="inputFollowUpDate" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-bold text-slate-900">Follow-Up Time</label>
-                            <input type="time" id="inputFollowUpTime" value="11:00" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                            <input type="time" id="inputFollowUpTime" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                         </div>
                     </div>
 
@@ -362,7 +365,7 @@
                 <!-- Submit Disposition Button -->
                 <div class="flex justify-end pt-4 border-t border-slate-100">
                     <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow transition flex items-center">
-                        <i class="fa-solid fa-floppy-disk mr-2"></i> Save & Log Call Disposition
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Save Call to MongoDB Database
                     </button>
                 </div>
             </form>
@@ -372,7 +375,7 @@
         <div id="tabContentHistory" class="space-y-6 hidden">
             <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
                 <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-6 flex items-center">
-                    <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs (Call 1 to Call 4)
+                    <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs (Call 1 to Call N) from Database
                 </h3>
                 <div class="space-y-6" id="historyTimelineContainer">
                     <!-- Injected via JS -->
@@ -397,7 +400,7 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form id="callForm" onsubmit="saveCall(event)" class="p-6 space-y-4">
+            <form id="callForm" onsubmit="saveNewTaskToDb(event)" class="p-6 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Lead Name *</label>
@@ -420,20 +423,28 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Call Remarks / Notes</label>
-                    <textarea id="modalRemark" rows="3" placeholder="Discussed pricing, site visit scheduled for weekend..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"></textarea>
+                    <textarea id="modalRemark" rows="3" placeholder="Initial discussion notes..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"></textarea>
                 </div>
                 <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
                     <button type="button" onclick="closeCallModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium shadow transition">Save Call</button>
+                    <button type="submit" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium shadow transition">Save to DB</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Application Logic connected to MongoDB backend -->
     <script>
-        const LOGGED_IN_USER = "Abhishek Patil";
-        
+        // Retrieve dynamic logged-in user from localStorage or fallback to Abhishek Patil
+        const LOGGED_IN_USER = localStorage.getItem('crm_username') || "Abhishek Patil";
+        let dbCallsDatabase = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let currentSelectedTaskId = null;
+        let currentSelectedLeadObject = null;
+
+        const now = new Date(2026, 9, 4, 14, 30, 0); // October 4, 2026 reference time
+
         function formatDatetimeLocal(date) {
             const pad = (n) => n < 10 ? '0' + n : n;
             return date.getFullYear() + '-' +
@@ -443,102 +454,66 @@
                 pad(date.getMinutes());
         }
 
-        const now = new Date(2026, 9, 4, 14, 30, 0); // Oct 4, 2026
-        
-        const d1 = new Date(now); d1.setDate(now.getDate() - 5); d1.setHours(11, 0);
-        const d2 = new Date(now); d2.setDate(now.getDate() - 2); d2.setHours(15, 30);
-        const d3 = new Date(now); d3.setHours(10, 0);
+        function initDashboard() {
+            document.getElementById('currentUserName').innerText = LOGGED_IN_USER;
+            document.getElementById('footerUser').innerText = LOGGED_IN_USER;
+            const initials = LOGGED_IN_USER.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('currentUserAvatar').innerText = initials;
+            
+            fetchDatabaseTasks();
+        }
 
-        // Mock Database with Vikram Malhotra and Sunita Deshmukh matching your exact data[cite: 1]
-        let callsDatabase = [
-            {
-                id: "CALL-101",
-                user: LOGGED_IN_USER,
-                leadName: "Vikram Malhotra",
-                phone: "+91 98211 44556",
-                property: "4 BHK Penthouse - Bandra West",
-                datetime: formatDatetimeLocal(d1),
-                remark: "Interested – Wants Project Details",
-                completed: false,
-                connectedStatus: "Call Connected",
-                callDuration: "03:15 mins",
-                leadQuality: "Warm Lead",
-                history: {
-                    call1: {
-                        title: "Call Log",
-                        call_connected: "Call Not Connected",
-                        remark: "Incoming Calls Not Available",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call Next Week",
-                        followUpDate: "2026-10-02",
-                        followUpTime: "00:04",
-                        visitScheduled: "No",
-                        visitDate: "",
-                        visitTime: "",
-                        visitBuilding: "",
-                        visitLocation: "",
-                        visitNote: "",
-                        visitorComing: "",
-                        rescheduleReason: "",
-                        visitInterestCustomer: "",
-                        rescheduleVisitChoice: "",
-                        leadStatus: "",
-                        closeReason: "",
-                        loggedAt: { date: "2026-10-02 00:04:00" }
-                    },
-                    call2: null,
-                    call3: null,
-                    call4: null
+        // Fetch database tasks from backend API: /api/member-tasks/:username
+        async function fetchDatabaseTasks() {
+            try {
+                const response = await fetch(`/api/member-tasks/${encodeURIComponent(LOGGED_IN_USER)}`);
+                const data = await response.json();
+                if (data.success) {
+                    dbCallsDatabase = data.tasks.map(t => {
+                        let datetimeStr = '';
+                        if (t.followUpDate) {
+                            datetimeStr = t.followUpDate + 'T' + (t.followUpTime || '10:00');
+                        } else if (t.createdAt) {
+                            datetimeStr = t.createdAt.substring(0, 16);
+                        } else {
+                            datetimeStr = formatDatetimeLocal(now);
+                        }
+
+                        // Extract latest remark or description
+                        let latestRemark = t.description || '';
+                        let i = 1;
+                        while(t[`call${i}`]) {
+                            if (t[`call${i}`].remark) {
+                                latestRemark = t[`call${i}`].remark;
+                            }
+                            i++;
+                        }
+
+                        return {
+                            id: t._id,
+                            user: LOGGED_IN_USER,
+                            leadName: t.name || 'Untitled Lead',
+                            phone: t.contactNumber || 'N/A',
+                            property: t.description || 'General Inquiry',
+                            datetime: datetimeStr,
+                            remark: latestRemark,
+                            completed: t.status === 'Completed',
+                            history: t
+                        };
+                    });
+                    renderCalls();
+                } else {
+                    console.error("Failed to load tasks from DB");
                 }
-            },
-            {
-                id: "CALL-102",
-                user: LOGGED_IN_USER,
-                leadName: "Sunita Deshmukh",
-                phone: "+91 97001 22334",
-                property: "3 BHK Sea View Apartment - Worli",
-                datetime: formatDatetimeLocal(d2),
-                remark: "Bank loan pre-approval discussed.",
-                completed: false,
-                connectedStatus: "Call Connected",
-                callDuration: "02:45 mins",
-                leadQuality: "Warm Lead",
-                history: {
-                    call1: {
-                        title: "Call Log",
-                        call_connected: "Call Connected",
-                        remark: "Bank loan pre-approval discussed.",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call in 2 Days",
-                        followUpDate: "2026-10-02",
-                        followUpTime: "15:30",
-                        visitScheduled: "No",
-                        visitDate: "",
-                        visitTime: "",
-                        visitBuilding: "",
-                        visitLocation: "",
-                        visitNote: "",
-                        visitorComing: "",
-                        rescheduleReason: "",
-                        visitInterestCustomer: "",
-                        rescheduleVisitChoice: "",
-                        leadStatus: "Pending Bank Approval",
-                        closeReason: "",
-                        loggedAt: { date: "2026-10-02 15:30:00" }
-                    },
-                    call2: null,
-                    call3: null,
-                    call4: null
-                }
+            } catch (err) {
+                console.error("Error connecting to server:", err);
             }
-        ];
-
-        let currentFilter = 'all';
-        let searchQuery = '';
-        let currentSelectedLeadId = null;
+        }
 
         function getCallCategory(call) {
             if (call.completed) return 'completed';
+            if (!call.datetime) return 'upcoming';
+            
             const callDate = new Date(call.datetime);
             const callDateOnly = new Date(callDate.getFullYear(), callDate.getMonth(), callDate.getDate());
             const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -558,14 +533,8 @@
             return d.toLocaleDateString('en-US', options);
         }
 
-        function initDashboard() {
-            document.getElementById('currentUserName').innerText = LOGGED_IN_USER;
-            document.getElementById('footerUser').innerText = LOGGED_IN_USER;
-            renderCalls();
-        }
-
         function renderCalls() {
-            const userCalls = callsDatabase.filter(c => c.user === LOGGED_IN_USER);
+            const userCalls = dbCallsDatabase;
             const activeCalls = userCalls.filter(c => !c.completed);
             
             const counts = {
@@ -681,10 +650,11 @@
         }
 
         // Open Lead Profile Page
-        function openLeadProfile(callId) {
-            const call = callsDatabase.find(c => c.id === callId);
+        function openLeadProfile(taskId) {
+            const call = dbCallsDatabase.find(c => c.id === taskId);
             if (!call) return;
-            currentSelectedLeadId = callId;
+            currentSelectedTaskId = taskId;
+            currentSelectedLeadObject = call.history;
 
             document.getElementById('profileLeadName').innerText = call.leadName;
             document.getElementById('profileLeadPhone').innerText = call.phone;
@@ -702,76 +672,61 @@
             else badgeHtml = `<span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-full">Active</span>`;
             document.getElementById('profileCategoryBadge').innerHTML = badgeHtml;
 
-            // Render Timeline History
-            renderHistoryTimeline(call);
+            renderHistoryTimeline(call.history);
 
-            // Switch view
             document.getElementById('dashboardView').classList.add('hidden');
             document.getElementById('profileView').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function renderHistoryTimeline(call) {
+        function renderHistoryTimeline(taskObj) {
             const historyContainer = document.getElementById('historyTimelineContainer');
             historyContainer.innerHTML = '';
 
-            const steps = [
-                { key: 'call1', label: 'Call 1 (Initial Contact)', icon: 'fa-phone-volume', color: 'bg-blue-500' },
-                { key: 'call2', label: 'Call 2 (Follow-Up)', icon: 'fa-phone', color: 'bg-primary-600' },
-                { key: 'call3', label: 'Call 3 (Negotiation)', icon: 'fa-handshake', color: 'bg-amber-500' },
-                { key: 'call4', label: 'Call 4 (Closing)', icon: 'fa-building-user', color: 'bg-emerald-600' }
-            ];
+            let i = 1;
+            let timelineSteps = [];
+            while (taskObj[`call${i}`]) {
+                timelineSteps.push({ key: `call${i}`, data: taskObj[`call${i}`], title: `Call ${i} Record` });
+                i++;
+            }
 
-            steps.forEach((step) => {
-                const historyData = call.history && call.history[step.key];
-                const isPresent = historyData !== null && historyData !== undefined;
+            if (timelineSteps.length === 0) {
+                historyContainer.innerHTML = `<div class="p-6 text-center text-slate-400 italic bg-slate-50 rounded-xl border border-dashed border-slate-300">No database call logs recorded yet. Use the Call Connected form above to save your first interaction.</div>`;
+                return;
+            }
 
+            timelineSteps.forEach((step, idx) => {
+                const historyData = step.data;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = "flex items-start space-x-4 relative";
 
-                if (isPresent) {
-                    itemDiv.innerHTML = `
-                        <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full ${step.color} text-white flex items-center justify-center shadow-md">
-                            <i class="fa-solid ${step.icon} text-sm"></i>
+                itemDiv.innerHTML = `
+                    <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-md font-bold text-sm">
+                        ${idx + 1}
+                    </div>
+                    <div class="flex-grow bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <span class="text-sm font-bold uppercase tracking-wider text-slate-900"><i class="fa-solid fa-file-lines text-primary-500 mr-1.5"></i> ${historyData.title || step.title}</span>
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">${historyData.call_connected || 'Completed'}</span>
                         </div>
-                        <div class="flex-grow bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                                <span class="text-sm font-bold uppercase tracking-wider text-slate-900"><i class="fa-solid fa-file-lines text-primary-500 mr-1.5"></i> ${historyData.title || step.label}</span>
-                                <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">${historyData.call_connected}</span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                <div><strong class="text-slate-700">Follow-up Req:</strong> ${historyData.followUpRequired || 'N/A'}</div>
-                                <div><strong class="text-slate-700">Follow-up Date:</strong> ${historyData.followUpDate || 'N/A'} (${historyData.followUpTime || 'N/A'})</div>
-                                <div><strong class="text-slate-700">Visit Scheduled:</strong> ${historyData.visitScheduled || 'No'}</div>
-                                <div><strong class="text-slate-700">Visit Date:</strong> ${historyData.visitDate || 'None'}</div>
-                                <div><strong class="text-slate-700">Lead Status:</strong> ${historyData.leadStatus || 'Active'}</div>
-                            </div>
-                            <p class="text-sm text-slate-700 font-normal"><strong>Remark:</strong> "${historyData.remark}"</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <div><strong class="text-slate-700">Follow-up Req:</strong> ${historyData.followUpRequired || 'N/A'}</div>
+                            <div><strong class="text-slate-700">Follow-up Date:</strong> ${historyData.followUpDate || 'N/A'} (${historyData.followUpTime || 'N/A'})</div>
+                            <div><strong class="text-slate-700">Visit Scheduled:</strong> ${historyData.visitScheduled || 'No'}</div>
+                            <div><strong class="text-slate-700">Visit Date:</strong> ${historyData.visitDate || 'None'}</div>
+                            <div><strong class="text-slate-700">Lead Status:</strong> ${historyData.leadStatus || 'Active'}</div>
                         </div>
-                    `;
-                } else {
-                    itemDiv.innerHTML = `
-                        <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center">
-                            <i class="fa-solid fa-ban text-xs"></i>
-                        </div>
-                        <div class="flex-grow bg-slate-100/70 p-4 rounded-xl border border-dashed border-slate-300">
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${step.label}</span>
-                                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-slate-200 text-slate-500">Absent / Not Recorded</span>
-                            </div>
-                            <p class="text-xs text-slate-400 italic">No database log recorded for this milestone sequence yet.</p>
-                        </div>
-                    `;
-                }
+                        <p class="text-sm text-slate-700 font-normal"><strong>Remark:</strong> "${historyData.remark || 'No remarks'}"</p>
+                    </div>
+                `;
                 historyContainer.appendChild(itemDiv);
             });
         }
 
-        // Submit and Save Call Disposition from Form
-        function submitCallDisposition(event) {
+        // Submit and Save Call Disposition to MongoDB Backend API
+        async function submitCallDisposition(event) {
             event.preventDefault();
-            const call = callsDatabase.find(c => c.id === currentSelectedLeadId);
-            if (!call) return;
+            if (!currentSelectedTaskId) return;
 
             const callConnectedVal = document.getElementById('selectCallConnected').value;
             const callConnectedText = callConnectedVal === 'Yes' ? 'Call Connected' : 'Call Not Connected';
@@ -791,23 +746,11 @@
             const followUpDate = document.getElementById('inputFollowUpDate').value;
             const followUpTime = document.getElementById('inputFollowUpTime').value;
 
-            // Find next available slot in history (call1, call2, call3, call4)
-            let targetKey = null;
-            ['call1', 'call2', 'call3', 'call4'].forEach(k => {
-                if (!targetKey && (!call.history[k])) {
-                    targetKey = k;
-                }
-            });
-
-            if (!targetKey) targetKey = 'call4'; // fallback
-
-            const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
-
-            // Save new entry matching exact schema
-            call.history[targetKey] = {
+            const payload = {
                 title: "Call Log - " + category,
                 call_connected: callConnectedText,
                 remark: remark || "Disposition recorded successfully.",
+                leadTemperature: temperature,
                 followUpRequired: followUpReq,
                 followUpOption: "Custom Scheduled",
                 followUpDate: followUpDate,
@@ -815,30 +758,65 @@
                 visitScheduled: visitScheduled,
                 visitDate: visitDate,
                 visitTime: visitTime,
-                visitBuilding: call.property,
+                visitBuilding: currentSelectedLeadObject.description || 'Bandra Property',
                 visitLocation: "Bandra West",
                 visitNote: remark,
                 visitorComing: visitScheduled === 'Yes' ? "Self + Family" : "",
-                rescheduleReason: "",
-                visitInterestCustomer: temperature,
-                rescheduleVisitChoice: "",
                 leadStatus: category,
-                closeReason: "",
-                loggedAt: { date: nowStr }
+                closeReason: ""
             };
 
-            // Update main call summary
-            call.connectedStatus = callConnectedText;
-            call.remark = remark;
-            call.leadQuality = temperature;
-            if (followUpDate) {
-                call.datetime = followUpDate + 'T' + (followUpTime || '10:00');
+            try {
+                const response = await fetch(`/api/update-task-status/${encodeURIComponent(LOGGED_IN_USER)}/${currentSelectedTaskId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert("Call disposition successfully saved to MongoDB database!");
+                    currentSelectedLeadObject = data.task;
+                    renderHistoryTimeline(data.task);
+                    fetchDatabaseTasks();
+                    switchProfileTab('history');
+                } else {
+                    alert("Error saving disposition: " + data.message);
+                }
+            } catch (err) {
+                console.error("Server communication error:", err);
+                alert("Error connecting to server.");
             }
+        }
 
-            alert("Call disposition successfully logged to database!");
-            renderHistoryTimeline(call);
-            renderCalls();
-            switchProfileTab('history');
+        async function saveNewTaskToDb(event) {
+            event.preventDefault();
+            const leadName = document.getElementById('modalLeadName').value.trim();
+            const contactNumber = document.getElementById('modalPhone').value.trim();
+            const description = document.getElementById('modalProperty').value.trim();
+
+            try {
+                const response = await fetch('/api/assign-task', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: LOGGED_IN_USER,
+                        name: leadName,
+                        contactNumber: contactNumber,
+                        description: description
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert("New lead task scheduled successfully in MongoDB!");
+                    closeCallModal();
+                    fetchDatabaseTasks();
+                } else {
+                    alert("Error scheduling task.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error connecting to server.");
+            }
         }
 
         function backToDashboard() {
@@ -846,7 +824,6 @@
             document.getElementById('dashboardView').classList.remove('hidden');
         }
 
-        // Switch between Call Connected and Call History tabs inside profile view
         function switchProfileTab(tabName) {
             const btnConnected = document.getElementById('tabBtnConnected');
             const btnHistory = document.getElementById('tabBtnHistory');
@@ -878,10 +855,12 @@
 
             ['all', 'lapsed', 'today', 'tomorrow'].forEach(t => {
                 const card = document.getElementById(`card-${t}`);
-                if (t === tabName) {
-                    card.classList.add('ring-2', 'ring-primary-500', 'ring-offset-2');
-                } else {
-                    card.classList.remove('ring-2', 'ring-primary-500', 'ring-offset-2');
+                if (card) {
+                    if (t === tabName) {
+                        card.classList.add('ring-2', 'ring-primary-500', 'ring-offset-2');
+                    } else {
+                        card.classList.remove('ring-2', 'ring-primary-500', 'ring-offset-2');
+                    }
                 }
             });
 
@@ -890,10 +869,6 @@
 
         function handleSearch() {
             searchQuery = document.getElementById('searchInput').value.trim();
-            renderCalls();
-        }
-
-        function refreshData() {
             renderCalls();
         }
 
@@ -910,58 +885,10 @@
             document.getElementById('callModal').classList.add('hidden');
         }
 
-        function saveCall(event) {
-            event.preventDefault();
-            const leadName = document.getElementById('modalLeadName').value.trim();
-            const phone = document.getElementById('modalPhone').value.trim();
-            const property = document.getElementById('modalProperty').value.trim();
-            const datetime = document.getElementById('modalDatetime').value;
-            const remark = document.getElementById('modalRemark').value.trim();
-
-            const newCall = {
-                id: 'CALL-' + (Math.floor(Math.random() * 900) + 200),
-                user: LOGGED_IN_USER,
-                leadName,
-                phone,
-                property,
-                datetime,
-                remark,
-                completed: false,
-                connectedStatus: "Call Connected",
-                callDuration: "02:00 mins",
-                leadQuality: "Warm Lead",
-                history: {
-                    call1: {
-                        title: "Call Log",
-                        call_connected: "Call Connected",
-                        remark: remark,
-                        followUpRequired: "Yes",
-                        followUpOption: "Call Tomorrow",
-                        followUpDate: datetime.split('T')[0],
-                        followUpTime: datetime.split('T')[1] || "10:00",
-                        visitScheduled: "No",
-                        visitDate: "",
-                        visitTime: "",
-                        visitBuilding: "",
-                        visitLocation: "",
-                        visitNote: "",
-                        visitorComing: "",
-                        rescheduleReason: "",
-                        visitInterestCustomer: "",
-                        rescheduleVisitChoice: "",
-                        leadStatus: "New",
-                        closeReason: "",
-                        loggedAt: { date: datetime }
-                    },
-                    call2: null,
-                    call3: null,
-                    call4: null
-                }
-            };
-            callsDatabase.unshift(newCall);
-
-            closeCallModal();
-            renderCalls();
+        function handleLogout() {
+            localStorage.removeItem('crm_username');
+            localStorage.removeItem('crm_role');
+            window.location.href = '/';
         }
 
         window.onload = initDashboard;
