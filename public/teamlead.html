@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Team Lead Dashboard - Real_Crm</title>
+    <title>Add User & Collection - Real_Crm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -77,11 +77,11 @@
                     </button>
                 </div>
                 <div class="space-y-1.5">
-                    <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-md shadow-blue-600/20">
-                        <i class="fa-solid fa-house w-5 text-blue-100"></i> Dashboard Overview
+                    <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> Dashboard Overview
                     </a>
-                    <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
-                        <i class="fa-solid fa-user-plus w-5 text-slate-400"></i> Add User & Collection
+                    <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-md shadow-blue-600/20">
+                        <i class="fa-solid fa-user-plus w-5 text-blue-100"></i> Add User & Collection
                     </a>
                     <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
                         <i class="fa-solid fa-list-check w-5 text-slate-400"></i> Assign Task to Member
@@ -95,18 +95,18 @@
         <div class="flex-grow" onclick="toggleMobileMenu()"></div>
     </div>
 
-    <!-- Main Workspace Layout -->
+    <!-- Main Workspace -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
         
-        <!-- Left Sidebar Navigation Menu (Desktop Only) -->
+        <!-- Sidebar Navigation Menu (Desktop Only) -->
         <aside class="hidden md:block md:col-span-1 space-y-4">
             <div class="corporate-card rounded-3xl p-4 space-y-2 sticky top-28 shadow-sm">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation Menu</p>
-                <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3.5 bg-blue-600 text-white font-bold rounded-2xl text-sm shadow-md shadow-blue-600/20 transition">
-                    <i class="fa-solid fa-house w-5 text-blue-100 text-base"></i> Dashboard Overview
+                <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 font-semibold rounded-2xl text-sm transition group">
+                    <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Dashboard Overview
                 </a>
-                <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 font-semibold rounded-2xl text-sm transition group">
-                    <i class="fa-solid fa-user-plus w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Add User & Collection
+                <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3.5 bg-blue-600 text-white font-bold rounded-2xl text-sm shadow-md shadow-blue-600/20 transition">
+                    <i class="fa-solid fa-user-plus w-5 text-blue-100 text-base"></i> Add User & Collection
                 </a>
                 <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 font-semibold rounded-2xl text-sm transition group">
                     <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Assign Task to Member
@@ -114,74 +114,49 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
+        <!-- Main Form Content -->
         <main class="md:col-span-3 space-y-6">
-            
-            <!-- Welcome Banner Card -->
-            <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex justify-between items-center border border-slate-800">
-                <div class="absolute -right-12 -top-12 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                
-                <div class="relative z-10 space-y-3">
-                    <div class="inline-flex items-center gap-2 bg-blue-500/20 px-3 py-1 rounded-full text-xs font-semibold text-blue-300 border border-blue-500/30">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Team Lead Control Hub
+            <div class="corporate-card rounded-3xl p-6 sm:p-8 space-y-6 shadow-md">
+                <div class="flex items-center gap-4 pb-5 border-b border-slate-100">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-100 shadow-xs flex-shrink-0">
+                        <i class="fa-solid fa-user-plus"></i>
                     </div>
-                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Welcome back, <span class="text-blue-400">Team Lead</span></h1>
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-xl leading-relaxed">Monitor your registered team members, inspect isolated MongoDB task collections, and assign property leads securely.</p>
-                </div>
-                <div class="hidden lg:block relative z-10">
-                    <div class="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/15 flex items-center justify-center text-blue-400 text-4xl shadow-inner">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Metrics Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="corporate-card corporate-card-hover p-6 rounded-3xl transition flex items-center justify-between">
                     <div>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Database Architecture</p>
-                        <h3 class="text-sm sm:text-base font-black text-emerald-600 mt-1.5 flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Multi-Collection Active
-                        </h3>
-                    </div>
-                    <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 border border-emerald-100 flex-shrink-0 shadow-xs">
-                        <i class="fa-solid fa-database text-xl"></i>
+                        <h2 class="text-xl font-extrabold text-slate-900">Create Team Member Account</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Provision secure agent credentials & set up a dedicated MongoDB collection (<code class="text-blue-600 font-mono font-bold">tasks_[username]</code>)</p>
                     </div>
                 </div>
 
-                <div class="corporate-card corporate-card-hover p-6 rounded-3xl transition flex items-center justify-between">
+                <form id="addMemberForm" class="space-y-4 sm:space-y-5">
                     <div>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Registered Members</p>
-                        <h3 id="memberCount" class="text-xl sm:text-2xl font-black text-blue-600 mt-1.5">Loading...</h3>
-                    </div>
-                    <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0 shadow-xs">
-                        <i class="fa-solid fa-users text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Active Registered Team Members List Card -->
-            <div class="corporate-card rounded-3xl p-6 sm:p-8 space-y-5">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2.5">
-                            <i class="fa-solid fa-users-gear text-blue-600"></i> Registered Team Members & Isolated Collections
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-1">Securely mapped MongoDB collections (<code class="text-blue-600 font-mono font-bold">tasks_[username]</code>) for individual workspace tracking.</p>
-                    </div>
-                </div>
-                
-                <div class="p-5 bg-slate-50/80 border border-slate-200/70 rounded-2xl">
-                    <div id="memberListContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div class="col-span-full flex items-center justify-center gap-2 text-xs text-slate-400 py-6">
-                            <i class="fa-solid fa-spinner animate-spin text-blue-600 text-sm"></i> Fetching team members...
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">New Member Username</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="newUsername" required placeholder="e.g. alex_smith" 
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-xs sm:text-sm transition">
                         </div>
                     </div>
-                </div>
-            </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">New Member Password</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="password" id="newPassword" required placeholder="••••••••" 
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-xs sm:text-sm transition">
+                        </div>
+                    </div>
 
+                    <div class="pt-2">
+                        <button type="submit" 
+                            class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-database text-xs"></i>
+                            <span>Create Account & Provision Collection</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="msg" class="hidden text-center text-xs font-semibold p-4 rounded-2xl border"></div>
+            </div>
         </main>
     </div>
 
@@ -205,7 +180,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Active Session Check
         const currentUsername = localStorage.getItem('crm_username');
         if (currentUsername) {
             const badge = document.getElementById('activeUserBadge');
@@ -214,50 +188,43 @@
             if (mobileBadge) mobileBadge.innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Lead: <b>${currentUsername}</b>`;
         }
 
-        async function fetchDashboardData() {
-            try {
-                const res = await fetch('/api/members');
-                const data = await res.json();
-                const container = document.getElementById('memberListContainer');
-                const countElem = document.getElementById('memberCount');
-                
-                container.innerHTML = '';
+        document.getElementById('addMemberForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+            const msgDiv = document.getElementById('msg');
+            msgDiv.textContent = '';
+            msgDiv.classList.add('hidden');
 
-                if (data.success && data.members.length > 0) {
-                    countElem.textContent = `${data.members.length} Active Member${data.members.length > 1 ? 's' : ''}`;
-                    data.members.forEach(m => {
-                        const badge = document.createElement('div');
-                        badge.className = 'p-4 bg-white text-slate-800 text-xs font-semibold rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between transition hover:border-blue-400 hover:shadow-md';
-                        badge.innerHTML = `
-                            <div class="flex items-center gap-3 overflow-hidden">
-                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm flex-shrink-0 border border-blue-100">
-                                    ${m.username.charAt(0).toUpperCase()}
-                                </div>
-                                <div class="overflow-hidden">
-                                    <span class="font-bold text-slate-900 block text-sm truncate">${m.username}</span>
-                                    <span class="text-[10px] text-slate-400 font-mono block truncate mt-0.5">tasks_${m.username.trim().replace(/[^a-zA-Z0-9_]/g, '_')}</span>
-                                </div>
-                            </div>
-                            <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-lg border border-emerald-200/60 flex-shrink-0">Online</span>
-                        `;
-                        container.appendChild(badge);
-                    });
+            try {
+                const response = await fetch('/api/add-member', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                msgDiv.classList.remove('hidden');
+                if (data.success) {
+                    msgDiv.className = 'text-center text-xs font-semibold p-4 rounded-2xl border bg-emerald-50 text-emerald-700 border-emerald-200';
+                    msgDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5 text-sm"></i> ${data.message}`;
+                    document.getElementById('addMemberForm').reset();
                 } else {
-                    countElem.textContent = '0 Members';
-                    container.innerHTML = '<span class="text-xs text-slate-400 italic py-6 block text-center col-span-full">No team members created yet. Use the sidebar menu to add one.</span>';
+                    msgDiv.className = 'text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                    msgDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-sm"></i> ${data.message || 'Failed to create member account.'}`;
                 }
             } catch (err) {
-                console.error('Failed to load dashboard data');
+                msgDiv.classList.remove('hidden');
+                msgDiv.className = 'text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                msgDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-sm"></i> Server connection failed.`;
             }
-        }
+        });
 
         function handleLogout(e) {
             e.preventDefault();
             localStorage.clear();
             window.location.href = '/';
         }
-
-        fetchDashboardData();
     </script>
 </body>
 </html>
