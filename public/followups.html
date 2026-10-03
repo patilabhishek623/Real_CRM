@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Follow-Up Leads & Customer History - Real_Crm Hub</title>
+    <title>Customer History & Follow-Ups - Real_Crm Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -42,10 +42,10 @@
         </div>
     </header>
 
-    <!-- Main Content Layout -->
+    <!-- Main Workspace Layout -->
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
         
-        <!-- Sidebar Menu -->
+        <!-- Sidebar Navigation -->
         <aside class="hidden md:block md:col-span-1 space-y-2">
             <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">Member Menu</p>
@@ -67,16 +67,16 @@
             </div>
         </aside>
 
-        <!-- Main Workspace -->
+        <!-- Content Area -->
         <main class="md:col-span-3 space-y-6">
             
-            <!-- VIEW 1: Follow-Up List View -->
+            <!-- View Mode Switcher: List View vs. Lead History View -->
             <div id="listViewSection" class="space-y-6">
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-8 shadow-sm">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
                         <div>
                             <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Scheduled Follow-Ups</h1>
-                            <p class="text-xs sm:text-sm text-slate-500 mt-1">Click any lead name to view customer history timeline.</p>
+                            <p class="text-xs sm:text-sm text-slate-500 mt-1">Click any lead name to view full customer history timeline.</p>
                         </div>
                         <div id="followupCountBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60 shadow-2xs">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -136,7 +136,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: Customer History Timeline View (Hidden initially) -->
+            <!-- Customer History View (Hidden by default, shown when a lead name is clicked) -->
             <div id="historyViewSection" class="space-y-6 hidden">
                 
                 <!-- Lead Profile Header Card with Call Now Action -->
@@ -163,9 +163,9 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Timeline Cards Container -->
+                <!-- Timeline Container for All Calls (call1, call2...) -->
                 <div id="historyTimelineContainer" class="space-y-4">
-                    <!-- Dynamic call logs (call1, call2...) rendered here -->
+                    <!-- Dynamic call history logs injected here -->
                 </div>
 
             </div>
@@ -198,7 +198,7 @@
         </a>
     </nav>
 
-    <!-- Script Logic -->
+    <!-- JavaScript Controller -->
     <script>
         const currentUsername = localStorage.getItem('crm_username');
         if (!currentUsername) {
@@ -320,10 +320,11 @@
                 return;
             }
 
-            // Render Desktop Table Rows
+            // Desktop Table Rows
             tbody.innerHTML = activeList.map(t => {
                 const targetDate = parseTaskTargetDate(t);
                 const lapsedLabel = getLapsedDetails(targetDate);
+                const taskId = t._id || t.id;
                 const safeTaskObj = encodeURIComponent(JSON.stringify(t));
 
                 return `
@@ -344,14 +345,14 @@
                             <div class="inline-flex items-center gap-2 font-medium flex-wrap">
                                 <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">${formatDateToDMY(t.followUpDate)}</span>
                                 <span class="text-xs text-slate-400 font-normal">${t.followUpTime || ''}</span>
-                                ${lapsedLabel ? `<span class="bg-rose-50 text-rose-600 font-bold px-2.5 py-1 rounded-md text-[10px] border border-rose-200 ml-1">${lapsedLabel}</span>` : ''}
+                                ${lapsedLabel ? `<span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200 ml-1">${lapsedLabel}</span>` : ''}
                             </div>
                         </td>
                     </tr>
                 `;
             }).join('');
 
-            // Render Mobile Cards
+            // Mobile Cards
             cardContainer.innerHTML = activeList.map(t => {
                 const targetDate = parseTaskTargetDate(t);
                 const lapsedLabel = getLapsedDetails(targetDate);
@@ -384,25 +385,25 @@
         function openLeadHistory(encodedTask) {
             const task = JSON.parse(decodeURIComponent(encodedTask));
             
-            // Populate Form Header Details
+            // Populate Lead Info Header Form
             document.getElementById('profileLeadName').textContent = task.name || 'Sneha Gupta';
             const phone = task.contactNumber || '9112233445';
             document.getElementById('profileLeadPhone').textContent = phone;
             document.getElementById('profileCallNowBtn').href = `tel:${phone}`;
 
-            // Switch layout view sections
+            // Switch views
             document.getElementById('listViewSection').classList.add('hidden');
             document.getElementById('historyViewSection').classList.remove('hidden');
 
-            // Find all call objects (call1, call2, call3...)
+            // Render all call logs (call1, call2, etc.) dynamically
             const timelineContainer = document.getElementById('historyTimelineContainer');
             const callKeys = Object.keys(task).filter(key => /^call\d+$/i.test(key));
 
-            // If no explicit call objects exist, fallback to showing the task data as a default call log card
+            // If no call keys found in object, fallback to showing standard/sample task details as a call card
             if (callKeys.length === 0) {
                 timelineContainer.innerHTML = generateCallCardHTML({
                     title: "Call Log",
-                    call_connected: task.call_connected || "Call Not Connected",
+                    call_connected: "Call Not Connected",
                     remark: task.remark || "Incoming Calls Not Available",
                     followUpRequired: task.followUpRequired || "Yes",
                     followUpOption: task.followUpOption || "Call Next Week",
@@ -424,7 +425,7 @@
                 return;
             }
 
-            // Sort call keys sequentially
+            // Sort call logs numerically
             callKeys.sort((a, b) => {
                 return (parseInt(a.replace(/\D/g, '')) || 0) - (parseInt(b.replace(/\D/g, '')) || 0);
             });
