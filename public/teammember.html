@@ -64,7 +64,7 @@
                 <div>
                     <div class="flex items-center gap-1.5 sm:gap-2">
                         <span class="text-base sm:text-xl font-black tracking-tight text-slate-900">Real_Crm</span>
-                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200">Member</span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200">Member Portal</span>
                     </div>
                     <span id="liveClock" class="text-[10px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
                 </div>
@@ -349,7 +349,7 @@
         let cachedFollowups = [];
         let cachedVisits = [];
 
-        // Fetch Data from Backend API
+        // Fetch Data from Backend API Safely
         async function loadDashboardData() {
             try {
                 const resTasks = await fetch(`/api/member-tasks/${encodeURIComponent(currentUsername)}`);
