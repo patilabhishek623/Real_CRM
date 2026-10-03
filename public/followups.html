@@ -45,7 +45,7 @@
             <div class="flex items-center space-x-4">
                 <div class="hidden sm:flex flex-col text-right">
                     <span class="text-sm font-semibold text-slate-700" id="currentUserName">User</span>
-                    <span class="text-xs text-slate-500" id="currentUserRole">Team Member</span>
+                    <span class="text-xs text-slate-500">Team Member</span>
                 </div>
                 <div class="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold border border-primary-200 shadow-inner" id="currentUserAvatar">
                     U
@@ -64,10 +64,10 @@
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Follow-Up Call Management</h2>
-                <p class="text-sm text-slate-600">Track database tasks, plan your day, and click any lead name to log dispositions.</p>
+                <p class="text-sm text-slate-600">Showing only leads where Follow-Up is explicitly set to <strong>Yes</strong>.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="fetchDatabaseTasks()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+                <button onclick="fetchDatabaseFollowUps()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
                     <i class="fa-solid fa-rotate mr-2 text-slate-500"></i> Refresh DB
                 </button>
                 <button onclick="openNewCallModal()" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg shadow transition">
@@ -89,9 +89,6 @@
                         <i class="fa-solid fa-triangle-exclamation text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-3 flex items-center">
-                    <span class="text-rose-600 font-medium mr-1">Requires action</span> past scheduled time
-                </p>
             </div>
 
             <!-- Due Today -->
@@ -105,9 +102,6 @@
                         <i class="fa-solid fa-clock text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-3 flex items-center">
-                    <span class="text-amber-600 font-medium mr-1">Priority focus</span> for today
-                </p>
             </div>
 
             <!-- Due Tomorrow -->
@@ -121,35 +115,27 @@
                         <i class="fa-solid fa-calendar-day text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-3 flex items-center">
-                    <span class="text-blue-600 font-medium mr-1">Scheduled</span> for tomorrow
-                </p>
             </div>
 
             <!-- All Follow-ups -->
             <div onclick="filterTab('all')" id="card-all" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition border-l-4 border-l-slate-600 group ring-2 ring-primary-500 ring-offset-2">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-600">All Database Calls</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-600">Total Follow-Ups</p>
                         <h3 class="text-2xl font-bold text-slate-900 mt-1" id="count-all">0</h3>
                     </div>
                     <div class="p-3 bg-slate-100 rounded-lg text-slate-600 group-hover:scale-110 transition">
                         <i class="fa-solid fa-database text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-3 flex items-center">
-                    <span class="text-slate-600 font-medium mr-1">Total active</span> assigned to you
-                </p>
             </div>
         </div>
 
         <!-- Filter & Search Toolbar -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            
-            <!-- Tabs Navigation -->
             <div class="flex flex-wrap items-center gap-2" id="filterTabs">
                 <button onclick="filterTab('all')" data-tab="all" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white shadow-sm transition">
-                    All Calls <span class="ml-1 px-1.5 py-0.5 text-xs bg-slate-700 rounded-full" id="badge-all">0</span>
+                    All <span class="ml-1 px-1.5 py-0.5 text-xs bg-slate-700 rounded-full" id="badge-all">0</span>
                 </button>
                 <button onclick="filterTab('lapsed')" data-tab="lapsed" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
                     Lapsed <span class="ml-1 px-1.5 py-0.5 text-xs bg-rose-100 text-rose-700 rounded-full" id="badge-lapsed">0</span>
@@ -161,13 +147,11 @@
                     Tomorrow <span class="ml-1 px-1.5 py-0.5 text-xs bg-blue-100 text-blue-700 rounded-full" id="badge-tomorrow">0</span>
                 </button>
             </div>
-
-            <!-- Search Box -->
             <div class="relative w-full md:w-72">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search lead, phone, property..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search lead, phone..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
             </div>
         </div>
 
@@ -179,9 +163,9 @@
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
                             <th class="py-3 px-4">Lead Name / Contact</th>
                             <th class="py-3 px-4">Property / Requirement</th>
-                            <th class="py-3 px-4">Scheduled Date & Time</th>
-                            <th class="py-3 px-4">Category Status</th>
-                            <th class="py-3 px-4">Last Remark</th>
+                            <th class="py-3 px-4">Follow-Up Date & Time</th>
+                            <th class="py-3 px-4">Status Category</th>
+                            <th class="py-3 px-4">Remark</th>
                         </tr>
                     </thead>
                     <tbody id="callsTableBody" class="divide-y divide-slate-200 text-sm">
@@ -193,89 +177,59 @@
             <!-- Empty State -->
             <div id="emptyState" class="hidden py-16 px-4 text-center">
                 <div class="w-16 h-16 mx-auto mb-4 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl">
-                    <i class="fa-solid fa-folder-open"></i>
+                    <i class="fa-solid fa-calendar-check"></i>
                 </div>
-                <h3 class="text-base font-bold text-slate-700">No follow-up calls found</h3>
-                <p class="text-sm text-slate-500 mt-1">There are no calls matching your database collection.</p>
+                <h3 class="text-base font-bold text-slate-700">No follow-ups required</h3>
+                <p class="text-sm text-slate-500 mt-1">No tasks have follow-up scheduled as 'Yes'.</p>
             </div>
 
             <!-- Table Footer -->
             <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-                <span id="tableCountInfo">Showing 0 calls</span>
+                <span id="tableCountInfo">Showing 0 follow-ups</span>
                 <div class="flex items-center space-x-2">
                     <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> Connected to MongoDB Collection (<span id="footerUser">User</span>)
                 </div>
             </div>
         </div>
-
     </main>
 
-    <!-- Customer Profile / Details View (Hidden by default, shown when lead name is clicked) -->
+    <!-- Customer Profile / Details View -->
     <main id="profileView" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full hidden">
-        <!-- Back Button & Header -->
         <div class="mb-6 flex items-center justify-between">
             <button onclick="backToDashboard()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Back to All Calls
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back to Follow-Ups
             </button>
-            <div class="flex items-center space-x-3">
-                <span class="px-3 py-1 bg-primary-50 text-primary-700 text-xs font-semibold rounded-full border border-primary-200" id="profilePropertyBadge">Property</span>
-            </div>
         </div>
 
-        <!-- Customer Summary Card -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <div class="w-14 h-14 rounded-full bg-primary-600 text-white flex items-center justify-center text-xl font-bold shadow" id="profileLeadAvatar">
-                    LD
-                </div>
+                <div class="w-14 h-14 rounded-full bg-primary-600 text-white flex items-center justify-center text-xl font-bold shadow" id="profileLeadAvatar">LD</div>
                 <div>
                     <h2 class="text-xl font-bold text-slate-900" id="profileLeadName">Lead Name</h2>
-                    <p class="text-sm text-slate-500 flex items-center mt-0.5">
-                        <i class="fa-solid fa-phone mr-1.5 text-slate-400"></i> <span id="profileLeadPhone">+91 00000 00000</span>
-                        <span class="mx-2">&bull;</span>
-                        <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> <span id="profileLeadProperty">Requirement</span>
-                    </p>
+                    <p class="text-sm text-slate-500"><i class="fa-solid fa-phone mr-1"></i> <span id="profileLeadPhone">+91 00000 00000</span></p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <div id="profileCategoryBadge"></div>
-            </div>
         </div>
 
-        <!-- Tabs Navigation for Profile View -->
-        <div class="flex border-b border-slate-200 mb-6">
-            <button onclick="switchProfileTab('connected')" id="tabBtnConnected" class="profile-tab-btn px-6 py-3 border-b-2 border-primary-600 text-primary-600 font-semibold text-sm transition flex items-center">
-                <i class="fa-solid fa-phone-volume mr-2"></i> Call Connected Details
-            </button>
-            <button onclick="switchProfileTab('history')" id="tabBtnHistory" class="profile-tab-btn px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm transition flex items-center">
-                <i class="fa-solid fa-history mr-2"></i> Call History (Timeline)
-            </button>
-        </div>
-
-        <!-- Tab Content: Call Connected (Interactive Disposition Form) -->
-        <div id="tabContentConnected" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+        <!-- Call Connected Form & Timeline -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
             <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center">
-                <i class="fa-solid fa-phone-volume text-primary-600 mr-2"></i> Live Call Disposition & Telephony Form
+                <i class="fa-solid fa-phone-volume text-primary-600 mr-2"></i> Live Call Disposition Form
             </h3>
-            
             <form id="callDispositionForm" onsubmit="submitCallDisposition(event)" class="space-y-6">
-                <!-- Question 1: Call Connected Status -->
                 <div class="space-y-2">
                     <label class="block text-sm font-bold text-slate-900">Was the Call Connected?</label>
-                    <select id="selectCallConnected" onchange="toggleConnectionFields()" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                    <select id="selectCallConnected" onchange="toggleConnectionFields()" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                         <option value="">-- Choose Call Status --</option>
                         <option value="Yes">Yes (Call Connected)</option>
                         <option value="No">No (Call Not Connected)</option>
                     </select>
                 </div>
 
-                <!-- Conditional Container if Connected (Yes/No) -->
                 <div id="dispositionDependentFields" class="space-y-6 hidden">
-                    
-                    <!-- 1. Select Call Disposition Category -->
                     <div class="space-y-2">
                         <label class="block text-sm font-bold text-slate-900">1. Select Call Disposition Category</label>
-                        <select id="selectCategory" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                        <select id="selectCategory" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                             <option value="">-- Choose Category --</option>
                             <option value="Call Not Connected">🔴 Call Not Connected</option>
                             <option value="Call Connected — Interested">🟢 Call Connected — Interested</option>
@@ -283,10 +237,9 @@
                         </select>
                     </div>
 
-                    <!-- 2. Select Specific Remark / Detail -->
                     <div class="space-y-2">
                         <label class="block text-sm font-bold text-slate-900">2. Select Specific Remark / Detail</label>
-                        <select id="selectSpecificRemark" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                        <select id="selectSpecificRemark" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                             <option value="">-- Choose Specific Remark --</option>
                             <option value="Interested – Wants Project Details">Interested – Wants Project Details</option>
                             <option value="Interested – Wants Price Details">Interested – Wants Price Details</option>
@@ -304,30 +257,10 @@
                         </select>
                     </div>
 
-                    <!-- Lead Temperature (Hot, Warm, Cold) -->
-                    <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-900">Lead Temperature</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
-                                <input type="radio" name="leadTemperature" value="Hot Lead" class="mb-1 text-primary-600 focus:ring-primary-500">
-                                <span class="text-xs font-bold text-rose-600"><i class="fa-solid fa-fire mr-1"></i> Hot</span>
-                            </label>
-                            <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
-                                <input type="radio" name="leadTemperature" value="Warm Lead" checked class="mb-1 text-primary-600 focus:ring-primary-500">
-                                <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-sun mr-1"></i> Warm</span>
-                            </label>
-                            <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
-                                <input type="radio" name="leadTemperature" value="Cold Lead" class="mb-1 text-primary-600 focus:ring-primary-500">
-                                <span class="text-xs font-bold text-blue-600"><i class="fa-solid fa-snowflake mr-1"></i> Cold</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Visit Scheduled or Not -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="block text-sm font-bold text-slate-900">Site Visit Scheduled?</label>
-                            <select id="selectVisitScheduled" onchange="toggleVisitFields()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                            <select id="selectVisitScheduled" onchange="toggleVisitFields()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                                 <option value="No">No</option>
                                 <option value="Yes">Yes</option>
                             </select>
@@ -341,12 +274,11 @@
                         </div>
                     </div>
 
-                    <!-- Follow-Up Required Yes/No with Time & Date -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-100">
                         <div class="space-y-2">
                             <label class="block text-sm font-bold text-slate-900">Follow-Up Required?</label>
-                            <select id="selectFollowUpReq" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
-                                <option value="Yes">Yes</option>
+                            <select id="selectFollowUpReq" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                                <option value="Yes" selected>Yes</option>
                                 <option value="No">No</option>
                             </select>
                         </div>
@@ -359,161 +291,64 @@
                             <input type="time" id="inputFollowUpTime" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
                         </div>
                     </div>
-
                 </div>
 
-                <!-- Submit Disposition Button -->
                 <div class="flex justify-end pt-4 border-t border-slate-100">
-                    <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow transition flex items-center">
+                    <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow transition">
                         <i class="fa-solid fa-floppy-disk mr-2"></i> Save Call to MongoDB Database
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- Tab Content: Call History -->
-        <div id="tabContentHistory" class="space-y-6 hidden">
-            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-6 flex items-center">
-                    <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs from MongoDB Collection
-                </h3>
-                <div class="space-y-6" id="historyTimelineContainer">
-                    <!-- Injected via JS -->
-                </div>
-            </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mt-6">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-6">Complete Call History Logs</h3>
+            <div class="space-y-6" id="historyTimelineContainer"></div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-            Real Estate CRM Call Management System &copy; 2026. All rights reserved.
-        </div>
-    </footer>
-
-    <!-- Call Log Modal (Schedule New Call) -->
-    <div id="callModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all">
-            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-                <h3 id="modalTitle" class="font-bold text-lg"><i class="fa-solid fa-phone mr-2 text-primary-400"></i> Schedule New Follow-Up Call</h3>
-                <button onclick="closeCallModal()" class="text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <form id="callForm" onsubmit="saveNewTaskToDb(event)" class="p-6 space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Lead Name *</label>
-                        <input type="text" id="modalLeadName" required placeholder="e.g. Rajesh Sharma" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Phone Number *</label>
-                        <input type="text" id="modalPhone" required placeholder="+91 98765 43210" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Property / Requirement</label>
-                        <input type="text" id="modalProperty" placeholder="e.g. 3 BHK Luxury Villa" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Scheduled Date & Time *</label>
-                        <input type="datetime-local" id="modalDatetime" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Call Remarks / Notes</label>
-                    <textarea id="modalRemark" rows="3" placeholder="Initial discussion notes..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"></textarea>
-                </div>
-                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="closeCallModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium shadow transition">Save to DB</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- JavaScript Application Logic Connected to MongoDB -->
+    <!-- Script Logic -->
     <script>
-        // Retrieve dynamic logged-in user from localStorage
         const LOGGED_IN_USER = localStorage.getItem('crm_username') || "member";
-        let dbCallsDatabase = [];
+        let dbFollowUps = [];
         let currentFilter = 'all';
         let searchQuery = '';
         let currentSelectedTaskId = null;
         let currentSelectedLeadObject = null;
 
-        const now = new Date(); 
-
-        function formatDatetimeLocal(date) {
-            const pad = (n) => n < 10 ? '0' + n : n;
-            return date.getFullYear() + '-' +
-                pad(date.getMonth() + 1) + '-' +
-                pad(date.getDate()) + 'T' +
-                pad(date.getHours()) + ':' +
-                pad(date.getMinutes());
-        }
+        const now = new Date();
 
         function initDashboard() {
             document.getElementById('currentUserName').innerText = LOGGED_IN_USER;
             document.getElementById('footerUser').innerText = LOGGED_IN_USER;
-            const initials = LOGGED_IN_USER.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('currentUserAvatar').innerText = initials;
-            
-            fetchDatabaseTasks();
+            document.getElementById('currentUserAvatar').innerText = LOGGED_IN_USER.substring(0, 2).toUpperCase();
+            fetchDatabaseFollowUps();
         }
 
-        // Fetch database tasks from backend API: /api/member-tasks/:username
-        async function fetchDatabaseTasks() {
+        async function fetchDatabaseFollowUps() {
             try {
-                const response = await fetch(`/api/member-tasks/${encodeURIComponent(LOGGED_IN_USER)}`);
+                const response = await fetch(`/api/followups/${encodeURIComponent(LOGGED_IN_USER)}`);
                 const data = await response.json();
                 if (data.success) {
-                    dbCallsDatabase = data.tasks.map(t => {
-                        let datetimeStr = '';
-                        if (t.followUpDate) {
-                            datetimeStr = t.followUpDate + 'T' + (t.followUpTime || '10:00');
-                        } else if (t.createdAt) {
-                            datetimeStr = t.createdAt.substring(0, 16);
-                        } else {
-                            datetimeStr = formatDatetimeLocal(now);
-                        }
-
-                        let latestRemark = t.description || '';
-                        let i = 1;
-                        while(t[`call${i}`]) {
-                            if (t[`call${i}`].remark) {
-                                latestRemark = t[`call${i}`].remark;
-                            }
-                            i++;
-                        }
-
-                        return {
-                            id: t._id,
-                            user: LOGGED_IN_USER,
-                            leadName: t.name || 'Untitled Lead',
-                            phone: t.contactNumber || 'N/A',
-                            property: t.description || 'General Inquiry',
-                            datetime: datetimeStr,
-                            remark: latestRemark,
-                            completed: t.status === 'Completed',
-                            history: t
-                        };
-                    });
-                    renderCalls();
-                } else {
-                    console.error("Failed to load tasks from DB");
+                    dbFollowUps = data.followups.map(f => ({
+                        id: f.taskId,
+                        leadName: f.name,
+                        phone: f.contactNumber,
+                        property: f.property || 'General Inquiry',
+                        datetime: f.followUpDate + 'T' + (f.followUpTime || '10:00'),
+                        remark: f.remark,
+                        history: f.history
+                    }));
+                    renderFollowUps();
                 }
             } catch (err) {
-                console.error("Error connecting to server:", err);
+                console.error("Error fetching follow-ups:", err);
             }
         }
 
-        function getCallCategory(call) {
-            if (call.completed) return 'completed';
-            if (!call.datetime) return 'upcoming';
-            
-            const callDate = new Date(call.datetime);
+        function getCallCategory(datetimeStr) {
+            if (!datetimeStr) return 'upcoming';
+            const callDate = new Date(datetimeStr);
             const callDateOnly = new Date(callDate.getFullYear(), callDate.getMonth(), callDate.getDate());
             const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const diffDays = Math.round((callDateOnly - nowDateOnly) / (1000 * 60 * 60 * 24));
@@ -528,19 +363,15 @@
             if (!dateStr) return 'N/A';
             const d = new Date(dateStr);
             if (isNaN(d)) return dateStr;
-            const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            return d.toLocaleDateString('en-US', options);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
-        function renderCalls() {
-            const userCalls = dbCallsDatabase;
-            const activeCalls = userCalls.filter(c => !c.completed);
-            
+        function renderFollowUps() {
             const counts = {
-                all: userCalls.length,
-                lapsed: activeCalls.filter(c => getCallCategory(c) === 'lapsed').length,
-                today: activeCalls.filter(c => getCallCategory(c) === 'today').length,
-                tomorrow: activeCalls.filter(c => getCallCategory(c) === 'tomorrow').length,
+                all: dbFollowUps.length,
+                lapsed: dbFollowUps.filter(f => getCallCategory(f.datetime) === 'lapsed').length,
+                today: dbFollowUps.filter(f => getCallCategory(f.datetime) === 'today').length,
+                tomorrow: dbFollowUps.filter(f => getCallCategory(f.datetime) === 'tomorrow').length,
             };
 
             document.getElementById('count-all').innerText = counts.all;
@@ -553,20 +384,13 @@
             document.getElementById('badge-today').innerText = counts.today;
             document.getElementById('badge-tomorrow').innerText = counts.tomorrow;
 
-            let filtered = userCalls.filter(call => {
-                const category = getCallCategory(call);
-                if (currentFilter === 'lapsed' && (category !== 'lapsed' || call.completed)) return false;
-                if (currentFilter === 'today' && (category !== 'today' || call.completed)) return false;
-                if (currentFilter === 'tomorrow' && (category !== 'tomorrow' || call.completed)) return false;
-                if (currentFilter === 'all' && call.completed) return false;
+            let filtered = dbFollowUps.filter(f => {
+                const category = getCallCategory(f.datetime);
+                if (currentFilter !== 'all' && category !== currentFilter) return false;
 
                 if (searchQuery) {
                     const q = searchQuery.toLowerCase();
-                    const matchName = call.leadName.toLowerCase().includes(q);
-                    const matchPhone = call.phone.toLowerCase().includes(q);
-                    const matchProp = (call.property || '').toLowerCase().includes(q);
-                    const matchRemark = (call.remark || '').toLowerCase().includes(q);
-                    if (!matchName && !matchPhone && !matchProp && !matchRemark) return false;
+                    return f.leadName.toLowerCase().includes(q) || f.phone.toLowerCase().includes(q) || f.property.toLowerCase().includes(q);
                 }
                 return true;
             });
@@ -579,238 +403,99 @@
                 emptyState.classList.remove('hidden');
             } else {
                 emptyState.classList.add('hidden');
-                
-                filtered.forEach(call => {
-                    const category = getCallCategory(call);
-                    let badgeHtml = '';
-
-                    if (call.completed) {
-                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check mr-1.5"></i> Completed</span>`;
-                    } else if (category === 'lapsed') {
-                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Lapsed / Overdue</span>`;
-                    } else if (category === 'today') {
-                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"><i class="fa-solid fa-clock mr-1.5"></i> Due Today</span>`;
-                    } else if (category === 'tomorrow') {
-                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800"><i class="fa-solid fa-calendar-day mr-1.5"></i> Due Tomorrow</span>`;
-                    } else {
-                        badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"><i class="fa-solid fa-calendar mr-1.5"></i> Upcoming</span>`;
-                    }
+                filtered.forEach(f => {
+                    const category = getCallCategory(f.datetime);
+                    let badgeHtml = category === 'lapsed' 
+                        ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Lapsed</span>`
+                        : category === 'today' 
+                        ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"><i class="fa-solid fa-clock mr-1"></i> Due Today</span>`
+                        : `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800"><i class="fa-solid fa-calendar-day mr-1"></i> Upcoming</span>`;
 
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
+                    tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
                     tr.innerHTML = `
                         <td class="py-3.5 px-4">
-                            <a href="javascript:void(0)" onclick="openLeadProfile('${call.id}')" class="font-bold text-primary-600 hover:text-primary-800 hover:underline transition flex items-center">
-                                <i class="fa-solid fa-user-circle mr-2 text-primary-500"></i> ${call.leadName}
-                            </a>
-                            <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-xs mr-1 text-slate-400"></i> ${call.phone}</div>
+                            <a href="javascript:void(0)" onclick="openLeadProfile('${f.id}')" class="font-bold text-primary-600 hover:underline">${f.leadName}</a>
+                            <div class="text-xs text-slate-500">${f.phone}</div>
                         </td>
-                        <td class="py-3.5 px-4 text-slate-700 font-medium">${call.property || 'General Inquiry'}</td>
-                        <td class="py-3.5 px-4">
-                            <div class="text-slate-900 font-semibold text-xs">${formatDisplayDate(call.datetime)}</div>
-                        </td>
+                        <td class="py-3.5 px-4 text-slate-700">${f.property}</td>
+                        <td class="py-3.5 px-4 font-semibold text-xs">${formatDisplayDate(f.datetime)}</td>
                         <td class="py-3.5 px-4">${badgeHtml}</td>
-                        <td class="py-3.5 px-4 text-slate-600 text-xs max-w-xs truncate" title="${call.remark || ''}">${call.remark || 'No remarks recorded'}</td>
+                        <td class="py-3.5 px-4 text-slate-600 text-xs truncate max-w-xs">${f.remark || 'No remark'}</td>
                     `;
                     tbody.appendChild(tr);
                 });
             }
-
-            document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
+            document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} follow-ups`;
         }
 
         function toggleConnectionFields() {
             const val = document.getElementById('selectCallConnected').value;
-            const container = document.getElementById('dispositionDependentFields');
-            const catSelect = document.getElementById('selectCategory');
-            
-            if (val === 'Yes') {
-                container.classList.remove('hidden');
-                catSelect.value = 'Call Connected — Interested';
-            } else if (val === 'No') {
-                container.classList.remove('hidden');
-                catSelect.value = 'Call Not Connected';
-                document.getElementById('selectSpecificRemark').value = 'Incoming Calls Not Available';
-            } else {
-                container.classList.add('hidden');
-            }
+            document.getElementById('dispositionDependentFields').classList.toggle('hidden', val === '');
         }
 
         function toggleVisitFields() {
             const val = document.getElementById('selectVisitScheduled').value;
-            const container = document.getElementById('visitDateContainer');
-            if (val === 'Yes') {
-                container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
-            }
+            document.getElementById('visitDateContainer').style.display = val === 'Yes' ? 'block' : 'none';
         }
 
         function openLeadProfile(taskId) {
-            const call = dbCallsDatabase.find(c => c.id === taskId);
-            if (!call) return;
+            const item = dbFollowUps.find(f => f.id === taskId);
+            if (!item) return;
             currentSelectedTaskId = taskId;
-            currentSelectedLeadObject = call.history;
+            currentSelectedLeadObject = item.history;
 
-            document.getElementById('profileLeadName').innerText = call.leadName;
-            document.getElementById('profileLeadPhone').innerText = call.phone;
-            document.getElementById('profileLeadProperty').innerText = call.property || 'General Inquiry';
-            document.getElementById('profilePropertyBadge').innerText = call.property ? call.property.split('-')[0].trim() : 'General';
-            
-            const initials = call.leadName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('profileLeadAvatar').innerText = initials;
+            document.getElementById('profileLeadName').innerText = item.leadName;
+            document.getElementById('profileLeadPhone').innerText = item.phone;
+            document.getElementById('profileLeadAvatar').innerText = item.leadName.substring(0, 2).toUpperCase();
 
-            const category = getCallCategory(call);
-            let badgeHtml = '';
-            if (category === 'lapsed') badgeHtml = `<span class="px-3 py-1 bg-rose-100 text-rose-800 text-xs font-semibold rounded-full">Lapsed / Overdue</span>`;
-            else if (category === 'today') badgeHtml = `<span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full">Due Today</span>`;
-            else if (category === 'tomorrow') badgeHtml = `<span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Due Tomorrow</span>`;
-            else badgeHtml = `<span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-full">Active</span>`;
-            document.getElementById('profileCategoryBadge').innerHTML = badgeHtml;
-
-            renderHistoryTimeline(call.history);
-
+            renderHistoryTimeline(item.history);
             document.getElementById('dashboardView').classList.add('hidden');
             document.getElementById('profileView').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderHistoryTimeline(taskObj) {
-            const historyContainer = document.getElementById('historyTimelineContainer');
-            historyContainer.innerHTML = '';
-
+            const container = document.getElementById('historyTimelineContainer');
+            container.innerHTML = '';
             let i = 1;
-            let timelineSteps = [];
-            while (taskObj[`call${i}`]) {
-                timelineSteps.push({ key: `call${i}`, data: taskObj[`call${i}`], title: `Call ${i} Record` });
-                i++;
-            }
-
-            if (timelineSteps.length === 0) {
-                historyContainer.innerHTML = `<div class="p-6 text-center text-slate-400 italic bg-slate-50 rounded-xl border border-dashed border-slate-300">No database call logs recorded yet. Use the Call Connected form above to save your first interaction.</div>`;
-                return;
-            }
-
-            timelineSteps.forEach((step, idx) => {
-                const historyData = step.data;
-                const itemDiv = document.createElement('div');
-                itemDiv.className = "flex items-start space-x-4 relative";
-
-                itemDiv.innerHTML = `
-                    <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-md font-bold text-sm">
-                        ${idx + 1}
-                    </div>
-                    <div class="flex-grow bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                            <span class="text-sm font-bold uppercase tracking-wider text-slate-900"><i class="fa-solid fa-file-lines text-primary-500 mr-1.5"></i> ${historyData.title || step.title}</span>
-                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">${historyData.call_connected || 'Completed'}</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                            <div><strong class="text-slate-700">Follow-up Req:</strong> ${historyData.followUpRequired || 'N/A'}</div>
-                            <div><strong class="text-slate-700">Follow-up Date:</strong> ${historyData.followUpDate || 'N/A'} (${historyData.followUpTime || 'N/A'})</div>
-                            <div><strong class="text-slate-700">Visit Scheduled:</strong> ${historyData.visitScheduled || 'No'}</div>
-                            <div><strong class="text-slate-700">Visit Date:</strong> ${historyData.visitDate || 'None'}</div>
-                            <div><strong class="text-slate-700">Lead Status:</strong> ${historyData.leadStatus || 'Active'}</div>
-                        </div>
-                        <p class="text-sm text-slate-700 font-normal"><strong>Remark:</strong> "${historyData.remark || 'No remarks'}"</p>
+            while(taskObj[`call${i}`]) {
+                const call = taskObj[`call${i}`];
+                container.innerHTML += `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-1">
+                        <div class="font-bold text-slate-900">Call ${i} - ${call.call_connected}</div>
+                        <div><strong>Remark:</strong> ${call.remark}</div>
+                        <div><strong>Follow-up Required:</strong> ${call.followUpRequired} (${call.followUpDate || 'None'})</div>
                     </div>
                 `;
-                historyContainer.appendChild(itemDiv);
-            });
+                i++;
+            }
         }
 
         async function submitCallDisposition(event) {
             event.preventDefault();
-            if (!currentSelectedTaskId) return;
-
-            const callConnectedVal = document.getElementById('selectCallConnected').value;
-            const callConnectedText = callConnectedVal === 'Yes' ? 'Call Connected' : 'Call Not Connected';
-            const category = document.getElementById('selectCategory').value;
-            const remark = document.getElementById('selectSpecificRemark').value;
-            
-            const tempRadios = document.getElementsByName('leadTemperature');
-            let temperature = 'Warm Lead';
-            for (const r of tempRadios) {
-                if (r.checked) temperature = r.value;
-            }
-
-            const visitScheduled = document.getElementById('selectVisitScheduled').value;
-            const visitDate = document.getElementById('inputVisitDate').value;
-            const visitTime = document.getElementById('inputVisitTime').value;
-            const followUpReq = document.getElementById('selectFollowUpReq').value;
-            const followUpDate = document.getElementById('inputFollowUpDate').value;
-            const followUpTime = document.getElementById('inputFollowUpTime').value;
-
             const payload = {
-                title: "Call Log - " + category,
-                call_connected: callConnectedText,
-                remark: remark || "Disposition recorded successfully.",
-                leadTemperature: temperature,
-                followUpRequired: followUpReq,
-                followUpOption: "Custom Scheduled",
-                followUpDate: followUpDate,
-                followUpTime: followUpTime,
-                visitScheduled: visitScheduled,
-                visitDate: visitDate,
-                visitTime: visitTime,
-                visitBuilding: currentSelectedLeadObject.description || 'Property Unit',
-                visitLocation: "Bandra West",
-                visitNote: remark,
-                visitorComing: visitScheduled === 'Yes' ? "Self + Family" : "",
-                leadStatus: category,
-                closeReason: ""
+                title: "Call Log",
+                call_connected: document.getElementById('selectCallConnected').value === 'Yes' ? 'Call Connected' : 'Call Not Connected',
+                remark: document.getElementById('selectSpecificRemark').value,
+                followUpRequired: document.getElementById('selectFollowUpReq').value,
+                followUpDate: document.getElementById('inputFollowUpDate').value,
+                followUpTime: document.getElementById('inputFollowUpTime').value,
+                visitScheduled: document.getElementById('selectVisitScheduled').value,
+                visitDate: document.getElementById('inputVisitDate').value,
+                visitTime: document.getElementById('inputVisitTime').value,
+                leadStatus: document.getElementById('selectCategory').value
             };
 
-            try {
-                const response = await fetch(`/api/update-task-status/${encodeURIComponent(LOGGED_IN_USER)}/${currentSelectedTaskId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                if (data.success) {
-                    alert("Call disposition successfully saved to MongoDB database!");
-                    currentSelectedLeadObject = data.task;
-                    renderHistoryTimeline(data.task);
-                    fetchDatabaseTasks();
-                    switchProfileTab('history');
-                } else {
-                    alert("Error saving disposition: " + data.message);
-                }
-            } catch (err) {
-                console.error("Server communication error:", err);
-                alert("Error connecting to server.");
-            }
-        }
-
-        async function saveNewTaskToDb(event) {
-            event.preventDefault();
-            const leadName = document.getElementById('modalLeadName').value.trim();
-            const contactNumber = document.getElementById('modalPhone').value.trim();
-            const description = document.getElementById('modalProperty').value.trim();
-
-            try {
-                const response = await fetch('/api/assign-task', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: LOGGED_IN_USER,
-                        name: leadName,
-                        contactNumber: contactNumber,
-                        description: description
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    alert("New lead task scheduled successfully in MongoDB!");
-                    closeCallModal();
-                    fetchDatabaseTasks();
-                } else {
-                    alert("Error scheduling task.");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Error connecting to server.");
+            const res = await fetch(`/api/update-task-status/${encodeURIComponent(LOGGED_IN_USER)}/${currentSelectedTaskId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert("Follow-up updated successfully in DB!");
+                fetchDatabaseFollowUps();
+                backToDashboard();
             }
         }
 
@@ -819,70 +504,18 @@
             document.getElementById('dashboardView').classList.remove('hidden');
         }
 
-        function switchProfileTab(tabName) {
-            const btnConnected = document.getElementById('tabBtnConnected');
-            const btnHistory = document.getElementById('tabBtnHistory');
-            const contentConnected = document.getElementById('tabContentConnected');
-            const contentHistory = document.getElementById('tabContentHistory');
-
-            if (tabName === 'connected') {
-                btnConnected.className = "profile-tab-btn px-6 py-3 border-b-2 border-primary-600 text-primary-600 font-semibold text-sm transition flex items-center";
-                btnHistory.className = "profile-tab-btn px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm transition flex items-center";
-                contentConnected.classList.remove('hidden');
-                contentHistory.classList.add('hidden');
-            } else {
-                btnHistory.className = "profile-tab-btn px-6 py-3 border-b-2 border-primary-600 text-primary-600 font-semibold text-sm transition flex items-center";
-                btnConnected.className = "profile-tab-btn px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-sm transition flex items-center";
-                contentHistory.classList.remove('hidden');
-                contentConnected.classList.add('hidden');
-            }
-        }
-
-        function filterTab(tabName) {
-            currentFilter = tabName;
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if (btn.getAttribute('data-tab') === tabName) {
-                    btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white shadow-sm transition";
-                } else {
-                    btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
-                }
-            });
-
-            ['all', 'lapsed', 'today', 'tomorrow'].forEach(t => {
-                const card = document.getElementById(`card-${t}`);
-                if (card) {
-                    if (t === tabName) {
-                        card.classList.add('ring-2', 'ring-primary-500', 'ring-offset-2');
-                    } else {
-                        card.classList.remove('ring-2', 'ring-primary-500', 'ring-offset-2');
-                    }
-                }
-            });
-
-            renderCalls();
+        function filterTab(tab) {
+            currentFilter = tab;
+            renderFollowUps();
         }
 
         function handleSearch() {
             searchQuery = document.getElementById('searchInput').value.trim();
-            renderCalls();
-        }
-
-        function openNewCallModal() {
-            document.getElementById('modalLeadName').value = '';
-            document.getElementById('modalPhone').value = '';
-            document.getElementById('modalProperty').value = '';
-            document.getElementById('modalDatetime').value = formatDatetimeLocal(now);
-            document.getElementById('modalRemark').value = '';
-            document.getElementById('callModal').classList.remove('hidden');
-        }
-
-        function closeCallModal() {
-            document.getElementById('callModal').classList.add('hidden');
+            renderFollowUps();
         }
 
         function handleLogout() {
-            localStorage.removeItem('crm_username');
-            localStorage.removeItem('crm_role');
+            localStorage.clear();
             window.location.href = '/';
         }
 
