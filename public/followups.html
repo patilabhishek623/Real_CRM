@@ -51,18 +51,18 @@
             <div id="quickCallAction"></div>
         </div>
 
-        <!-- Customer History & Past Call Logs Section -->
+        <!-- Customer History & Call Logs Section (Showing all exact data fields) -->
         <div class="corporate-card rounded-2xl p-5 sm:p-6 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-history text-emerald-600"></i> Customer History & Call Logs
                 </h2>
-                <span id="histTitleBadge" class="text-[10px] font-bold uppercase bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg">Call Log</span>
+                <span id="histTitleBadge" class="text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-200">Call Log</span>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Call Connected</span>
+                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Call Connected Status</span>
                     <span id="histCallConnected" class="font-bold text-slate-700 mt-0.5 block">-</span>
                 </div>
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
@@ -118,7 +118,7 @@
                     <span id="histRescheduleVisitChoice" class="font-bold text-slate-700 mt-0.5 block">-</span>
                 </div>
                 <div class="sm:col-span-2 md:col-span-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Remarks</span>
+                    <span class="text-slate-400 block font-semibold uppercase text-[10px]">Call Remarks</span>
                     <span id="histRemark" class="font-medium text-slate-800 mt-0.5 block italic">-</span>
                 </div>
                 <div class="sm:col-span-2 md:col-span-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
@@ -243,14 +243,14 @@
                         document.getElementById('quickCallAction').innerHTML = `<a href="tel:${task.contactNumber}" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200 flex items-center gap-2"><i class="fa-solid fa-phone"></i> Call Now</a>`;
                     }
 
-                    // Populate Full Customer History & Call Log Fields
+                    // Populate Customer History & Call Logs with all provided data values
                     document.getElementById('histTitleBadge').textContent = task.title || 'Call Log';
                     document.getElementById('histCallConnected').textContent = task.call_connected || 'Call Not Connected';
                     document.getElementById('histFollowUpRequired').textContent = task.followUpRequired || 'Yes';
                     document.getElementById('histFollowUpOption').textContent = task.followUpOption || 'Call Next Week';
                     document.getElementById('histFollowUpDateTime').textContent = `${task.followUpDate || 'N/A'} ${task.followUpTime || ''}`;
                     document.getElementById('histVisitScheduled').textContent = task.visitScheduled || 'No';
-                    document.getElementById('histVisitDateTime').textContent = `${task.visitDate || 'N/A'} ${task.visitTime || ''}`;
+                    document.getElementById('histVisitDateTime').textContent = (task.visitDate || task.visitTime) ? `${task.visitDate || 'N/A'} ${task.visitTime || ''}` : 'Not Scheduled';
                     document.getElementById('histVisitBuilding').textContent = task.visitBuilding || 'N/A';
                     document.getElementById('histVisitLocation').textContent = task.visitLocation || 'N/A';
                     document.getElementById('histVisitorComing').textContent = task.visitorComing || 'N/A';
