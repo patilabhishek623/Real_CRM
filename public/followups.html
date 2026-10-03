@@ -449,7 +449,7 @@
         const d2 = new Date(now); d2.setDate(now.getDate() - 2); d2.setHours(15, 30);
         const d3 = new Date(now); d3.setHours(10, 0);
 
-        // Mock Database with Vikram Malhotra and exact requested call1 schema
+        // Mock Database with Vikram Malhotra and Sunita Deshmukh matching your exact data[cite: 1]
         let callsDatabase = [
             {
                 id: "CALL-101",
@@ -458,11 +458,11 @@
                 phone: "+91 98211 44556",
                 property: "4 BHK Penthouse - Bandra West",
                 datetime: formatDatetimeLocal(d1),
-                remark: "Incoming Calls Not Available",
+                remark: "Interested – Wants Project Details",
                 completed: false,
-                connectedStatus: "Call Not Connected",
-                callDuration: "00:04 mins",
-                leadQuality: "Hot Lead",
+                connectedStatus: "Call Connected",
+                callDuration: "03:15 mins",
+                leadQuality: "Warm Lead",
                 history: {
                     call1: {
                         title: "Call Log",
@@ -486,28 +486,7 @@
                         closeReason: "",
                         loggedAt: { date: "2026-10-02 00:04:00" }
                     },
-                    call2: {
-                        title: "Call Log - FollowUp",
-                        call_connected: "Call Connected",
-                        remark: "Discussed pricing negotiation and bank financing options.",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call Tomorrow",
-                        followUpDate: "2026-10-03",
-                        followUpTime: "11:30",
-                        visitScheduled: "Yes",
-                        visitDate: "2026-10-06",
-                        visitTime: "14:00",
-                        visitBuilding: "Bandra Towers Wing A",
-                        visitLocation: "Bandra West",
-                        visitNote: "Client requested car parking slot details.",
-                        visitorComing: "Self + Spouse",
-                        rescheduleReason: "",
-                        visitInterestCustomer: "Very Interested",
-                        rescheduleVisitChoice: "",
-                        leadStatus: "In Progress",
-                        closeReason: "",
-                        loggedAt: { date: "2026-10-02 15:30:00" }
-                    },
+                    call2: null,
                     call3: null,
                     call4: null
                 }
@@ -528,11 +507,11 @@
                     call1: {
                         title: "Call Log",
                         call_connected: "Call Connected",
-                        remark: "Customer called inquiring about sea-facing inventory availability.",
+                        remark: "Bank loan pre-approval discussed.",
                         followUpRequired: "Yes",
                         followUpOption: "Call in 2 Days",
-                        followUpDate: "2026-10-04",
-                        followUpTime: "15:00",
+                        followUpDate: "2026-10-02",
+                        followUpTime: "15:30",
                         visitScheduled: "No",
                         visitDate: "",
                         visitTime: "",
@@ -545,7 +524,7 @@
                         rescheduleVisitChoice: "",
                         leadStatus: "Pending Bank Approval",
                         closeReason: "",
-                        loggedAt: { date: "2026-10-02 11:00:00" }
+                        loggedAt: { date: "2026-10-02 15:30:00" }
                     },
                     call2: null,
                     call3: null,
