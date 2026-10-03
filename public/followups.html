@@ -27,6 +27,7 @@
             </div>
             <div class="flex items-center gap-3 sm:gap-4">
                 <span id="activeUserBadge" class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60 shadow-2xs"></span>
+                <!-- Safe Back Link -->
                 <a href="followups.html" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition-all">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Back to Follow-Ups</span>
@@ -187,7 +188,6 @@
                 const data = await res.json();
 
                 if (data.success && data.tasks && data.tasks.length > 0) {
-                    // Safe fallback if URL has no ID parameter
                     if (!leadId) {
                         currentLeadData = data.tasks[0];
                         leadId = currentLeadData._id || currentLeadData.id;
@@ -346,7 +346,8 @@
 
                 if (response.ok) {
                     alert('Call response saved successfully!');
-                    window.location.reload();
+                    // Instead of a hard reload that disrupts browser history, redirect cleanly or reload
+                    window.location.href = 'followups.html';
                 } else {
                     alert(result.message || 'Failed to save call response.');
                 }
