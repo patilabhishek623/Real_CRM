@@ -1,78 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50/80">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Assign Task & Excel Upload - Real_Crm</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- SheetJS CDN for parsing Excel files (.xlsx, .xls, .csv) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .corporate-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(16px);
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 12px 30px -10px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+        }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
+<body class="min-h-full text-slate-800 flex flex-col selection:bg-blue-600 selection:text-white relative">
+
+    <!-- Ambient Background Glow Accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/4 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+    </div>
 
     <!-- Top Navigation Bar -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-                    <i class="fa-solid fa-chart-line"></i>
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3.5">
+                <!-- Mobile Menu Toggle Button -->
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-base cursor-pointer hover:bg-slate-200 transition">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/25 border border-blue-400/20">
+                    <i class="fa-solid fa-building-user text-lg"></i>
                 </div>
-                <span class="text-xl font-bold tracking-tight text-slate-900">Real_Crm <span class="text-xs font-semibold uppercase px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full ml-2">Lead Portal</span></span>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">Lead Portal</span>
+                    </div>
+                    <span id="liveClock" class="text-[11px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
+                </div>
             </div>
-            <div>
-                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium text-sm rounded-xl transition">
+            
+            <div class="flex items-center gap-3">
+                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
+                    <span class="hidden sm:inline">Logout</span>
                 </a>
             </div>
         </div>
     </header>
 
+    <!-- Mobile Slide-over Menu Drawer -->
+    <div id="mobileDrawer" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs hidden md:hidden flex">
+        <div class="w-72 bg-white h-full p-5 space-y-6 shadow-2xl flex flex-col justify-between border-r border-slate-200 animate-in slide-in-from-left duration-300">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-building-user text-sm"></i>
+                        </div>
+                        <span class="font-extrabold text-slate-900 text-sm">Real_Crm Navigation</span>
+                    </div>
+                    <button type="button" onclick="toggleMobileMenu()" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer border border-slate-200">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="space-y-1.5">
+                    <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> Dashboard Overview
+                    </a>
+                    <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200">
+                        <i class="fa-solid fa-user-plus w-5 text-slate-400"></i> Add User & Collection
+                    </a>
+                    <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-md shadow-blue-600/20">
+                        <i class="fa-solid fa-list-check w-5 text-blue-100"></i> Assign Task & Excel
+                    </a>
+                </div>
+            </div>
+            <div class="pt-4 border-t border-slate-100 text-center">
+                <span id="mobileUserBadge" class="text-xs text-slate-500 font-semibold block mb-2"></span>
+            </div>
+        </div>
+        <div class="flex-grow" onclick="toggleMobileMenu()"></div>
+    </div>
+
     <!-- Main Workspace with Left Sidebar Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
         
-        <!-- Sidebar Navigation Menu -->
-        <aside class="md:col-span-1 space-y-2">
-            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-1 sticky top-24">
-                <p class="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">Navigation Menu</p>
-                <a href="teamlead.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 font-medium rounded-xl text-sm transition">
-                    <i class="fa-solid fa-house w-5"></i> Dashboard Overview
+        <!-- Sidebar Navigation Menu (Desktop Only) -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="corporate-card rounded-3xl p-4 space-y-2 sticky top-28 shadow-sm border border-slate-200">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation Menu</p>
+                <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-50 font-semibold rounded-2xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Dashboard Overview
                 </a>
-                <a href="leaduser.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 font-medium rounded-xl text-sm transition">
-                    <i class="fa-solid fa-user-plus w-5"></i> Add User & Collection
+                <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-50 font-semibold rounded-2xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-user-plus w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Add User & Collection
                 </a>
-                <a href="assigntaskteammember.html" class="flex items-center gap-3 px-3 py-2.5 bg-blue-50 text-blue-700 font-semibold rounded-xl text-sm transition">
-                    <i class="fa-solid fa-list-check w-5"></i> Assign Task & Excel
+                <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3.5 bg-blue-600 text-white font-bold rounded-2xl text-sm shadow-md shadow-blue-600/20 transition border border-blue-600">
+                    <i class="fa-solid fa-list-check w-5 text-blue-100 text-base"></i> Assign Task & Excel
                 </a>
             </div>
         </aside>
 
         <!-- Main Form Content -->
         <main class="md:col-span-3 space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+            <div class="corporate-card rounded-3xl p-6 sm:p-10 space-y-6 shadow-xl border border-slate-200">
+                <div class="flex items-center gap-4 pb-6 border-b border-slate-200">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl border border-blue-200 shadow-xs flex-shrink-0">
                         <i class="fa-solid fa-file-excel"></i>
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900">Assign Tasks / Excel Bulk Import</h2>
-                        <p class="text-xs text-slate-500">Upload spreadsheet or assign individual tasks as <b>Pending</b> to member's database collection</p>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Assign Tasks / Excel Bulk Import</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Upload spreadsheet or assign individual tasks as <b>Pending</b> to member's collection</p>
                     </div>
                 </div>
 
                 <!-- Mode selection tabs -->
                 <div class="flex gap-3 mb-6 border-b border-slate-200 pb-4">
-                    <button type="button" id="tabSingle" onclick="switchMode('single')" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer">Single Task</button>
-                    <button type="button" id="tabExcel" onclick="switchMode('excel')" class="px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">Excel Spreadsheet Bulk Upload</button>
+                    <button type="button" id="tabSingle" onclick="switchMode('single')" class="px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer">Single Task</button>
+                    <button type="button" id="tabExcel" onclick="switchMode('excel')" class="px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">Excel Spreadsheet Bulk Upload</button>
                 </div>
 
                 <!-- Member Selection (Shared) -->
                 <div class="mb-5">
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Select Team Member</label>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">Select Team Member</label>
                     <select id="targetMember" required onchange="onMemberSelect()"
-                        class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+                        class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-sm transition shadow-2xs">
                         <option value="">-- Choose Member --</option>
                     </select>
                 </div>
@@ -80,70 +142,94 @@
                 <!-- Single Task Form -->
                 <form id="singleTaskForm" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Lead Name</label>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">Lead Name</label>
                         <input type="text" id="taskTitle" required placeholder="e.g. Rajesh Sharma" 
-                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+                            class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-sm transition shadow-2xs">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Contact Number</label>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">Contact Number</label>
                         <input type="text" id="contactNumber" placeholder="e.g. 9876543210" 
-                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+                            class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-sm transition shadow-2xs">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Description / Notes</label>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">Description / Notes</label>
                         <textarea id="taskDesc" rows="3" placeholder="Enter instructions..." 
-                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition"></textarea>
+                            class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-sm transition shadow-2xs"></textarea>
                     </div>
                     <button type="submit" 
-                        class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-paper-plane"></i>
+                        class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-2xl shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2.5 cursor-pointer active:scale-95">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
                         <span>Assign Single Pending Task</span>
                     </button>
                 </form>
 
                 <!-- Excel Upload Form (Hidden by default) -->
                 <form id="excelTaskForm" class="space-y-4 hidden">
-                    <div class="p-6 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 text-center hover:bg-slate-100/80 transition">
+                    <div class="p-6 sm:p-8 border-2 border-dashed border-slate-300 rounded-3xl bg-slate-50/80 text-center hover:bg-slate-100 transition">
                         <i class="fa-solid fa-file-excel text-4xl text-emerald-600 mb-2"></i>
                         <h4 class="text-sm font-bold text-slate-700">Upload Excel Spreadsheet (.xlsx, .xls, .csv)</h4>
                         <p class="text-xs text-slate-500 mt-1 mb-4">Ensure your file has columns for Name and Contact Number / Phone.</p>
-                        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
                     </div>
 
                     <div id="excelPreviewContainer" class="hidden space-y-3">
-                        <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-4 py-3 rounded-xl">
+                        <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-4 py-3.5 rounded-2xl">
                             <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Total Records Count:</span>
                             <span id="rowCountBadge" class="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg">0 Tasks</span>
                         </div>
 
                         <div>
-                            <p class="text-xs font-bold text-slate-600 mb-1">Parsed Contact & Name Preview:</p>
-                            <div id="previewList" class="max-h-48 overflow-y-auto space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs"></div>
+                            <p class="text-xs font-bold text-slate-600 mb-1.5">Parsed Contact & Name Preview:</p>
+                            <div id="previewList" class="max-h-48 overflow-y-auto space-y-1.5 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs"></div>
                         </div>
                     </div>
 
                     <button type="submit" 
-                        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-2xl shadow-lg shadow-emerald-600/25 transition flex items-center justify-center gap-2.5 cursor-pointer active:scale-95">
+                        <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
                         <span>Import & Assign All Tasks as Pending to Collection</span>
                     </button>
                 </form>
 
-                <div id="taskMsg" class="mt-4 text-center text-sm font-medium"></div>
+                <div id="taskMsg" class="mt-4 text-center text-xs font-semibold p-4 rounded-2xl border hidden"></div>
             </div>
 
             <!-- Member Live Pending Tasks Summary Box -->
-            <div id="memberPendingBox" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
-                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 mb-3">
+            <div id="memberPendingBox" class="corporate-card rounded-3xl p-6 sm:p-8 space-y-3 shadow-md hidden border border-slate-200">
+                <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
                     <i class="fa-solid fa-hourglass-half text-amber-500"></i>
                     Currently Pending Tasks in <span id="selectedMemberName" class="text-blue-600"></span>'s Queue:
                 </h3>
-                <div id="pendingTasksList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                <div id="pendingTasksList" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
             </div>
         </main>
     </div>
 
     <script>
+        // Toggle Mobile Menu Drawer
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.textContent = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        const currentUsername = localStorage.getItem('crm_username');
+        if (currentUsername) {
+            const badge = document.getElementById('activeUserBadge');
+            if (badge) badge.innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-2"></i> Lead: <b>${currentUsername}</b>`;
+            const mobileBadge = document.getElementById('mobileUserBadge');
+            if (mobileBadge) mobileBadge.innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Lead: <b>${currentUsername}</b>`;
+        }
+
         let parsedExcelTasks = [];
 
         function switchMode(mode) {
@@ -151,16 +237,18 @@
             const tabExcel = document.getElementById('tabExcel');
             const singleForm = document.getElementById('singleTaskForm');
             const excelForm = document.getElementById('excelTaskForm');
-            document.getElementById('taskMsg').textContent = '';
+            const msg = document.getElementById('taskMsg');
+            msg.textContent = '';
+            msg.classList.add('hidden');
 
             if (mode === 'single') {
-                tabSingle.className = 'px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer';
-                tabExcel.className = 'px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
+                tabSingle.className = 'px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer';
+                tabExcel.className = 'px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
                 singleForm.classList.remove('hidden');
                 excelForm.classList.add('hidden');
             } else {
-                tabExcel.className = 'px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold transition cursor-pointer';
-                tabSingle.className = 'px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
+                tabExcel.className = 'px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold transition cursor-pointer';
+                tabSingle.className = 'px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
                 excelForm.classList.remove('hidden');
                 singleForm.classList.add('hidden');
             }
@@ -207,7 +295,7 @@
                     if (pending.length > 0) {
                         pending.forEach((t, i) => {
                             const row = document.createElement('div');
-                            row.className = 'flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs';
+                            row.className = 'flex justify-between items-center p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs shadow-2xs';
                             row.innerHTML = `
                                 <div class="space-y-0.5">
                                     <span class="font-bold text-slate-800">#${i + 1} ${t.name}</span>
@@ -277,13 +365,13 @@
                         });
 
                         const item = document.createElement('div');
-                        item.className = 'flex justify-between items-center py-2 px-3 bg-white rounded-lg border border-slate-200 shadow-2xs';
+                        item.className = 'flex justify-between items-center py-2 px-3 bg-white rounded-xl border border-slate-200 shadow-2xs';
                         item.innerHTML = `
                             <div class="flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px] flex items-center justify-center">${idx + 1}</span>
                                 <span class="font-bold text-slate-800">${name}</span>
                             </div>
-                            <span class="font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded"><i class="fa-solid fa-phone text-[10px] mr-1"></i> ${contactNumber || 'No Phone'}</span>
+                            <span class="font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-lg"><i class="fa-solid fa-phone text-[10px] mr-1"></i> ${contactNumber || 'No Phone'}</span>
                         `;
                         previewList.appendChild(item);
                     });
@@ -304,6 +392,7 @@
             const contactNumber = document.getElementById('contactNumber').value.trim();
             const description = document.getElementById('taskDesc').value.trim();
             const msg = document.getElementById('taskMsg');
+            msg.classList.remove('hidden');
 
             if (!username) {
                 alert('Please select a team member.');
@@ -317,15 +406,15 @@
                     body: JSON.stringify({ username, name, description, contactNumber })
                 });
                 const data = await res.json();
-                msg.className = data.success ? 'mt-4 text-center text-sm font-medium text-emerald-600' : 'mt-4 text-center text-sm font-medium text-rose-600';
-                msg.textContent = data.message;
+                msg.className = data.success ? 'mt-4 text-center text-xs font-semibold p-4 rounded-2xl border bg-emerald-50 text-emerald-700 border-emerald-200' : 'mt-4 text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                msg.innerHTML = `<i class="fa-solid ${data.success ? 'fa-circle-check' : 'fa-triangle-exclamation'} mr-1.5"></i> ${data.message}`;
                 if (data.success) {
                     document.getElementById('singleTaskForm').reset();
                     onMemberSelect();
                 }
             } catch (err) {
-                msg.className = 'mt-4 text-center text-sm font-medium text-rose-600';
-                msg.textContent = 'Server connection failed.';
+                msg.className = 'mt-4 text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Server connection failed.`;
             }
         });
 
@@ -333,6 +422,7 @@
             e.preventDefault();
             const username = document.getElementById('targetMember').value;
             const msg = document.getElementById('taskMsg');
+            msg.classList.remove('hidden');
 
             if (!username) {
                 alert('Please select a team member first.');
@@ -350,8 +440,8 @@
                     body: JSON.stringify({ username, tasks: parsedExcelTasks })
                 });
                 const data = await res.json();
-                msg.className = data.success ? 'mt-4 text-center text-sm font-medium text-emerald-600' : 'mt-4 text-center text-sm font-medium text-rose-600';
-                msg.textContent = data.message;
+                msg.className = data.success ? 'mt-4 text-center text-xs font-semibold p-4 rounded-2xl border bg-emerald-50 text-emerald-700 border-emerald-200' : 'mt-4 text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                msg.innerHTML = `<i class="fa-solid ${data.success ? 'fa-circle-check' : 'fa-triangle-exclamation'} mr-1.5"></i> ${data.message}`;
                 if (data.success) {
                     document.getElementById('excelTaskForm').reset();
                     document.getElementById('excelPreviewContainer').classList.add('hidden');
@@ -359,8 +449,8 @@
                     onMemberSelect();
                 }
             } catch (err) {
-                msg.className = 'mt-4 text-center text-sm font-medium text-rose-600';
-                msg.textContent = 'Server connection failed.';
+                msg.className = 'mt-4 text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Server connection failed.`;
             }
         });
     </script>
