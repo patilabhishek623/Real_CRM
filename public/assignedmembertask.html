@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assigned Tasks - Real_Crm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col selection:bg-emerald-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/20">
+                    <i class="fa-solid fa-chart-line text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
+                    <span class="block text-[10px] font-bold uppercase tracking-widest text-emerald-600">Member Portal</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/80 hidden sm:inline-flex items-center shadow-2xs"></span>
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs rounded-xl transition shadow-2xs">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace with Left Sidebar Menu -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Left Sidebar Navigation Menu -->
+        <aside class="md:col-span-1 space-y-2">
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm space-y-2 sticky top-28">
+                <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-xs transition group">
+                    <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Dashboard
+                </a>
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-sm transition">
+                    <i class="fa-solid fa-list-check w-5 text-emerald-100 text-base"></i> Assigned Tasks
+                    <span id="sidebarPendingCount" class="ml-auto bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">0</span>
+                </a>
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-xs transition group">
+                    <i class="fa-solid fa-calendar-days w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Follow Ups
+                    <span id="sidebarFollowupCount" class="ml-auto bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">0</span>
+                </a>
+                <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-xs transition group">
+                    <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Visits
+                    <span id="sidebarVisitCount" class="ml-auto bg-teal-50 text-teal-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-teal-200">0</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="md:col-span-3 space-y-6">
+            
+            <!-- Welcome Banner -->
+            <div class="relative bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 rounded-3xl p-8 text-white shadow-xl shadow-emerald-900/10 overflow-hidden flex justify-between items-center">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 space-y-1">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-semibold text-emerald-50 mb-1">
+                        <i class="fa-regular fa-hand-wave"></i> Active Session
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Welcome back, <span id="usernameDisplay" class="text-emerald-200">Member</span>!</h1>
+                    <p class="text-emerald-100 text-xs sm:text-sm font-medium">Review your assigned leads sequentially and log detailed multi-step call outcomes.</p>
+                </div>
+                <div class="hidden sm:flex relative z-10 w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl items-center justify-center text-white text-2xl border border-white/20 shadow-inner">
+                    <i class="fa-solid fa-address-book"></i>
+                </div>
+            </div>
+
+            <!-- Sequential Task Card Container -->
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                
+                <!-- Progress Header -->
+                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                    <span id="progressIndicator" class="text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200/60 flex items-center gap-1.5">
+                        <i class="fa-solid fa-layer-group text-slate-400"></i> Remaining: 0
+                    </span>
+                    <span id="taskCountBadge" class="px-3.5 py-1.5 bg-amber-50 text-amber-700 text-xs font-bold rounded-xl border border-amber-200/80 flex items-center gap-1.5 shadow-2xs">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Active Task
+                    </span>
+                </div>
+
+                <!-- Step Wizard Active Card View -->
+                <div id="singleTaskContainer" class="space-y-6">
+                    <div class="text-center py-16 text-slate-400 italic text-sm flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600"></i>
+                        <span>Loading your next assigned task...</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const currentUsername = localStorage.getItem('crm_username');
+        
+        if (!currentUsername) {
+            alert('No active session found. Please log in again.');
+            window.location.href = '/';
+        }
+
+        document.getElementById('usernameDisplay').textContent = currentUsername;
+        document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b class="ml-1 text-slate-800">${currentUsername}</b>`;
+
+        let allTasks = [];
+        let pendingTasks = [];
+
+        // Workflow State Object
+        let currentWorkflow = {
+            taskId: '',
+            mainCategory: '',
+            subRemark: '',
+            leadTemp: '',
+            tempSubOption: '',
+            requirementBudget: '',
+            requirementFlatSize: '',
+            requirementFloor: '',
+            requirementNote: '',
+            followUpRequired: '',
+            followUpOption: '',
+            followUpDate: '',
+            followUpTime: '',
+            visitScheduled: '',
+            visitDate: '',
+            visitTime: '',
+            visitBuilding: '',
+            visitLocation: '',
+            visitNote: ''
+        };
+
+        // Disposition Sub-options Mapping
+        const dispositionSubOptions = {
+            "Call Not Connected": [
+                "Call Not Connected",
+                "Ringing But No Answer",
+                "Busy on Another Call",
+                "Phone Switched Off",
+                "Number Not Reachable",
+                "Invalid / Wrong Number",
+                "Incoming Calls Not Available",
+                "Client Disconnected the Call",
+                "Client Requested WhatsApp Communication",
+                "Call Back Requested"
+            ],
+            "Call Connected — Interested": [
+                "Interested – Wants Project Details",
+                "Interested – Wants Price Details",
+                "Interested – Wants Brochure",
+                "Interested – Wants Floor Plan",
+                "Interested – Wants Payment Plan",
+                "Interested – Wants Location Details",
+                "Interested – Wants Amenities Details",
+                "Interested – Wants Configuration Options",
+                "Interested – Comparing Multiple Projects",
+                "Interested – Wants to Discuss With Family",
+                "Interested – Wants to Speak With Spouse",
+                "Interested – Wants Developer/Builder Details"
+            ],
+            "Follow-Up Required": [
+                "Call After 2 Days",
+                "Call After 3 Days",
+                "Call After 7 Days",
+                "Call After 15 Days",
+                "Call Next Week",
+                "Call After Salary Date",
+                "Call After Discussing With Family",
+                "Call After Arranging Funds",
+                "Client Travelling – Call Later",
+                "Client Currently Busy – Call Later",
+                "Client Will Confirm Date for Discussion",
+                "Client Requested WhatsApp Follow-Up"
+            ]
+        };
+
+        // Temperature-Specific Sub Options Mapping
+        const temperatureSubOptionsMap = {
+            "HOT": [
+                "Wants site visit",
+                "Wants price negotiation",
+                "Wants specific unit",
+                "Asking about booking",
+                "Wants payment details",
+                "Ready to purchase soon"
+            ],
+            "WARM": [
+                "Comparing projects",
+                "Discussing with family",
+                "Waiting for funds",
+                "Wants to visit later",
+                "Interested but needs more information"
+            ],
+            "COLD": [
+                "Just checking prices",
+                "No immediate requirement",
+                "Long-term requirement",
+                "Not currently planning purchase",
+                "Low Budget",
+                "Other Location"
+            ]
+        };
+
+        const followUpTimelineOptions = [
+            "Call After 2 Days",
+            "Call After 3 Days",
+            "Call After 7 Days",
+            "Call After 15 Days",
+            "Call Next Week",
+            "Call After Salary Date",
+            "Call After Discussing With Family",
+            "Call After Arranging Funds",
+            "Client Travelling – Call Later",
+            "Client Currently Busy – Call Later",
+            "Client Will Confirm Date for Discussion",
+            "Client Requested WhatsApp Follow-Up"
+        ];
+
+        async function loadMemberTasks() {
+            try {
+                const res = await fetch(`/api/member-tasks/${encodeURIComponent(currentUsername)}`);
+                const data = await res.json();
+                
+                if (data.success && data.tasks) {
+                    allTasks = data.tasks;
+                    pendingTasks = allTasks.filter(t => !t.status || t.status === 'Pending' || t.status === 'Initialized');
+                    
+                    // Update sidebar counts
+                    const followupsCount = allTasks.filter(t => t.followUpRequired === 'Yes').length;
+                    const visitsCount = allTasks.filter(t => t.visitScheduled === 'Yes').length;
+                    
+                    document.getElementById('sidebarPendingCount').textContent = pendingTasks.length;
+                    document.getElementById('sidebarFollowupCount').textContent = followupsCount;
+                    document.getElementById('sidebarVisitCount').textContent = visitsCount;
+
+                    if (pendingTasks.length > 0) {
+                        loadTaskIntoWorkflow(pendingTasks[0]);
+                    }
+                    renderStep1();
+                } else {
+                    showCompletionScreen();
+                }
+            } catch (err) {
+                console.error('Failed to fetch tasks', err);
+                document.getElementById('singleTaskContainer').innerHTML = '<div class="text-center py-12 text-rose-500 text-xs font-bold bg-rose-50 rounded-2xl border border-rose-100">Error connecting to server backend. Please refresh.</div>';
+            }
+        }
+
+        function loadTaskIntoWorkflow(task) {
+            currentWorkflow.taskId = task._id;
+            currentWorkflow.mainCategory = task.call_connected && task.call_connected !== 'Pending' ? task.call_connected : '';
+            currentWorkflow.subRemark = task.remark || '';
+            currentWorkflow.leadTemp = task.leadTemperature || '';
+            currentWorkflow.tempSubOption = task.tempSubOption || '';
+            currentWorkflow.requirementBudget = task.requirementBudget || '';
+            currentWorkflow.requirementFlatSize = task.requirementFlatSize || '';
+            currentWorkflow.requirementFloor = task.requirementFloor || '';
+            currentWorkflow.requirementNote = task.requirementNote || '';
+            currentWorkflow.followUpRequired = task.followUpRequired || '';
+            currentWorkflow.followUpOption = task.followUpOption || '';
+            currentWorkflow.followUpDate = task.followUpDate || '';
+            currentWorkflow.followUpTime = task.followUpTime || '';
+            currentWorkflow.visitScheduled = task.visitScheduled || '';
+            currentWorkflow.visitDate = task.visitDate || '';
+            currentWorkflow.visitTime = task.visitTime || '';
+            currentWorkflow.visitBuilding = task.visitBuilding || '';
+            currentWorkflow.visitLocation = task.visitLocation || '';
+            currentWorkflow.visitNote = task.visitNote || '';
+        }
+
+        // --- STEP 1: Basic Lead Details + Call Disposition Category & Remark ---
+        function renderStep1() {
+            const container = document.getElementById('singleTaskContainer');
+            const progress = document.getElementById('progressIndicator');
+
+            if (pendingTasks.length === 0) {
+                showCompletionScreen();
+                return;
+            }
+
+            progress.innerHTML = `<i class="fa-solid fa-layer-group text-slate-400"></i> ${pendingTasks.length} Assigned Tasks Remaining`;
+            const task = pendingTasks[0];
+
+            let historyBanner = '';
+            if (task.call_connected && task.call_connected !== 'Pending') {
+                historyBanner = `
+                    <div class="bg-amber-50/70 border border-amber-200/80 p-4 rounded-2xl text-xs space-y-1.5 shadow-2xs">
+                        <span class="font-bold text-amber-900 block flex items-center gap-1.5"><i class="fa-solid fa-history text-amber-600"></i> Previous Call Logged:</span>
+                        <p class="text-amber-800"><b>Disposition:</b> ${task.call_connected} &gt; ${task.remark}</p>
+                        ${task.leadTemperature ? `<p class="text-amber-800"><b>Temperature:</b> ${task.leadTemperature} (${task.tempSubOption})</p>` : ''}
+                        ${task.requirementBudget ? `<p class="text-amber-800"><b>Budget / Size:</b> ${task.requirementBudget} \vert{}${task.requirementFlatSize}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200/60">Step 1 of 3: Call Disposition</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2.5 mt-2.5">
+                                <i class="fa-solid fa-circle-user text-emerald-600"></i> ${task.name || task.title || 'Unnamed Lead'}
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-inner">
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Contact Number</p>
+                            <p class="text-lg sm:text-xl font-extrabold text-blue-600 flex items-center gap-2 mt-1">
+                                <i class="fa-solid fa-phone text-sm"></i> ${task.contactNumber || 'No Phone Number'}
+                            </p>
+                        </div>
+                        ${task.contactNumber ? `<a href="tel:${task.contactNumber}" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 transition flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-phone-volume text-sm"></i> Call Now</a>` : ''}
+                    </div>
+
+                    ${historyBanner}
+
+                    ${task.description ? `<div class="bg-slate-50/60 p-4 rounded-2xl border border-slate-200/80 text-xs text-slate-600 space-y-1"><span class="font-bold text-slate-700 block">Notes/Instructions:</span><p class="leading-relaxed">${task.description}</p></div>` : ''}
+
+                    <div class="space-y-2 pt-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">1. Select Call Disposition Category</label>
+                        <select id="mainCategorySelect" onchange="onCategoryChange()" class="w-full px-4 py-3.5 bg-slate-50/80 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-xs sm:text-sm transition font-medium cursor-pointer shadow-2xs">
+                            <option value="">-- Choose Category --</option>
+                            <option value="Call Not Connected" ${currentWorkflow.mainCategory === 'Call Not Connected' ? 'selected' : ''}>🔴 Call Not Connected</option>
+                            <option value="Call Connected — Interested" ${currentWorkflow.mainCategory === 'Call Connected — Interested' ? 'selected' : ''}>🟢 Call Connected — Interested</option>
+                            <option value="Follow-Up Required" ${currentWorkflow.mainCategory === 'Follow-Up Required' ? 'selected' : ''}>🟡 Follow-Up Required</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">2. Select Specific Remark / Detail</label>
+                        <select id="subRemarkSelect" ${!currentWorkflow.mainCategory ? 'disabled' : ''} class="w-full px-4 py-3.5 ${!currentWorkflow.mainCategory ? 'bg-slate-100 text-slate-400' : 'bg-slate-50/80 text-slate-800'} border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs sm:text-sm transition font-medium cursor-pointer shadow-2xs">
+                            <option value="">-- Choose Specific Remark --</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex justify-end">
+                        <button onclick="proceedToStep2('${task._id}')" 
+                            class="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25 transition flex items-center gap-2 cursor-pointer">
+                            <span>Next: Lead Temperature</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            if (currentWorkflow.mainCategory) {
+                onCategoryChange(currentWorkflow.subRemark);
+            }
+        }
+
+        function onCategoryChange(preselectedSub = '') {
+            const mainCategory = document.getElementById('mainCategorySelect').value;
+            const subSelect = document.getElementById('subRemarkSelect');
+
+            subSelect.innerHTML = '<option value="">-- Choose Specific Remark --</option>';
+
+            if (mainCategory && dispositionSubOptions[mainCategory]) {
+                dispositionSubOptions[mainCategory].forEach(remark => {
+                    const opt = document.createElement('option');
+                    opt.value = remark;
+                    opt.textContent = remark;
+                    if (remark === preselectedSub) opt.selected = true;
+                    subSelect.appendChild(opt);
+                });
+                subSelect.disabled = false;
+                subSelect.className = 'w-full px-4 py-3.5 bg-slate-50/80 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-xs sm:text-sm transition font-medium text-slate-800 cursor-pointer shadow-2xs';
+            } else {
+                subSelect.disabled = true;
+                subSelect.className = 'w-full px-4 py-3.5 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs sm:text-sm transition font-medium text-slate-400 cursor-not-allowed';
+            }
+        }
+
+        function proceedToStep2(taskId) {
+            const mainCategory = document.getElementById('mainCategorySelect').value;
+            const subRemark = document.getElementById('subRemarkSelect').value;
+
+            if (!mainCategory || !subRemark) {
+                alert('Please select both a Call Disposition category and a specific remark before proceeding.');
+                return;
+            }
+
+            currentWorkflow.mainCategory = mainCategory;
+            currentWorkflow.subRemark = subRemark;
+            currentWorkflow.taskId = taskId;
+
+            renderStep2();
+        }
+
+        // --- STEP 2: Lead Temperature Selection & Requirements Gathering ---
+        function renderStep2() {
+            const container = document.getElementById('singleTaskContainer');
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200/60">Step 2 of 3: Lead Temperature & Requirements</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2.5">Rate Lead Purchase Intent & Details</h2>
+                        <p class="text-xs text-slate-500 mt-1">Selected Disposition: <span class="font-bold text-slate-700">${currentWorkflow.mainCategory} &gt; ${currentWorkflow.subRemark}</span></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                        <label class="flex flex-col p-5 bg-rose-50/40 border-2 ${currentWorkflow.leadTemp === 'HOT' ? 'border-rose-500 ring-4 ring-rose-500/10 bg-white shadow-md' : 'border-rose-200/80'} hover:border-rose-500 rounded-3xl cursor-pointer transition-all group shadow-2xs">
+                            <input type="radio" name="leadTemp" value="HOT" ${currentWorkflow.leadTemp === 'HOT' ? 'checked' : ''} onchange="onTemperatureSelect('HOT')" class="sr-only peer">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-lg sm:text-xl font-black text-rose-600 flex items-center gap-1.5"><i class="fa-solid fa-fire text-rose-500"></i> HOT</span>
+                                <i class="fa-solid fa-circle-check text-rose-500 ${currentWorkflow.leadTemp === 'HOT' ? 'opacity-100 scale-110' : 'opacity-0'} text-lg transition-all"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700 mb-0.5">Strong purchase intent</p>
+                        </label>
+
+                        <label class="flex flex-col p-5 bg-amber-50/40 border-2 ${currentWorkflow.leadTemp === 'WARM' ? 'border-amber-500 ring-4 ring-amber-500/10 bg-white shadow-md' : 'border-amber-200/80'} hover:border-amber-500 rounded-3xl cursor-pointer transition-all group shadow-2xs">
+                            <input type="radio" name="leadTemp" value="WARM" ${currentWorkflow.leadTemp === 'WARM' ? 'checked' : ''} onchange="onTemperatureSelect('WARM')" class="sr-only peer">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-lg sm:text-xl font-black text-amber-600 flex items-center gap-1.5"><i class="fa-solid fa-sun text-amber-500"></i> WARM</span>
+                                <i class="fa-solid fa-circle-check text-amber-500 ${currentWorkflow.leadTemp === 'WARM' ? 'opacity-100 scale-110' : 'opacity-0'} text-lg transition-all"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700 mb-0.5">Interested, not immediate</p>
+                        </label>
+
+                        <label class="flex flex-col p-5 bg-blue-50/40 border-2 ${currentWorkflow.leadTemp === 'COLD' ? 'border-blue-500 ring-4 ring-blue-500/10 bg-white shadow-md' : 'border-blue-200/80'} hover:border-blue-500 rounded-3xl cursor-pointer transition-all group shadow-2xs">
+                            <input type="radio" name="leadTemp" value="COLD" ${currentWorkflow.leadTemp === 'COLD' ? 'checked' : ''} onchange="onTemperatureSelect('COLD')" class="sr-only peer">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-lg sm:text-xl font-black text-blue-600 flex items-center gap-1.5"><i class="fa-solid fa-snowflake text-blue-500"></i> COLD</span>
+                                <i class="fa-solid fa-circle-check text-blue-500 ${currentWorkflow.leadTemp === 'COLD' ? 'opacity-100 scale-110' : 'opacity-0'} text-lg transition-all"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700 mb-0.5">Low immediate intent</p>
+                        </label>
+                    </div>
+
+                    <!-- Dynamic Temperature Sub-options Dropdown Container -->
+                    <div id="tempSubOptionContainer" class="space-y-2 ${currentWorkflow.leadTemp ? '' : 'hidden'}">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700" id="tempSubLabel">Select Specific Intent Sub-option</label>
+                        <select id="tempSubSelect" class="w-full px-4 py-3.5 bg-slate-50/80 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs sm:text-sm font-medium cursor-pointer shadow-2xs">
+                            <option value="">-- Choose Sub-option --</option>
+                        </select>
+                    </div>
+
+                    <!-- Structured Requirement Details Section -->
+                    <div class="bg-slate-50/80 p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-inner">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-emerald-600"></i> Requirement Gathered Details
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Budget</label>
+                                <input type="text" id="reqBudgetInput" value="${currentWorkflow.requirementBudget || ''}" placeholder="e.g. 75 Lakhs - 1 Cr" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Flat Size</label>
+                                <input type="text" id="reqFlatSizeInput" value="${currentWorkflow.requirementFlatSize || ''}" placeholder="e.g. 2 BHK / 1200 sq.ft" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Preferred Floor</label>
+                                <input type="text" id="reqFloorInput" value="${currentWorkflow.requirementFloor || ''}" placeholder="e.g. 5th Floor / High-rise" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Additional Requirement Notes</label>
+                            <textarea id="reqNoteInput" rows="2" placeholder="Note down any specific customer remarks, amenities preferences, or observations..." class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">${currentWorkflow.requirementNote || ''}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100 flex justify-between items-center">
+                        <button onclick="renderStep1()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-2xs">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button onclick="proceedToStep3()" class="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25 transition flex items-center gap-2 cursor-pointer">
+                            <span>Next: Follow-Up & Visit</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            if (currentWorkflow.leadTemp) {
+                populateTempSubOptions(currentWorkflow.leadTemp, currentWorkflow.tempSubOption);
+            }
+        }
+
+        function onTemperatureSelect(temp) {
+            currentWorkflow.leadTemp = temp;
+            currentWorkflow.tempSubOption = '';
+            
+            document.querySelectorAll('input[name="leadTemp"]').forEach(r => {
+                r.closest('label').classList.remove('ring-4', 'ring-rose-500/10', 'ring-amber-500/10', 'ring-blue-500/10', 'bg-white', 'shadow-md', 'border-rose-500', 'border-amber-500', 'border-blue-500');
+                if (r.value === temp) {
+                    r.closest('label').classList.add('bg-white', 'shadow-md');
+                    if(temp === 'HOT') r.closest('label').classList.add('border-rose-500', 'ring-4', 'ring-rose-500/10');
+                    if(temp === 'WARM') r.closest('label').classList.add('border-amber-500', 'ring-4', 'ring-amber-500/10');
+                    if(temp === 'COLD') r.closest('label').classList.add('border-blue-500', 'ring-4', 'ring-blue-500/10');
+                }
+            });
+
+            populateTempSubOptions(temp);
+        }
+
+        function populateTempSubOptions(temp, preselected = '') {
+            const container = document.getElementById('tempSubOptionContainer');
+            const select = document.getElementById('tempSubSelect');
+            const label = document.getElementById('tempSubLabel');
+
+            container.classList.remove('hidden');
+            label.textContent = `CRM Status: ${temp} — Select Specific Sub-option`;
+            select.innerHTML = '<option value="">-- Choose Sub-option --</option>';
+
+            if (temperatureSubOptionsMap[temp]) {
+                temperatureSubOptionsMap[temp].forEach(optText => {
+                    const opt = document.createElement('option');
+                    opt.value = optText;
+                    opt.textContent = optText;
+                    if (optText === preselected) opt.selected = true;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function proceedToStep3() {
+            const selectedTemp = document.querySelector('input[name="leadTemp"]:checked');
+            const subOptVal = document.getElementById('tempSubSelect').value;
+
+            if (!selectedTemp) {
+                alert('Please select a Lead Temperature (HOT, WARM, or COLD) to continue.');
+                return;
+            }
+            if (!subOptVal) {
+                alert('Please select a specific temperature sub-option.');
+                return;
+            }
+
+            currentWorkflow.leadTemp = selectedTemp.value;
+            currentWorkflow.tempSubOption = subOptVal;
+            currentWorkflow.requirementBudget = document.getElementById('reqBudgetInput').value;
+            currentWorkflow.requirementFlatSize = document.getElementById('reqFlatSizeInput').value;
+            currentWorkflow.requirementFloor = document.getElementById('reqFloorInput').value;
+            currentWorkflow.requirementNote = document.getElementById('reqNoteInput').value;
+
+            renderStep3();
+        }
+
+        // --- STEP 3: Independent Follow-Up & Expanded Site Visit Schedule Logic ---
+        function renderStep3() {
+            const container = document.getElementById('singleTaskContainer');
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200/60">Step 3 of 3: Scheduling & Follow-up</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2.5">Schedule Next Actions</h2>
+                        <p class="text-xs text-slate-500 mt-1">Temperature: <b class="text-slate-800">${currentWorkflow.leadTemp} (${currentWorkflow.tempSubOption})</b></p>
+                    </div>
+
+                    <!-- Follow-up Required Question -->
+                    <div class="bg-slate-50/80 p-5 sm:p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-inner">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-emerald-600"></i> Is a Follow-Up Required for this lead?
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-emerald-500 shadow-2xs">
+                                <input type="radio" name="followUpReq" value="Yes" ${currentWorkflow.followUpRequired === 'Yes' ? 'checked' : ''} onchange="toggleFollowUpOptions('Yes')" class="text-emerald-600 focus:ring-emerald-500"> Yes
+                            </label>
+                            <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-rose-500 shadow-2xs">
+                                <input type="radio" name="followUpReq" value="No" ${currentWorkflow.followUpRequired === 'No' ? 'checked' : ''} onchange="toggleFollowUpOptions('No')" class="text-rose-600 focus:ring-rose-500"> No
+                            </label>
+                        </div>
+
+                        <!-- Follow-Up Date & Time Inputs Positioned Directly Below FollowUpRequired Yes Selection -->
+                        <div id="followUpDropdownContainer" class="space-y-4 pt-3 ${currentWorkflow.followUpRequired === 'Yes' ? '' : 'hidden'}">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-emerald-800">Select Follow-Up Timeline Option</label>
+                                <select id="followUpOptionSelect" class="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs sm:text-sm font-medium cursor-pointer shadow-2xs">
+                                    <option value="">-- Choose Follow-Up Timeline --</option>
+                                    ${followUpTimelineOptions.map(opt => `<option value="${opt}" ${currentWorkflow.followUpOption === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-emerald-800 mb-1.5">Follow-Up Date</label>
+                                    <input type="date" id="followUpDateVal" value="${currentWorkflow.followUpDate || ''}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-emerald-800 mb-1.5">Follow-Up Time</label>
+                                    <input type="time" id="followUpTimeVal" value="${currentWorkflow.followUpTime || ''}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Independent Site Visit Schedule Question (Fully Detailed with Building & Location) -->
+                    <div id="visitScheduleContainer" class="bg-slate-50/80 p-5 sm:p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-inner">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Would you like to schedule a Site Visit?
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-emerald-500 shadow-2xs">
+                                <input type="radio" name="visitReq" value="Yes" ${currentWorkflow.visitScheduled === 'Yes' ? 'checked' : ''} onchange="toggleVisitDateTime('Yes')" class="text-emerald-600 focus:ring-emerald-500"> Yes, Schedule Visit
+                            </label>
+                            <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-rose-500 shadow-2xs">
+                                <input type="radio" name="visitReq" value="No" ${currentWorkflow.visitScheduled === 'No' ? 'checked' : ''} onchange="toggleVisitDateTime('No')" class="text-rose-600 focus:ring-rose-500"> No Visit Needed
+                            </label>
+                        </div>
+
+                        <!-- Detailed Date, Time, Building Name, Location, and Visit Proposal Notes -->
+                        <div id="visitDateTimeInputs" class="space-y-4 pt-3 ${currentWorkflow.visitScheduled === 'Yes' ? '' : 'hidden'}">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Site Visit Date</label>
+                                    <input type="date" id="visitDateVal" value="${currentWorkflow.visitDate || ''}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Site Visit Time</label>
+                                    <input type="time" id="visitTimeVal" value="${currentWorkflow.visitTime || ''}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Building Name / Project</label>
+                                    <input type="text" id="visitBuildingVal" value="${currentWorkflow.visitBuilding || ''}" placeholder="e.g. Acme Heights Tower B" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Location / Address</label>
+                                    <input type="text" id="visitLocationVal" value="${currentWorkflow.visitLocation || ''}" placeholder="e.g. Andheri West, Mumbai" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Site Visit Proposed Details / Notes</label>
+                                <textarea id="visitNoteVal" rows="2" placeholder="Provide details regarding pickup arrangements, specific units to show, etc..." class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">${currentWorkflow.visitNote || ''}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100 flex justify-between items-center">
+                        <button onclick="renderStep2()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-2xs">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button onclick="submitFinalWorkflow()" class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xl shadow-emerald-600/30 transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-floppy-disk text-base"></i> Submit Complete Call Outcome
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleFollowUpOptions(val) {
+            currentWorkflow.followUpRequired = val;
+            const followUpContainer = document.getElementById('followUpDropdownContainer');
+
+            if (val === 'Yes') {
+                followUpContainer.classList.remove('hidden');
+            } else {
+                followUpContainer.classList.add('hidden');
+                currentWorkflow.followUpOption = '';
+                currentWorkflow.followUpDate = '';
+                currentWorkflow.followUpTime = '';
+            }
+        }
+
+        function toggleVisitDateTime(val) {
+            currentWorkflow.visitScheduled = val;
+            const dtInputs = document.getElementById('visitDateTimeInputs');
+            if (val === 'Yes') {
+                dtInputs.classList.remove('hidden');
+            } else {
+                dtInputs.classList.add('hidden');
+                currentWorkflow.visitDate = '';
+                currentWorkflow.visitTime = '';
+                currentWorkflow.visitBuilding = '';
+                currentWorkflow.visitLocation = '';
+                currentWorkflow.visitNote = '';
+            }
+        }
+
+        function showCompletionScreen() {
+            document.getElementById('progressIndicator').innerHTML = `<i class="fa-solid fa-layer-group text-slate-400"></i> 0 Remaining Tasks`;
+            document.getElementById('taskCountBadge').className = 'px-3.5 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200/80 flex items-center gap-1.5 shadow-2xs';
+            document.getElementById('taskCountBadge').innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> All Completed!`;
+            document.getElementById('singleTaskContainer').innerHTML = `
+                <div class="text-center py-20 text-slate-500 space-y-4">
+                    <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-emerald-100">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900">All Assigned Tasks Completed!</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">Great job! You have cleared all pending tasks assigned to your collection: <code class="bg-slate-100 text-emerald-700 px-2.5 py-1 rounded-lg font-bold">tasks_${currentUsername}</code></p>
+                </div>
+            `;
+        }
+
+        async function submitFinalWorkflow() {
+            if (!currentWorkflow.followUpRequired) {
+                alert('Please specify whether a Follow-Up is required.');
+                return;
+            }
+
+            if (currentWorkflow.followUpRequired === 'Yes') {
+                const optionVal = document.getElementById('followUpOptionSelect').value;
+                if (!optionVal) {
+                    alert('Please select a follow-up timeline option.');
+                    return;
+                }
+                currentWorkflow.followUpOption = optionVal;
+                currentWorkflow.followUpDate = document.getElementById('followUpDateVal').value;
+                currentWorkflow.followUpTime = document.getElementById('followUpTimeVal').value;
+            }
+
+            if (currentWorkflow.visitScheduled === 'Yes') {
+                currentWorkflow.visitDate = document.getElementById('visitDateVal').value;
+                currentWorkflow.visitTime = document.getElementById('visitTimeVal').value;
+                currentWorkflow.visitBuilding = document.getElementById('visitBuildingVal').value;
+                currentWorkflow.visitLocation = document.getElementById('visitLocationVal').value;
+                currentWorkflow.visitNote = document.getElementById('visitNoteVal').value;
+
+                if (!currentWorkflow.visitDate || !currentWorkflow.visitTime) {
+                    alert('Please provide both site visit date and time.');
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch(`/api/update-task-status/${encodeURIComponent(currentUsername)}/${currentWorkflow.taskId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        call_connected: currentWorkflow.mainCategory, 
+                        remark: currentWorkflow.subRemark,
+                        leadTemperature: currentWorkflow.leadTemp,
+                        tempSubOption: currentWorkflow.tempSubOption,
+                        requirementBudget: currentWorkflow.requirementBudget,
+                        requirementFlatSize: currentWorkflow.requirementFlatSize,
+                        requirementFloor: currentWorkflow.requirementFloor,
+                        requirementNote: currentWorkflow.requirementNote,
+                        followUpRequired: currentWorkflow.followUpRequired,
+                        followUpOption: currentWorkflow.followUpOption,
+                        followUpDate: currentWorkflow.followUpDate,
+                        followUpTime: currentWorkflow.followUpTime,
+                        visitScheduled: currentWorkflow.visitScheduled,
+                        visitDate: currentWorkflow.visitDate,
+                        visitTime: currentWorkflow.visitTime,
+                        visitBuilding: currentWorkflow.visitBuilding,
+                        visitLocation: currentWorkflow.visitLocation,
+                        visitNote: currentWorkflow.visitNote
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    pendingTasks = pendingTasks.filter(t => t._id !== currentWorkflow.taskId);
+                    currentWorkflow = { taskId: '', mainCategory: '', subRemark: '', leadTemp: '', tempSubOption: '', requirementBudget: '', requirementFlatSize: '', requirementFloor: '', requirementNote: '', followUpRequired: '', followUpOption: '', followUpDate: '', followUpTime: '', visitScheduled: '', visitDate: '', visitTime: '', visitBuilding: '', visitLocation: '', visitNote: '' };
+                    if (pendingTasks.length > 0) {
+                        loadTaskIntoWorkflow(pendingTasks[0]);
+                    }
+                    renderStep1();
+                } else {
+                    alert(data.message || 'Failed to update task.');
+                }
+            } catch (err) {
+                alert('Server connection error.');
+            }
+        }
+
+        loadMemberTasks();
+    </script>
+</body>
+</html>

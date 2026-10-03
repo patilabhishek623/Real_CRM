@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real_Crm - Secure Login</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden p-8 text-white">
+        <!-- Logo & Branding -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-500/30 mb-4 transform hover:scale-105 transition duration-300">
+                <i class="fa-solid fa-chart-line text-2xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight">Real_Crm</h1>
+            <p class="text-slate-400 text-sm mt-1">Enterprise Lead & Team Management</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Username</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <input type="text" id="username" required placeholder="Enter your username" 
+                        class="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-500 transition">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input type="password" id="password" required placeholder="••••••••" 
+                        class="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-500 transition">
+                </div>
+            </div>
+
+            <button type="submit" 
+                class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200 transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                <span>Sign In</span>
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <!-- Error Notification Area -->
+        <div id="error" class="mt-4 text-center text-sm font-medium text-rose-400 min-h-[20px]"></div>
+
+        <!-- Footer Help info -->
+        <div class="mt-8 text-center border-t border-slate-700/60 pt-4 text-xs text-slate-400">
+            Need access credentials? Contact your System Team Lead.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store user session details in localStorage for collection binding
+                    localStorage.setItem('crm_username', data.username);
+                    localStorage.setItem('crm_role', data.role);
+
+                    if (data.role === 'teamlead') {
+                        window.location.href = 'teamlead.html';
+                    } else if (data.role === 'teammember') {
+                        window.location.href = 'teammember.html';
+                    }
+                } else {
+                    errorDiv.textContent = data.message || 'Invalid username or password.';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Unable to connect to server backend.';
+            }
+        });
+    </script>
+</body>
+</html>

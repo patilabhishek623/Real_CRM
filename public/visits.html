@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduled Visits - Real_Crm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white/85 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-map-location-dot text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
+                    <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">Scheduled Site Visits</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span id="activeUserBadge" class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"></span>
+                <a href="/" onclick="localStorage.clear()" class="px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Left Sidebar Navigation Menu -->
+        <aside class="md:col-span-1 space-y-2">
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">Member Menu</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Dashboard</a>
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Assigned Tasks</a>
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Follow Ups</a>
+                <div>
+                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm transition">Visits</a>
+                    <div class="pl-4 mt-2 space-y-1 border-l-2 border-emerald-100 ml-4">
+                        <a href="pre-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs">Pre-Visit Call</a>
+                        <a href="visits.html" class="flex items-center gap-2.5 px-3 py-2 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg">Schedule Total Visit</a>
+                        <a href="post-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs">Post-Visit Call</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="md:col-span-3 space-y-6">
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Total Scheduled Site Visits</h1>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Overview of all active customer tours and inspection schedules across team members.</p>
+                    </div>
+                    <div id="visitCountBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>0 Visits Scheduled</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto mt-6">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                <th class="py-3.5 px-4">Lead Name</th>
+                                <th class="py-3.5 px-4">Contact Number</th>
+                                <th class="py-3.5 px-4">Visit Date & Time</th>
+                                <th class="py-3.5 px-4">Building / Location</th>
+                                <th class="py-3.5 px-4">Assigned Member</th>
+                                <th class="py-3.5 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitTableBody" class="divide-y divide-slate-100 text-sm">
+                            <tr><td colspan="6" class="text-center py-12 text-slate-400">Loading scheduled visits...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Lead Detail Modal Overlay -->
+    <div id="leadModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">Customer Profile & History</span>
+                    <h2 id="modalLeadName" class="text-xl font-extrabold text-slate-900 mt-1">Lead Details</h2>
+                </div>
+                <button onclick="closeModal()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="modalLeadSummary" class="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs"></div>
+
+            <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-3"><i class="fa-solid fa-timeline text-emerald-600 mr-1.5"></i> Full Call History & Detailed Logs</h3>
+                <div id="modalCallHistory" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const currentUsername = localStorage.getItem('crm_username');
+        if (currentUsername) document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b>${currentUsername}</b>`;
+
+        // Helper: Convert YYYY-MM-DD to DD/MM/YYYY
+        function formatDateDMY(dateStr) {
+            if (!dateStr) return 'TBD';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateStr;
+        }
+
+        async function fetchVisits() {
+            try {
+                const response = await fetch('/api/all-visits');
+                const data = await response.json();
+                const tbody = document.getElementById('visitTableBody');
+                const countBadge = document.getElementById('visitCountBadge');
+
+                if (!data.success || !data.visits || data.visits.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-slate-400"><p class="text-sm font-semibold text-slate-700">No scheduled visits found.</p></td></tr>`;
+                    countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span>0 Visits Scheduled</span>`;
+                    return;
+                }
+
+                const visits = data.visits;
+                countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span>${visits.length} Visit${visits.length > 1 ? 's' : ''} Scheduled</span>`;
+                tbody.innerHTML = '';
+
+                visits.forEach(v => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-50 transition-colors group";
+                    row.innerHTML = `
+                        <td class="py-4 px-4 whitespace-nowrap">
+                            <button onclick="openLeadModal('${v.memberUsername}', '${v.taskId}')" class="font-bold text-emerald-600 hover:underline flex items-center gap-1.5 text-left">
+                                <i class="fa-solid fa-circle-user text-xs"></i> ${v.name}
+                            </button>
+                        </td>
+                        <td class="py-4 px-4 whitespace-nowrap text-slate-600">${v.contactNumber || 'N/A'}</td>
+                        <td class="py-4 px-4 whitespace-nowrap font-medium text-slate-900"><span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-lg text-xs font-semibold">${formatDateDMY(v.visitDate)}</span> ${v.visitTime || ''}</td>
+                        <td class="py-4 px-4 text-slate-600 text-xs"><b>${v.visitBuilding || 'Standard Tower'}</b><br><span class="text-slate-400">${v.visitLocation || ''}</span></td>
+                        <td class="py-4 px-4 whitespace-nowrap"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold">${v.memberUsername}</span></td>
+                        <td class="py-4 px-4 whitespace-nowrap">
+                            <button onclick="openLeadModal('${v.memberUsername}', '${v.taskId}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition">View Details</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error('Error loading visits:', err);
+            }
+        }
+
+        async function openLeadModal(username, taskId) {
+            try {
+                const res = await fetch(`/api/lead-details/${username}/${taskId}`);
+                const data = await res.json();
+                if (!data.success) { alert('Failed to load lead details'); return; }
+
+                const lead = data.lead;
+                document.getElementById('modalLeadName').textContent = lead.name;
+                document.getElementById('modalLeadSummary').innerHTML = `
+                    <div><b>Contact:</b><br>${lead.contactNumber || 'N/A'}</div>
+                    <div><b>Assigned Member:</b><br>${username}</div>
+                    <div><b>Status:</b><br>${lead.status || 'Pending'}</div>
+                `;
+
+                let historyHtml = '';
+                let i = 1;
+                while (lead[`call${i}`]) {
+                    const c = lead[`call${i}`];
+                    const loggedDateStr = new Date(c.loggedAt).toLocaleString();
+                    historyHtml += `
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1">
+                            <div class="flex justify-between font-extrabold text-emerald-700">
+                                <span>Call ${i}: ${c.title || c.call_connected || 'Call Log'}</span>
+                                <span class="text-slate-400 font-normal">${loggedDateStr}</span>
+                            </div>
+                            <p><b>Remark:</b> ${c.remark || 'N/A'}</p>
+                            ${c.visitScheduled === 'Yes' ? `<p class="text-teal-700 font-bold">Scheduled Visit: ${formatDateDMY(c.visitDate)} at ${c.visitTime} (${c.visitBuilding || 'Tower'})</p>` : ''}
+                            ${c.visitorComing ? `<p><b>Visitor Coming:</b> ${c.visitorComing}${c.rescheduleReason ? '— Reason: ' + c.rescheduleReason : ''}</p>` : ''}
+                        </div>
+                    `;
+                    i++;
+                }
+                document.getElementById('modalCallHistory').innerHTML = historyHtml || '<p class="text-xs text-slate-400 italic">No prior calls recorded yet.</p>';
+
+                document.getElementById('leadModal').classList.remove('hidden');
+            } catch (err) {
+                alert('Error connecting to server.');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('leadModal').classList.add('hidden');
+        }
+
+        fetchVisits();
+    </script>
+</body>
+</html>

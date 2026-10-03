@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Task & Excel Upload - Real_Crm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SheetJS CDN for parsing Excel files (.xlsx, .xls, .csv) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-slate-900">Real_Crm <span class="text-xs font-semibold uppercase px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full ml-2">Lead Portal</span></span>
+            </div>
+            <div>
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium text-sm rounded-xl transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace with Left Sidebar Menu -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation Menu -->
+        <aside class="md:col-span-1 space-y-2">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-1 sticky top-24">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">Navigation Menu</p>
+                <a href="teamlead.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 font-medium rounded-xl text-sm transition">
+                    <i class="fa-solid fa-house w-5"></i> Dashboard Overview
+                </a>
+                <a href="leaduser.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 font-medium rounded-xl text-sm transition">
+                    <i class="fa-solid fa-user-plus w-5"></i> Add User & Collection
+                </a>
+                <a href="assigntaskteammember.html" class="flex items-center gap-3 px-3 py-2.5 bg-blue-50 text-blue-700 font-semibold rounded-xl text-sm transition">
+                    <i class="fa-solid fa-list-check w-5"></i> Assign Task & Excel
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Form Content -->
+        <main class="md:col-span-3 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Assign Tasks / Excel Bulk Import</h2>
+                        <p class="text-xs text-slate-500">Upload spreadsheet or assign individual tasks as <b>Pending</b> to member's database collection</p>
+                    </div>
+                </div>
+
+                <!-- Mode selection tabs -->
+                <div class="flex gap-3 mb-6 border-b border-slate-200 pb-4">
+                    <button type="button" id="tabSingle" onclick="switchMode('single')" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer">Single Task</button>
+                    <button type="button" id="tabExcel" onclick="switchMode('excel')" class="px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">Excel Spreadsheet Bulk Upload</button>
+                </div>
+
+                <!-- Member Selection (Shared) -->
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Select Team Member</label>
+                    <select id="targetMember" required onchange="onMemberSelect()"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+                        <option value="">-- Choose Member --</option>
+                    </select>
+                </div>
+
+                <!-- Single Task Form -->
+                <form id="singleTaskForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Lead Name</label>
+                        <input type="text" id="taskTitle" required placeholder="e.g. Rajesh Sharma" 
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Contact Number</label>
+                        <input type="text" id="contactNumber" placeholder="e.g. 9876543210" 
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Description / Notes</label>
+                        <textarea id="taskDesc" rows="3" placeholder="Enter instructions..." 
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition"></textarea>
+                    </div>
+                    <button type="submit" 
+                        class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Assign Single Pending Task</span>
+                    </button>
+                </form>
+
+                <!-- Excel Upload Form (Hidden by default) -->
+                <form id="excelTaskForm" class="space-y-4 hidden">
+                    <div class="p-6 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 text-center hover:bg-slate-100/80 transition">
+                        <i class="fa-solid fa-file-excel text-4xl text-emerald-600 mb-2"></i>
+                        <h4 class="text-sm font-bold text-slate-700">Upload Excel Spreadsheet (.xlsx, .xls, .csv)</h4>
+                        <p class="text-xs text-slate-500 mt-1 mb-4">Ensure your file has columns for Name and Contact Number / Phone.</p>
+                        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                    </div>
+
+                    <div id="excelPreviewContainer" class="hidden space-y-3">
+                        <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-4 py-3 rounded-xl">
+                            <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Total Records Count:</span>
+                            <span id="rowCountBadge" class="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg">0 Tasks</span>
+                        </div>
+
+                        <div>
+                            <p class="text-xs font-bold text-slate-600 mb-1">Parsed Contact & Name Preview:</p>
+                            <div id="previewList" class="max-h-48 overflow-y-auto space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Import & Assign All Tasks as Pending to Collection</span>
+                    </button>
+                </form>
+
+                <div id="taskMsg" class="mt-4 text-center text-sm font-medium"></div>
+            </div>
+
+            <!-- Member Live Pending Tasks Summary Box -->
+            <div id="memberPendingBox" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-hourglass-half text-amber-500"></i>
+                    Currently Pending Tasks in <span id="selectedMemberName" class="text-blue-600"></span>'s Queue:
+                </h3>
+                <div id="pendingTasksList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let parsedExcelTasks = [];
+
+        function switchMode(mode) {
+            const tabSingle = document.getElementById('tabSingle');
+            const tabExcel = document.getElementById('tabExcel');
+            const singleForm = document.getElementById('singleTaskForm');
+            const excelForm = document.getElementById('excelTaskForm');
+            document.getElementById('taskMsg').textContent = '';
+
+            if (mode === 'single') {
+                tabSingle.className = 'px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer';
+                tabExcel.className = 'px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
+                singleForm.classList.remove('hidden');
+                excelForm.classList.add('hidden');
+            } else {
+                tabExcel.className = 'px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold transition cursor-pointer';
+                tabSingle.className = 'px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
+                excelForm.classList.remove('hidden');
+                singleForm.classList.add('hidden');
+            }
+        }
+
+        async function loadTeamMembers() {
+            try {
+                const res = await fetch('/api/members');
+                const data = await res.json();
+                const select = document.getElementById('targetMember');
+                select.innerHTML = '<option value="">-- Choose Member --</option>';
+                if (data.success && data.members.length > 0) {
+                    data.members.forEach(m => {
+                        const opt = document.createElement('option');
+                        opt.value = m.username;
+                        opt.textContent = m.username;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to load team members');
+            }
+        }
+        loadTeamMembers();
+
+        async function onMemberSelect() {
+            const username = document.getElementById('targetMember').value;
+            const box = document.getElementById('memberPendingBox');
+            const list = document.getElementById('pendingTasksList');
+            
+            if (!username) {
+                box.classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('selectedMemberName').textContent = username;
+            try {
+                const res = await fetch(`/api/member-tasks/${encodeURIComponent(username)}`);
+                const data = await res.json();
+                list.innerHTML = '';
+
+                if (data.success && data.tasks) {
+                    const pending = data.tasks.filter(t => !t.status || t.status === 'Pending' || t.status === 'Initialized');
+                    if (pending.length > 0) {
+                        pending.forEach((t, i) => {
+                            const row = document.createElement('div');
+                            row.className = 'flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs';
+                            row.innerHTML = `
+                                <div class="space-y-0.5">
+                                    <span class="font-bold text-slate-800">#${i + 1} ${t.name}</span>
+                                    <p class="text-blue-600 font-semibold"><i class="fa-solid fa-phone mr-1"></i>${t.contactNumber || 'No Phone'}</p>
+                                </div>
+                                <span class="px-2.5 py-1 bg-amber-100 text-amber-700 font-bold rounded-lg text-[10px]">Pending</span>
+                            `;
+                            list.appendChild(row);
+                        });
+                        box.classList.remove('hidden');
+                    } else {
+                        list.innerHTML = '<p class="text-xs text-slate-400 italic py-2">No pending tasks currently in this member queue.</p>';
+                        box.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error('Error fetching member pending tasks');
+            }
+        }
+
+        document.getElementById('excelFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    parsedExcelTasks = [];
+                    const previewList = document.getElementById('previewList');
+                    previewList.innerHTML = '';
+
+                    jsonRows.forEach((row, idx) => {
+                        let nameVal = '';
+                        let contactVal = '';
+                        let descVal = '';
+
+                        for (const key of Object.keys(row)) {
+                            const lowerKey = key.toLowerCase();
+                            const val = String(row[key] || '').trim();
+
+                            if (!nameVal && (lowerKey.includes('name') || lowerKey.includes('title') || lowerKey.includes('client'))) {
+                                nameVal = val;
+                            }
+                            if (!contactVal && (lowerKey.includes('contact') || lowerKey.includes('phone') || lowerKey.includes('mobile') || lowerKey.includes('number') || lowerKey.includes('cell'))) {
+                                contactVal = val;
+                            }
+                            if (!descVal && (lowerKey.includes('desc') || lowerKey.includes('note') || lowerKey.includes('remark'))) {
+                                descVal = val;
+                            }
+                        }
+
+                        const name = nameVal || row.Name || row.name || row.NAME || row.Client || row.Title || `Lead #${idx + 1}`;
+                        const contactNumber = contactVal || row.Contact || row.contact || row.Phone || row.phone || row.Number || row.number || row.Mobile || '';
+                        const description = descVal || row.Description || row.notes || 'Imported via Excel spreadsheet upload.';
+
+                        parsedExcelTasks.push({ 
+                            name: String(name), 
+                            contactNumber: String(contactNumber), 
+                            description: String(description), 
+                            call_connected: 'Pending' 
+                        });
+
+                        const item = document.createElement('div');
+                        item.className = 'flex justify-between items-center py-2 px-3 bg-white rounded-lg border border-slate-200 shadow-2xs';
+                        item.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px] flex items-center justify-center">${idx + 1}</span>
+                                <span class="font-bold text-slate-800">${name}</span>
+                            </div>
+                            <span class="font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded"><i class="fa-solid fa-phone text-[10px] mr-1"></i> ${contactNumber || 'No Phone'}</span>
+                        `;
+                        previewList.appendChild(item);
+                    });
+
+                    document.getElementById('rowCountBadge').textContent = `${parsedExcelTasks.length} Tasks Ready`;
+                    document.getElementById('excelPreviewContainer').classList.remove('hidden');
+                } catch (err) {
+                    alert('Error reading Excel file format. Please ensure headers are correct.');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById('singleTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('targetMember').value;
+            const name = document.getElementById('taskTitle').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const description = document.getElementById('taskDesc').value.trim();
+            const msg = document.getElementById('taskMsg');
+
+            if (!username) {
+                alert('Please select a team member.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/assign-task', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, name, description, contactNumber })
+                });
+                const data = await res.json();
+                msg.className = data.success ? 'mt-4 text-center text-sm font-medium text-emerald-600' : 'mt-4 text-center text-sm font-medium text-rose-600';
+                msg.textContent = data.message;
+                if (data.success) {
+                    document.getElementById('singleTaskForm').reset();
+                    onMemberSelect();
+                }
+            } catch (err) {
+                msg.className = 'mt-4 text-center text-sm font-medium text-rose-600';
+                msg.textContent = 'Server connection failed.';
+            }
+        });
+
+        document.getElementById('excelTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('targetMember').value;
+            const msg = document.getElementById('taskMsg');
+
+            if (!username) {
+                alert('Please select a team member first.');
+                return;
+            }
+            if (parsedExcelTasks.length === 0) {
+                alert('Please upload a valid Excel file containing rows.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/assign-batch-tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, tasks: parsedExcelTasks })
+                });
+                const data = await res.json();
+                msg.className = data.success ? 'mt-4 text-center text-sm font-medium text-emerald-600' : 'mt-4 text-center text-sm font-medium text-rose-600';
+                msg.textContent = data.message;
+                if (data.success) {
+                    document.getElementById('excelTaskForm').reset();
+                    document.getElementById('excelPreviewContainer').classList.add('hidden');
+                    parsedExcelTasks = [];
+                    onMemberSelect();
+                }
+            } catch (err) {
+                msg.className = 'mt-4 text-center text-sm font-medium text-rose-600';
+                msg.textContent = 'Server connection failed.';
+            }
+        });
+    </script>
+</body>
+</html>
