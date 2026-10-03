@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lead Response - Real_Crm</title>
+    <title>Follow-Up Leads - Real_Crm</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -23,82 +23,67 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
-        .timeline-line {
-            position: absolute;
-            left: 19px;
-            top: 42px;
-            bottom: -20px;
-            width: 2px;
-            background: #e2e8f0;
-        }
-
-        .timeline-last .timeline-line {
-            display: none;
-        }
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px 18px;
-        }
-
-        @media (max-width: 640px) {
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
 
-<body class="bg-slate-50 min-h-screen text-slate-800 antialiased">
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased">
 
 
 <!-- ============================================================
      HEADER
 ============================================================ -->
 
-<header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
+<header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center space-x-3">
 
-            <div class="w-10 h-10 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                <i class="fa-solid fa-calendar-days"></i>
+            <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+
+                <i class="fa-solid fa-calendar-days text-lg"></i>
+
             </div>
+
 
             <div>
 
-                <div class="text-lg font-extrabold text-slate-900">
-                    Real_<span class="text-emerald-600">Crm</span>
-                </div>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">
 
-                <div class="text-[9px] uppercase tracking-wider font-bold text-slate-400">
+                    Real_<span class="text-emerald-600">Crm</span>
+
+                </span>
+
+                <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">
+
                     Lead Management
-                </div>
+
+                </span>
 
             </div>
 
         </div>
 
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 sm:gap-4">
 
             <span
                 id="activeUserBadge"
-                class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-2 rounded-xl border border-slate-200"
+                class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"
             ></span>
 
 
             <a
                 href="/"
-                onclick="logoutUser()"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-xl text-xs font-bold transition"
+                onclick="localStorage.clear()"
+                class="group inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-200"
             >
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Logout
+
+                <i class="fa-solid fa-right-from-bracket transition-transform group-hover:-translate-x-0.5"></i>
+
+                <span>Logout</span>
+
             </a>
 
         </div>
@@ -110,129 +95,306 @@
 
 
 <!-- ============================================================
-     PAGE
+     MAIN LAYOUT
 ============================================================ -->
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-
-    <!-- BACK BUTTON -->
-
-    <div class="mb-6">
-
-        <a
-            href="followups.html"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-emerald-600 transition"
-        >
-            <i class="fa-solid fa-arrow-left"></i>
-            Back to Follow-Ups
-        </a>
-
-    </div>
-
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
 
 
     <!-- ========================================================
-         LEAD HEADER
-    ========================================================= -->
+         SIDEBAR
+    ======================================================== -->
 
-    <div
-        id="leadHeader"
-        class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 mb-6"
-    >
+    <aside class="md:col-span-1 space-y-2">
 
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
 
-            <div>
-
-                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">
-                    Lead
-                </p>
-
-                <h1
-                    id="leadName"
-                    class="text-2xl font-bold text-slate-900"
-                >
-                    Loading...
-                </h1>
-
-                <p
-                    id="leadContact"
-                    class="text-sm text-slate-500 mt-2"
-                >
-                    —
-                </p>
-
-            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
+                Member Menu
+            </p>
 
 
-            <div
-                id="leadStatusBadge"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold"
+            <!-- Dashboard -->
+
+            <a
+                href="teammember.html"
+                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
             >
-                Loading...
-            </div>
+
+                <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <!-- Assigned Tasks -->
+
+            <a
+                href="assignedmembertask.html"
+                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
+            >
+
+                <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
+
+                Assigned Tasks
+
+                <span
+                    id="sidebarPendingCount"
+                    class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200"
+                >
+                    0
+                </span>
+
+            </a>
+
+
+            <!-- Follow Ups -->
+
+            <a
+                href="followups.html"
+                class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm shadow-emerald-500/20 transition"
+            >
+
+                <i class="fa-solid fa-calendar-days w-5 text-emerald-100 text-base"></i>
+
+                Follow Ups
+
+                <span
+                    id="sidebarFollowupCount"
+                    class="ml-auto bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full"
+                >
+                    0
+                </span>
+
+            </a>
+
+
+            <!-- Visits -->
+
+            <a
+                href="visits.html"
+                class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group"
+            >
+
+                <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i>
+
+                Visits
+
+                <span
+                    id="sidebarVisitCount"
+                    class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-teal-200"
+                >
+                    0
+                </span>
+
+            </a>
 
         </div>
 
-    </div>
+    </aside>
 
 
 
     <!-- ========================================================
-         CUSTOMER HISTORY
-    ========================================================= -->
+         CONTENT
+    ======================================================== -->
 
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+    <main class="md:col-span-3 space-y-6">
 
 
-        <!-- TITLE -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
 
-        <div class="flex items-center gap-3 pb-6 border-b border-slate-100">
 
-            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <!-- HEADER -->
 
-                <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
+
+                <div>
+
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900">
+                        Scheduled Follow-Ups
+                    </h1>
+
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                        Click any lead name to view the complete customer history.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="followupCountBadge"
+                    class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60"
+                >
+
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+
+                    <span>0 Active Follow-ups</span>
+
+                </div>
 
             </div>
 
 
-            <div>
 
-                <h2 class="text-xl font-bold text-slate-900">
-                    Customer History Timeline
-                </h2>
+            <!-- =================================================
+                 FILTER TABS
+            ================================================== -->
 
-                <p class="text-xs text-slate-400 mt-1">
-                    Complete customer interaction history
-                </p>
+            <div class="flex flex-wrap gap-2 mt-6">
+
+
+                <!-- Lapsed -->
+
+                <button
+                    onclick="switchTab('lapsed')"
+                    id="tab-lapsed"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm"
+                >
+
+                    <span>Lapsed Calls</span>
+
+                    <span
+                        id="badge-lapsed"
+                        class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+
+                <!-- Today -->
+
+                <button
+                    onclick="switchTab('today')"
+                    id="tab-today"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
+                >
+
+                    <span>Today</span>
+
+                    <span
+                        id="badge-today"
+                        class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+
+                <!-- Tomorrow -->
+
+                <button
+                    onclick="switchTab('tomorrow')"
+                    id="tab-tomorrow"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
+                >
+
+                    <span>Tomorrow</span>
+
+                    <span
+                        id="badge-tomorrow"
+                        class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+
+                <!-- Other -->
+
+                <button
+                    onclick="switchTab('other')"
+                    id="tab-other"
+                    class="px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
+                >
+
+                    <span>Other / Upcoming</span>
+
+                    <span
+                        id="badge-other"
+                        class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================== -->
+
+            <div class="overflow-x-auto mt-6">
+
+                <table class="w-full text-left border-collapse">
+
+                    <thead>
+
+                        <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+
+                            <th class="py-3.5 px-4">
+                                Lead Name
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Contact Number
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Follow-Up Option
+                            </th>
+
+                            <th class="py-3.5 px-4">
+                                Date & Time
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="followupTableBody"
+                        class="divide-y divide-slate-100 text-sm"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="text-center py-12 text-slate-400"
+                            >
+
+                                <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
+
+                                <p class="text-xs font-medium">
+                                    Loading follow-ups...
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
 
             </div>
 
         </div>
 
-
-
-        <!-- TIMELINE -->
-
-        <div
-            id="customerHistoryTimeline"
-            class="mt-8"
-        >
-
-            <div class="text-center py-12 text-slate-400">
-
-                <div class="inline-block animate-spin rounded-full h-7 w-7 border-2 border-emerald-500 border-t-transparent mb-3"></div>
-
-                <p class="text-sm font-medium">
-                    Loading customer history...
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
+    </main>
 
 </div>
 
@@ -242,7 +404,7 @@
 
 
 /* ============================================================
-   SESSION
+   USER SESSION
 ============================================================ */
 
 const currentUsername =
@@ -264,7 +426,7 @@ document.getElementById(
     "activeUserBadge"
 ).innerHTML = `
 
-    <i class="fa-solid fa-user-shield text-emerald-600 mr-1"></i>
+    <i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i>
 
     User:
 
@@ -277,26 +439,12 @@ document.getElementById(
 
 
 /* ============================================================
-   GET LEAD ID
+   VARIABLES
 ============================================================ */
 
-const urlParams =
-    new URLSearchParams(
-        window.location.search
-    );
+let globalFollowupTasks = [];
 
-
-const leadId =
-    urlParams.get("id");
-
-
-if (!leadId) {
-
-    showError(
-        "No lead ID was provided in the URL."
-    );
-
-}
+let currentActiveTab = "lapsed";
 
 
 
@@ -318,563 +466,431 @@ function escapeHtml(value) {
 
 
 /* ============================================================
-   VALUE FORMATTER
+   DATE FORMAT
 ============================================================ */
 
-function formatValue(value) {
+function formatDateString(date) {
 
-    /*
-     * Empty value
-     */
+    const d =
+        new Date(date);
 
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
 
-        return "—";
+    if (isNaN(d.getTime())) {
+
+        return "";
 
     }
 
 
-    /*
-     * MongoDB Extended JSON date:
-     *
-     * {
-     *   "$date": "2026-10-03T18:34:59.751Z"
-     * }
-     */
-
-    if (
-        typeof value === "object" &&
-        value !== null &&
-        value.$date
-    ) {
-
-        const date =
-            new Date(value.$date);
+    let month =
+        String(d.getMonth() + 1);
 
 
-        if (!isNaN(date.getTime())) {
-
-            return date.toLocaleString();
-
-        }
+    let day =
+        String(d.getDate());
 
 
-        return String(value.$date);
+    const year =
+        d.getFullYear();
+
+
+    if (month.length < 2) {
+
+        month =
+            "0" + month;
 
     }
 
 
-    /*
-     * Normal Date object
-     */
+    if (day.length < 2) {
 
-    if (value instanceof Date) {
-
-        return value.toLocaleString();
+        day =
+            "0" + day;
 
     }
 
 
-    /*
-     * Array
-     */
-
-    if (Array.isArray(value)) {
-
-        if (!value.length) {
-            return "—";
-        }
-
-        return value
-            .map(item => formatValue(item))
-            .join(", ");
-
-    }
-
-
-    /*
-     * Other objects
-     */
-
-    if (typeof value === "object") {
-
-        try {
-
-            return JSON.stringify(value);
-
-        } catch (error) {
-
-            return String(value);
-
-        }
-
-    }
-
-
-    return String(value);
+    return [
+        year,
+        month,
+        day
+    ].join("-");
 
 }
 
 
 
 /* ============================================================
-   FIELD LABEL
+   PARSE FOLLOW-UP DATE
 ============================================================ */
 
-function formatFieldLabel(key) {
+function parseTaskTargetDate(task) {
 
-    if (!key) {
-        return "Unknown Field";
+    let dateStr =
+        task.followUpDate || "";
+
+
+    let timeStr =
+        task.followUpTime || "00:00";
+
+
+    /*
+     * Support combined date/time values
+     */
+
+    if (
+        dateStr.length > 10 &&
+        dateStr.includes(":")
+    ) {
+
+        const parts =
+            dateStr.match(
+                /^(\d{4}-\d{2}-\d{2})[T ]?(\d{2}:\d{2})/
+            );
+
+
+        if (parts) {
+
+            dateStr =
+                parts[1];
+
+            timeStr =
+                parts[2];
+
+        }
+
     }
 
 
-    return String(key)
+    if (!dateStr) {
 
-        .replace(/_/g, " ")
+        return new Date(NaN);
 
-        .replace(
-            /([a-z])([A-Z])/g,
-            "$1 $2"
-        )
+    }
 
-        .replace(
-            /\b\w/g,
-            character =>
-                character.toUpperCase()
+
+    return new Date(
+        `${dateStr}T${timeStr}:00`
+    );
+
+}
+
+
+
+/* ============================================================
+   LAPSED DETAILS
+============================================================ */
+
+function getLapsedDetails(
+    targetDate
+) {
+
+    const now =
+        new Date();
+
+
+    const diffMs =
+        now - targetDate;
+
+
+    if (diffMs <= 0) {
+
+        return null;
+
+    }
+
+
+    const diffDays =
+        Math.floor(
+            diffMs /
+            (1000 * 60 * 60 * 24)
         );
 
-}
+
+    const diffHours =
+        Math.floor(
+            (
+                diffMs %
+                (1000 * 60 * 60 * 24)
+            ) /
+            (1000 * 60 * 60)
+        );
 
 
+    if (diffDays > 0) {
 
-/* ============================================================
-   FORMAT LOGGED AT
-============================================================ */
-
-function formatLoggedAt(value) {
-
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-
-        return "—";
+        return `${diffDays}d ${diffHours}h Lapsed`;
 
     }
 
 
-    let rawValue = value;
-
-
-    /*
-     * MongoDB:
-     *
-     * { "$date": "..." }
-     */
-
-    if (
-        typeof value === "object" &&
-        value.$date
-    ) {
-
-        rawValue = value.$date;
-
-    }
-
-
-    const date =
-        new Date(rawValue);
-
-
-    if (isNaN(date.getTime())) {
-
-        return formatValue(value);
-
-    }
-
-
-    return date.toLocaleString();
+    return `${diffHours}h Lapsed`;
 
 }
 
 
 
 /* ============================================================
-   GET ALL CALL KEYS
+   SWITCH TAB
 ============================================================ */
 
-function getCallKeys(data) {
+function switchTab(tab) {
 
-    if (
-        !data ||
-        typeof data !== "object"
-    ) {
-
-        return [];
-
-    }
+    currentActiveTab =
+        tab;
 
 
-    return Object.keys(data)
+    [
+        "lapsed",
+        "today",
+        "tomorrow",
+        "other"
+    ].forEach(type => {
 
-        .filter(key =>
-            /^call\d+$/i.test(key)
-        )
-
-        .sort((a, b) => {
-
-            const numberA =
-                parseInt(
-                    a.replace(/\D/g, ""),
-                    10
-                );
+        const button =
+            document.getElementById(
+                `tab-${type}`
+            );
 
 
-            const numberB =
-                parseInt(
-                    b.replace(/\D/g, ""),
-                    10
-                );
+        if (type === tab) {
 
+            if (type === "lapsed") {
 
-            return numberA - numberB;
+                button.className =
+                    "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-rose-600 text-white border-rose-600 shadow-sm";
 
-        });
+            } else {
 
-}
+                button.className =
+                    "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-emerald-600 text-white border-emerald-600 shadow-sm";
 
+            }
 
+        } else {
 
-/* ============================================================
-   FIND HISTORY SOURCE
-============================================================ */
-
-function findHistorySource(data) {
-
-    /*
-     * Case 1:
-     *
-     * Backend directly returns:
-     *
-     * {
-     *   call1: {...},
-     *   call2: {...}
-     * }
-     */
-
-    if (
-        data &&
-        typeof data === "object" &&
-        getCallKeys(data).length
-    ) {
-
-        return data;
-
-    }
-
-
-    /*
-     * Case 2:
-     *
-     * Backend returns:
-     *
-     * {
-     *   task: {
-     *      call1: {...}
-     *   }
-     * }
-     */
-
-    if (
-        data &&
-        data.task &&
-        typeof data.task === "object"
-    ) {
-
-        if (
-            getCallKeys(data.task).length
-        ) {
-
-            return data.task;
+            button.className =
+                "px-4 py-2 text-xs font-bold rounded-xl border transition flex items-center gap-2 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200";
 
         }
 
-    }
+    });
 
 
-    /*
-     * Case 3:
-     *
-     * Backend returns:
-     *
-     * {
-     *   lead: {
-     *      call1: {...}
-     *   }
-     * }
-     */
+    renderTable();
 
-    if (
-        data &&
-        data.lead &&
-        typeof data.lead === "object"
-    ) {
+}
+
+
+
+/* ============================================================
+   RENDER TABLE
+============================================================ */
+
+function renderTable() {
+
+    const now =
+        new Date();
+
+
+    const todayStr =
+        formatDateString(now);
+
+
+    const tomorrowDate =
+        new Date();
+
+
+    tomorrowDate.setDate(
+        tomorrowDate.getDate() + 1
+    );
+
+
+    const tomorrowStr =
+        formatDateString(
+            tomorrowDate
+        );
+
+
+    const lapsedTasks = [];
+
+    const todayTasks = [];
+
+    const tomorrowTasks = [];
+
+    const otherTasks = [];
+
+
+
+    globalFollowupTasks.forEach(task => {
+
+        const targetDate =
+            parseTaskTargetDate(task);
+
 
         if (
-            getCallKeys(data.lead).length
+            isNaN(targetDate.getTime())
         ) {
 
-            return data.lead;
+            otherTasks.push(task);
+
+            return;
 
         }
 
-    }
+
+        const dateString =
+            formatDateString(
+                targetDate
+            );
 
 
-    return {};
+        if (targetDate < now) {
 
-}
+            lapsedTasks.push(task);
+
+        }
+
+        else if (
+            dateString === todayStr
+        ) {
+
+            todayTasks.push(task);
+
+        }
+
+        else if (
+            dateString === tomorrowStr
+        ) {
+
+            tomorrowTasks.push(task);
+
+        }
+
+        else {
+
+            otherTasks.push(task);
+
+        }
+
+    });
 
 
 
-/* ============================================================
-   RENDER SINGLE FIELD
-============================================================ */
+    /* ========================================================
+       BADGES
+    ======================================================== */
 
-function renderTimelineField(
-    fieldName,
-    fieldValue
-) {
-
-    let displayValue;
+    document.getElementById(
+        "badge-lapsed"
+    ).textContent =
+        lapsedTasks.length;
 
 
-    /*
-     * Logged At gets special formatting
-     */
+    document.getElementById(
+        "badge-today"
+    ).textContent =
+        todayTasks.length;
+
+
+    document.getElementById(
+        "badge-tomorrow"
+    ).textContent =
+        tomorrowTasks.length;
+
+
+    document.getElementById(
+        "badge-other"
+    ).textContent =
+        otherTasks.length;
+
+
+
+    /* ========================================================
+       ACTIVE LIST
+    ======================================================== */
+
+    let activeList =
+        lapsedTasks;
+
 
     if (
-        fieldName.toLowerCase() ===
-        "loggedat"
+        currentActiveTab === "today"
     ) {
 
-        displayValue =
-            formatLoggedAt(fieldValue);
-
-    } else {
-
-        displayValue =
-            formatValue(fieldValue);
+        activeList =
+            todayTasks;
 
     }
 
 
-    return `
+    if (
+        currentActiveTab === "tomorrow"
+    ) {
 
-        <div class="border-b border-slate-100 pb-3">
+        activeList =
+            tomorrowTasks;
 
-            <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">
+    }
 
-                ${escapeHtml(
-                    formatFieldLabel(fieldName)
-                )}
 
-            </div>
+    if (
+        currentActiveTab === "other"
+    ) {
 
+        activeList =
+            otherTasks;
 
-            <div class="text-sm font-semibold text-slate-700 break-words">
+    }
 
-                ${escapeHtml(displayValue)}
 
-            </div>
 
-        </div>
-
-    `;
-
-}
-
-
-
-/* ============================================================
-   RENDER ONE CALL
-============================================================ */
-
-function renderCallTimelineItem(
-    callKey,
-    callData,
-    index,
-    total
-) {
-
-    const callNumber =
-        callKey.replace(/\D/g, "") ||
-        String(index + 1);
-
-
-    /*
-     * Every backend property is rendered.
-     */
-
-    const fields =
-        Object.entries(callData)
-            .map(([key, value]) => {
-
-                return renderTimelineField(
-                    key,
-                    value
-                );
-
-            })
-            .join("");
-
-
-    return `
-
-        <div
-            class="relative pl-12 ${
-                index === total - 1
-                    ? "timeline-last"
-                    : ""
-            }"
-        >
-
-
-            <!-- Timeline line -->
-
-            <div class="timeline-line"></div>
-
-
-            <!-- Timeline icon -->
-
-            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-emerald-100 border-4 border-white shadow-sm flex items-center justify-center z-10">
-
-                <i class="fa-solid fa-phone text-emerald-600"></i>
-
-            </div>
-
-
-
-            <!-- Call card -->
-
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
-
-
-                <!-- Header -->
-
-                <div class="px-5 py-4 bg-slate-50 border-b border-slate-200">
-
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-
-
-                        <div>
-
-                            <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
-                                Customer History
-                            </div>
-
-                            <h3 class="text-lg font-bold text-slate-900 mt-0.5">
-                                Call ${escapeHtml(callNumber)}
-                            </h3>
-
-                        </div>
-
-
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
-
-                            <i class="fa-solid fa-phone"></i>
-
-                            Call Log
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- ALL BACKEND FIELDS -->
-
-                <div class="p-5">
-
-                    <div class="detail-grid">
-
-                        ${fields}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-
-/* ============================================================
-   RENDER CUSTOMER HISTORY
-============================================================ */
-
-function renderCustomerHistoryTimeline(
-    backendData
-) {
-
-    const container =
+    const tbody =
         document.getElementById(
-            "customerHistoryTimeline"
+            "followupTableBody"
         );
 
 
-    if (!container) {
-        return;
-    }
+
+    /* ========================================================
+       EMPTY STATE
+    ======================================================== */
+
+    if (!activeList.length) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="4"
+                    class="text-center py-16"
+                >
+
+                    <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-slate-100">
+
+                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+
+                    </div>
 
 
-    const historyData =
-        findHistorySource(
-            backendData
-        );
+                    <p class="text-sm font-semibold text-slate-700">
+
+                        No records found!
+
+                    </p>
 
 
-    const callKeys =
-        getCallKeys(historyData);
+                    <p class="text-xs text-slate-400 mt-1">
 
+                        There are no follow-ups found in
+                        ${escapeHtml(currentActiveTab)}.
 
-    /*
-     * No calls
-     */
+                    </p>
 
-    if (!callKeys.length) {
+                </td>
 
-        container.innerHTML = `
-
-            <div class="text-center py-16">
-
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 mb-4">
-
-                    <i class="fa-solid fa-clock-rotate-left text-xl"></i>
-
-                </div>
-
-                <p class="text-sm font-bold text-slate-700">
-                    No Customer History
-                </p>
-
-                <p class="text-xs text-slate-400 mt-1">
-                    No call logs were found for this lead.
-                </p>
-
-            </div>
+            </tr>
 
         `;
 
@@ -883,39 +899,180 @@ function renderCustomerHistoryTimeline(
     }
 
 
-    /*
-     * Render all calls:
-     *
-     * call1
-     * call2
-     * call3
-     * ...
-     */
 
-    container.innerHTML =
-        callKeys
-            .map((callKey, index) => {
+    /* ========================================================
+       TABLE ROWS
+       
+       IMPORTANT:
+       There is NO Call Log column here.
+       
+       Call Log is shown ONLY inside
+       Customer History Timeline.
+    ======================================================== */
 
-                const callData =
-                    historyData[callKey];
+    tbody.innerHTML =
+        activeList
+            .map(task => {
 
-
-                if (
-                    !callData ||
-                    typeof callData !== "object"
-                ) {
-
-                    return "";
-
-                }
+                const targetDate =
+                    parseTaskTargetDate(task);
 
 
-                return renderCallTimelineItem(
-                    callKey,
-                    callData,
-                    index,
-                    callKeys.length
-                );
+                const lapsedLabel =
+                    getLapsedDetails(
+                        targetDate
+                    );
+
+
+                const taskId =
+                    task._id ||
+                    task.id;
+
+
+                const name =
+                    task.name ||
+                    task.customerName ||
+                    task.leadName ||
+                    "Unnamed Lead";
+
+
+                const contact =
+                    task.contactNumber ||
+                    task.phone ||
+                    task.mobile ||
+                    "";
+
+
+                const followUpOption =
+                    task.followUpOption ||
+                    "—";
+
+
+                const followUpDate =
+                    task.followUpDate ||
+                    "—";
+
+
+                const followUpTime =
+                    task.followUpTime ||
+                    "—";
+
+
+
+                return `
+
+                    <tr class="hover:bg-slate-50/60 transition-colors group">
+
+
+                        <!-- LEAD NAME -->
+
+                        <td class="py-4 px-4">
+
+                            <a
+                                href="lead-response.html?id=${encodeURIComponent(taskId)}"
+                                class="font-semibold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-slate-300 hover:decoration-emerald-500"
+                            >
+
+                                ${escapeHtml(name)}
+
+                            </a>
+
+                        </td>
+
+
+
+                        <!-- CONTACT -->
+
+                        <td class="py-4 px-4 text-slate-600">
+
+                            ${
+                                contact
+                                ?
+                                `
+                                    <a
+                                        href="tel:${encodeURIComponent(contact)}"
+                                        class="inline-flex items-center gap-1.5 hover:text-emerald-600 transition"
+                                    >
+
+                                        <i class="fa-solid fa-phone text-xs text-slate-400"></i>
+
+                                        ${escapeHtml(contact)}
+
+                                    </a>
+                                `
+                                :
+                                `
+                                    <span class="text-slate-400 italic">
+                                        —
+                                    </span>
+                                `
+                            }
+
+                        </td>
+
+
+
+                        <!-- FOLLOW-UP OPTION -->
+
+                        <td class="py-4 px-4">
+
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50/80 text-amber-700 font-semibold rounded-xl text-xs border border-amber-200/60">
+
+                                <i class="fa-solid fa-tag text-[10px] text-amber-500"></i>
+
+                                ${escapeHtml(followUpOption)}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- DATE / TIME -->
+
+                        <td class="py-4 px-4 text-slate-600">
+
+                            <div class="inline-flex items-center gap-2 font-medium flex-wrap">
+
+
+                                <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">
+
+                                    ${escapeHtml(followUpDate)}
+
+                                </span>
+
+
+                                <span class="text-xs text-slate-400 font-normal">
+
+                                    ${escapeHtml(followUpTime)}
+
+                                </span>
+
+
+                                ${
+                                    lapsedLabel
+                                    ?
+                                    `
+                                        <span class="bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded text-[10px] border border-rose-200 ml-1">
+
+                                            <i class="fa-solid fa-clock-rotate-left mr-1"></i>
+
+                                            ${escapeHtml(lapsedLabel)}
+
+                                        </span>
+                                    `
+                                    :
+                                    ""
+                                }
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+                `;
 
             })
             .join("");
@@ -925,147 +1082,16 @@ function renderCustomerHistoryTimeline(
 
 
 /* ============================================================
-   UPDATE LEAD HEADER
+   LOAD FOLLOW-UPS
 ============================================================ */
 
-function updateLeadHeader(
-    backendData
-) {
-
-    let lead =
-        backendData;
-
-
-    if (
-        backendData &&
-        backendData.lead
-    ) {
-
-        lead =
-            backendData.lead;
-
-    }
-
-
-    if (
-        backendData &&
-        backendData.task
-    ) {
-
-        lead =
-            backendData.task;
-
-    }
-
-
-    if (
-        !lead ||
-        typeof lead !== "object"
-    ) {
-
-        return;
-
-    }
-
-
-    /*
-     * Name
-     */
-
-    const name =
-        lead.name ||
-        lead.customerName ||
-        lead.leadName ||
-        "Lead";
-
-
-    document.getElementById(
-        "leadName"
-    ).textContent =
-        formatValue(name);
-
-
-    /*
-     * Contact
-     */
-
-    const contact =
-        lead.contactNumber ||
-        lead.phone ||
-        lead.mobile ||
-        "";
-
-
-    document.getElementById(
-        "leadContact"
-    ).innerHTML =
-        contact
-        ?
-        `
-            <a
-                href="tel:${encodeURIComponent(contact)}"
-                class="inline-flex items-center gap-2 hover:text-emerald-600"
-            >
-
-                <i class="fa-solid fa-phone text-xs"></i>
-
-                ${escapeHtml(contact)}
-
-            </a>
-        `
-        :
-        "Contact Number: —";
-
-
-    /*
-     * Status
-     */
-
-    const status =
-        lead.leadStatus ||
-        lead.status ||
-        "—";
-
-
-    const statusBadge =
-        document.getElementById(
-            "leadStatusBadge"
-        );
-
-
-    statusBadge.textContent =
-        status;
-
-
-    if (
-        String(status)
-            .toLowerCase() === "completed"
-    ) {
-
-        statusBadge.className =
-            "inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold";
-
-    }
-
-}
-
-
-
-/* ============================================================
-   FIND LEAD RESPONSE
-============================================================ */
-
-async function loadLeadData() {
+async function loadFollowUps() {
 
     try {
 
-        /*
-         * First try the lead-response endpoint.
-         */
-
-        let response =
+        const response =
             await fetch(
-                `/api/lead-response/${encodeURIComponent(leadId)}`,
+                `/api/member-tasks/${encodeURIComponent(currentUsername)}`,
                 {
                     method: "GET",
                     headers: {
@@ -1074,28 +1100,6 @@ async function loadLeadData() {
                     cache: "no-store"
                 }
             );
-
-
-        /*
-         * If that endpoint doesn't exist,
-         * fall back to member tasks.
-         */
-
-        if (!response.ok) {
-
-            response =
-                await fetch(
-                    `/api/member-tasks/${encodeURIComponent(currentUsername)}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
-                        },
-                        cache: "no-store"
-                    }
-                );
-
-        }
 
 
         if (!response.ok) {
@@ -1111,103 +1115,145 @@ async function loadLeadData() {
             await response.json();
 
 
-        /*
-         * If using member-tasks endpoint,
-         * find the requested lead.
-         */
-
-        let finalData =
-            data;
-
 
         if (
-            data &&
-            Array.isArray(data.tasks)
+            !data.success ||
+            !Array.isArray(data.tasks)
         ) {
 
-            const task =
-                data.tasks.find(item => {
-
-                    const itemId =
-                        item._id ||
-                        item.id;
-
-                    return String(itemId) ===
-                        String(leadId);
-
-                });
-
-
-            if (!task) {
-
-                throw new Error(
-                    "Lead was not found in the assigned tasks."
-                );
-
-            }
-
-
-            finalData =
-                task;
+            throw new Error(
+                "Invalid follow-up response from server."
+            );
 
         }
 
 
-        /*
-         * Update header
-         */
 
-        updateLeadHeader(
-            finalData
-        );
+        const tasks =
+            data.tasks;
+
 
 
         /*
-         * Render ALL call logs
+         * Only follow-ups are displayed.
          */
 
-        renderCustomerHistoryTimeline(
-            finalData
-        );
+        globalFollowupTasks =
+            tasks.filter(task => {
+
+                return (
+                    String(
+                        task.followUpRequired || ""
+                    ).toLowerCase() === "yes"
+                );
+
+            });
+
+
+
+        /*
+         * Sidebar counts
+         */
+
+        const pendingTasks =
+            tasks.filter(task => {
+
+                return (
+                    !task.status ||
+                    String(task.status)
+                        .toLowerCase() !==
+                    "completed"
+                );
+
+            });
+
+
+        const visitTasks =
+            tasks.filter(task => {
+
+                return (
+                    String(
+                        task.visitRequired || ""
+                    ).toLowerCase() === "yes"
+                );
+
+            });
+
+
+
+        document.getElementById(
+            "sidebarPendingCount"
+        ).textContent =
+            pendingTasks.length;
+
+
+        document.getElementById(
+            "sidebarFollowupCount"
+        ).textContent =
+            globalFollowupTasks.length;
+
+
+        document.getElementById(
+            "sidebarVisitCount"
+        ).textContent =
+            visitTasks.length;
+
+
+
+        /*
+         * Header count
+         */
+
+        document.getElementById(
+            "followupCountBadge"
+        ).innerHTML = `
+
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+
+            <span>
+                ${globalFollowupTasks.length}
+                Active Follow-ups
+            </span>
+
+        `;
+
+
+
+        renderTable();
 
 
     } catch (error) {
 
         console.error(
-            "Failed to load lead:",
+            "Error loading follow-ups:",
             error
         );
 
 
         document.getElementById(
-            "customerHistoryTimeline"
+            "followupTableBody"
         ).innerHTML = `
 
-            <div class="text-center py-14">
+            <tr>
 
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 mb-4">
-
-                    <i class="fa-solid fa-circle-exclamation text-xl"></i>
-
-                </div>
-
-                <p class="text-sm font-bold text-slate-700">
-                    Failed to load customer history
-                </p>
-
-                <p class="text-xs text-slate-400 mt-1">
-                    ${escapeHtml(error.message)}
-                </p>
-
-                <button
-                    onclick="loadLeadData()"
-                    class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold"
+                <td
+                    colspan="4"
+                    class="text-center py-12 text-rose-500"
                 >
-                    <i class="fa-solid fa-rotate-right mr-1"></i>
-                    Try Again
-                </button>
 
-            </div>
+                    <i class="fa-solid fa-circle-exclamation text-xl mb-2"></i>
+
+                    <p class="text-xs font-medium">
+                        Failed to load follow-up records.
+                    </p>
+
+                    <p class="text-[11px] text-slate-400 mt-1">
+                        ${escapeHtml(error.message)}
+                    </p>
+
+                </td>
+
+            </tr>
 
         `;
 
@@ -1218,54 +1264,13 @@ async function loadLeadData() {
 
 
 /* ============================================================
-   ERROR
-============================================================ */
-
-function showError(message) {
-
-    document.getElementById(
-        "customerHistoryTimeline"
-    ).innerHTML = `
-
-        <div class="text-center py-14 text-rose-500">
-
-            <i class="fa-solid fa-circle-exclamation text-2xl mb-3"></i>
-
-            <p class="text-sm font-semibold">
-                ${escapeHtml(message)}
-            </p>
-
-        </div>
-
-    `;
-
-}
-
-
-
-/* ============================================================
-   LOGOUT
-============================================================ */
-
-function logoutUser() {
-
-    localStorage.clear();
-
-}
-
-
-
-/* ============================================================
    START
 ============================================================ */
 
-if (leadId) {
-
-    loadLeadData();
-
-}
+loadFollowUps();
 
 </script>
 
 </body>
+
 </html>
