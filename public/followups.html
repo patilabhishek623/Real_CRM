@@ -249,14 +249,123 @@
             </button>
         </div>
 
-        <!-- Tab Content: Call Connected -->
+        <!-- Tab Content: Call Connected (Interactive Disposition Form) -->
         <div id="tabContentConnected" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
             <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center">
-                <i class="fa-solid fa-circle-info text-primary-600 mr-2"></i> Latest Call Connection Status & Metrics
+                <i class="fa-solid fa-phone-volume text-primary-600 mr-2"></i> Live Call Disposition & Telephony Form
             </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="connectedDetailsGrid">
-                <!-- Injected via JS -->
-            </div>
+            
+            <form id="callDispositionForm" onsubmit="submitCallDisposition(event)" class="space-y-6">
+                <!-- Question 1: Call Connected Status -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-slate-900">1. Was the Call Connected?</label>
+                    <select id="selectCallConnected" onchange="toggleConnectionFields()" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                        <option value="">-- Choose Call Status --</option>
+                        <option value="Call Not Connected">🔴 Call Not Connected</option>
+                        <option value="Call Connected">🟢 Call Connected</option>
+                    </select>
+                </div>
+
+                <!-- Conditional Container if Connected or Follow-up -->
+                <div id="dispositionDependentFields" class="space-y-6 hidden">
+                    
+                    <!-- Question 2: Select Disposition Category -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-900">2. Select Call Disposition Category</label>
+                        <select id="selectCategory" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                            <option value="">-- Choose Category --</option>
+                            <option value="Call Not Connected">🔴 Call Not Connected</option>
+                            <option value="Call Connected — Interested">🟢 Call Connected — Interested</option>
+                            <option value="Follow-Up Required">🟡 Follow-Up Required</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 3: Select Specific Remark / Detail -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-900">3. Select Specific Remark / Detail</label>
+                        <select id="selectSpecificRemark" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                            <option value="">-- Choose Specific Remark --</option>
+                            <option value="Interested – Wants Project Details">Interested – Wants Project Details</option>
+                            <option value="Interested – Wants Price Details">Interested – Wants Price Details</option>
+                            <option value="Interested – Wants Brochure">Interested – Wants Brochure</option>
+                            <option value="Interested – Wants Floor Plan">Interested – Wants Floor Plan</option>
+                            <option value="Interested – Wants Payment Plan">Interested – Wants Payment Plan</option>
+                            <option value="Interested – Wants Location Details">Interested – Wants Location Details</option>
+                            <option value="Interested – Wants Amenities Details">Interested – Wants Amenities Details</option>
+                            <option value="Interested – Wants Configuration Options">Interested – Wants Configuration Options</option>
+                            <option value="Interested – Comparing Multiple Projects">Interested – Comparing Multiple Projects</option>
+                            <option value="Interested – Wants to Discuss With Family">Interested – Wants to Discuss With Family</option>
+                            <option value="Interested – Wants to Speak With Spouse">Interested – Wants to Speak With Spouse</option>
+                            <option value="Interested – Wants Developer/Builder Details">Interested – Wants Developer/Builder Details</option>
+                            <option value="Incoming Calls Not Available">Incoming Calls Not Available</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 4: Lead Temperature (Hot, Warm, Cold) -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-900">4. Select Lead Temperature</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
+                                <input type="radio" name="leadTemperature" value="Hot Lead" class="mb-1 text-primary-600 focus:ring-primary-500">
+                                <span class="text-xs font-bold text-rose-600"><i class="fa-solid fa-fire mr-1"></i> Hot Lead</span>
+                            </label>
+                            <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
+                                <input type="radio" name="leadTemperature" value="Warm Lead" checked class="mb-1 text-primary-600 focus:ring-primary-500">
+                                <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-sun mr-1"></i> Warm Lead</span>
+                            </label>
+                            <label class="cursor-pointer border border-slate-200 rounded-lg p-3 text-center hover:bg-slate-50 transition flex flex-col items-center">
+                                <input type="radio" name="leadTemperature" value="Cold Lead" class="mb-1 text-primary-600 focus:ring-primary-500">
+                                <span class="text-xs font-bold text-blue-600"><i class="fa-solid fa-snowflake mr-1"></i> Cold Lead</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 5: Visit Scheduled or Not -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-slate-900">5. Site Visit Scheduled?</label>
+                            <select id="selectVisitScheduled" onchange="toggleVisitFields()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2" id="visitDateContainer" style="display: none;">
+                            <label class="block text-sm font-bold text-slate-900">Visit Date & Time</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="date" id="inputVisitDate" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                                <input type="time" id="inputVisitTime" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6: Follow-Up Required Yes/No with Time & Date -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-100">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-slate-900">6. Follow-Up Required?</label>
+                            <select id="selectFollowUpReq" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-slate-900">Follow-Up Date</label>
+                            <input type="date" id="inputFollowUpDate" value="2026-10-06" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-slate-900">Follow-Up Time</label>
+                            <input type="time" id="inputFollowUpTime" value="11:00" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Submit Disposition Button -->
+                <div class="flex justify-end pt-4 border-t border-slate-100">
+                    <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow transition flex items-center">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Save & Log Call Disposition
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Tab Content: Call History -->
@@ -266,7 +375,7 @@
                     <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs (Call 1 to Call 4)
                 </h3>
                 <div class="space-y-6" id="historyTimelineContainer">
-                    <!-- Injected via JS including requested call1 schema -->
+                    <!-- Injected via JS -->
                 </div>
             </div>
         </div>
@@ -399,29 +508,8 @@
                         closeReason: "",
                         loggedAt: { date: "2026-10-02 15:30:00" }
                     },
-                    call3: {
-                        title: "Call Log - Final Review",
-                        call_connected: "Call Connected",
-                        remark: "Scheduled call to finalize site visit slot.",
-                        followUpRequired: "No",
-                        followUpOption: "",
-                        followUpDate: "",
-                        followUpTime: "",
-                        visitScheduled: "Yes",
-                        visitDate: "2026-10-06",
-                        visitTime: "14:00",
-                        visitBuilding: "Bandra Towers Wing A",
-                        visitLocation: "Bandra West",
-                        visitNote: "Confirmed appointment.",
-                        visitorComing: "Self",
-                        rescheduleReason: "",
-                        visitInterestCustomer: "High",
-                        rescheduleVisitChoice: "",
-                        leadStatus: "Active",
-                        closeReason: "",
-                        loggedAt: { date: "2026-10-04 10:00:00" }
-                    },
-                    call4: null // Absent test case
+                    call3: null,
+                    call4: null
                 }
             },
             {
@@ -458,46 +546,6 @@
                         leadStatus: "Pending Bank Approval",
                         closeReason: "",
                         loggedAt: { date: "2026-10-02 11:00:00" }
-                    },
-                    call2: null,
-                    call3: null,
-                    call4: null
-                }
-            },
-            {
-                id: "CALL-103",
-                user: LOGGED_IN_USER,
-                leadName: "Ananya Iyer",
-                phone: "+91 98199 88776",
-                property: "2 BHK Luxury Suite - Lower Parel",
-                datetime: formatDatetimeLocal(d3),
-                remark: "Call scheduled to confirm site visit timing for Sunday.",
-                completed: false,
-                connectedStatus: "Call Not Connected",
-                callDuration: "00:00 mins",
-                leadQuality: "New Lead",
-                history: {
-                    call1: {
-                        title: "Call Log",
-                        call_connected: "Call Not Connected",
-                        remark: "Phone switched off. Ringing out.",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call Later Today",
-                        followUpDate: "2026-10-04",
-                        followUpTime: "17:00",
-                        visitScheduled: "No",
-                        visitDate: "",
-                        visitTime: "",
-                        visitBuilding: "",
-                        visitLocation: "",
-                        visitNote: "",
-                        visitorComing: "",
-                        rescheduleReason: "",
-                        visitInterestCustomer: "",
-                        rescheduleVisitChoice: "",
-                        leadStatus: "Unresponsive",
-                        closeReason: "",
-                        loggedAt: { date: "2026-10-04 09:30:00" }
                     },
                     call2: null,
                     call3: null,
@@ -624,13 +672,41 @@
             document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
         }
 
-        // Open Lead Profile Page (Switches view & populates tabs)
+        // Toggle Form Fields based on Call Connection Status
+        function toggleConnectionFields() {
+            const val = document.getElementById('selectCallConnected').value;
+            const container = document.getElementById('dispositionDependentFields');
+            const catSelect = document.getElementById('selectCategory');
+            
+            if (val === 'Call Connected') {
+                container.classList.remove('hidden');
+                catSelect.value = 'Call Connected — Interested';
+            } else if (val === 'Call Not Connected') {
+                container.classList.remove('hidden');
+                catSelect.value = 'Call Not Connected';
+                document.getElementById('selectSpecificRemark').value = 'Incoming Calls Not Available';
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // Toggle Visit Fields based on Site Visit Scheduled Yes/No
+        function toggleVisitFields() {
+            const val = document.getElementById('selectVisitScheduled').value;
+            const container = document.getElementById('visitDateContainer');
+            if (val === 'Yes') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // Open Lead Profile Page
         function openLeadProfile(callId) {
             const call = callsDatabase.find(c => c.id === callId);
             if (!call) return;
             currentSelectedLeadId = callId;
 
-            // Populate Profile Header
             document.getElementById('profileLeadName').innerText = call.leadName;
             document.getElementById('profileLeadPhone').innerText = call.phone;
             document.getElementById('profileLeadProperty').innerText = call.property || 'General Inquiry';
@@ -647,28 +723,16 @@
             else badgeHtml = `<span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-full">Active</span>`;
             document.getElementById('profileCategoryBadge').innerHTML = badgeHtml;
 
-            // Populate Tab 1: Call Connected Details
-            const connectedGrid = document.getElementById('connectedDetailsGrid');
-            connectedGrid.innerHTML = `
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <span class="text-xs font-semibold uppercase text-slate-500">Connection Status</span>
-                    <p class="text-base font-bold text-slate-900 mt-1"><i class="fa-solid fa-phone text-primary-600 mr-2"></i> ${call.connectedStatus || 'Call Connected'}</p>
-                </div>
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <span class="text-xs font-semibold uppercase text-slate-500">Call Duration</span>
-                    <p class="text-base font-bold text-slate-900 mt-1"><i class="fa-solid fa-stopwatch text-amber-500 mr-2"></i> ${call.callDuration || '03:30 mins'}</p>
-                </div>
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <span class="text-xs font-semibold uppercase text-slate-500">Lead Quality</span>
-                    <p class="text-base font-bold text-slate-900 mt-1"><i class="fa-solid fa-fire text-rose-500 mr-2"></i> ${call.leadQuality || 'Warm Lead'}</p>
-                </div>
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 sm:col-span-2 lg:col-span-3">
-                    <span class="text-xs font-semibold uppercase text-slate-500">Latest Remarks / Notes</span>
-                    <p class="text-sm font-medium text-slate-800 mt-1 bg-white p-3 rounded-lg border border-slate-100">"${call.remark || 'No remarks recorded.'}"</p>
-                </div>
-            `;
+            // Render Timeline History
+            renderHistoryTimeline(call);
 
-            // Populate Tab 2: Call History Timeline including requested exact call1 schema
+            // Switch view
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('profileView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderHistoryTimeline(call) {
             const historyContainer = document.getElementById('historyTimelineContainer');
             historyContainer.innerHTML = '';
 
@@ -698,9 +762,8 @@
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
                                 <div><strong class="text-slate-700">Follow-up Req:</strong> ${historyData.followUpRequired || 'N/A'}</div>
-                                <div><strong class="text-slate-700">Follow-up Option:</strong> ${historyData.followUpOption || 'N/A'}</div>
                                 <div><strong class="text-slate-700">Follow-up Date:</strong> ${historyData.followUpDate || 'N/A'} (${historyData.followUpTime || 'N/A'})</div>
-                                <div><strong class="text-slate-700">Visit Scheduled:</strong> ${historyData.visitScheduled || 'N/A'}</div>
+                                <div><strong class="text-slate-700">Visit Scheduled:</strong> ${historyData.visitScheduled || 'No'}</div>
                                 <div><strong class="text-slate-700">Visit Date:</strong> ${historyData.visitDate || 'None'}</div>
                                 <div><strong class="text-slate-700">Lead Status:</strong> ${historyData.leadStatus || 'Active'}</div>
                             </div>
@@ -723,11 +786,77 @@
                 }
                 historyContainer.appendChild(itemDiv);
             });
+        }
 
-            // Switch view
-            document.getElementById('dashboardView').classList.add('hidden');
-            document.getElementById('profileView').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Submit and Save Call Disposition from Form
+        function submitCallDisposition(event) {
+            event.preventDefault();
+            const call = callsDatabase.find(c => c.id === currentSelectedLeadId);
+            if (!call) return;
+
+            const callConnected = document.getElementById('selectCallConnected').value;
+            const category = document.getElementById('selectCategory').value;
+            const remark = document.getElementById('selectSpecificRemark').value;
+            const tempRadios = document.getElementsByName('leadTemperature');
+            let temperature = 'Warm Lead';
+            for (const r of tempRadios) {
+                if (r.checked) temperature = r.value;
+            }
+            const visitScheduled = document.getElementById('selectVisitScheduled').value;
+            const visitDate = document.getElementById('inputVisitDate').value;
+            const visitTime = document.getElementById('inputVisitTime').value;
+            const followUpReq = document.getElementById('selectFollowUpReq').value;
+            const followUpDate = document.getElementById('inputFollowUpDate').value;
+            const followUpTime = document.getElementById('inputFollowUpTime').value;
+
+            // Find next available slot in history (call1, call2, call3, call4)
+            let targetKey = null;
+            ['call1', 'call2', 'call3', 'call4'].forEach(k => {
+                if (!targetKey && (!call.history[k])) {
+                    targetKey = k;
+                }
+            });
+
+            if (!targetKey) targetKey = 'call4'; // fallback
+
+            const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+            // Save new entry
+            call.history[targetKey] = {
+                title: "Call Log - " + category,
+                call_connected: callConnected,
+                remark: remark || "Disposition recorded successfully.",
+                followUpRequired: followUpReq,
+                followUpOption: "Custom Scheduled",
+                followUpDate: followUpDate,
+                followUpTime: followUpTime,
+                visitScheduled: visitScheduled,
+                visitDate: visitDate,
+                visitTime: visitTime,
+                visitBuilding: call.property,
+                visitLocation: "Bandra West",
+                visitNote: remark,
+                visitorComing: visitScheduled === 'Yes' ? "Self + Family" : "",
+                rescheduleReason: "",
+                visitInterestCustomer: temperature,
+                rescheduleVisitChoice: "",
+                leadStatus: category,
+                closeReason: "",
+                loggedAt: { date: nowStr }
+            };
+
+            // Update main call summary
+            call.connectedStatus = callConnected;
+            call.remark = remark;
+            call.leadQuality = temperature;
+            if (followUpDate) {
+                call.datetime = followUpDate + 'T' + (followUpTime || '10:00');
+            }
+
+            alert("Call disposition successfully logged to database!");
+            renderHistoryTimeline(call);
+            renderCalls();
+            switchProfileTab('history');
         }
 
         function backToDashboard() {
@@ -818,7 +947,7 @@
                 completed: false,
                 connectedStatus: "Call Connected",
                 callDuration: "02:00 mins",
-                leadQuality: "New Lead",
+                leadQuality: "Warm Lead",
                 history: {
                     call1: {
                         title: "Call Log",
