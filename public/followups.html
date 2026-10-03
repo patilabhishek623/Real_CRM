@@ -396,20 +396,45 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Updated function showing all history logs (call1, call2, call3...) sequentially
         function renderHistoryTimeline(taskObj) {
             const container = document.getElementById('historyTimelineContainer');
             container.innerHTML = '';
+            
             let i = 1;
-            while(taskObj && taskObj[`call${i}`]) {
+            let hasCalls = false;
+
+            while (taskObj && taskObj[`call${i}`]) {
                 const call = taskObj[`call${i}`];
+                hasCalls = true;
+
                 container.innerHTML += `
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-1">
-                        <div class="font-bold text-slate-900"><i class="fa-solid fa-phone mr-1 text-primary-600"></i> Call ${i} - ${call.call_connected || 'Recorded'}</div>
-                        <div><strong>Remark:</strong> ${call.remark || 'N/A'}</div>
-                        <div><strong>Follow-up Required:</strong> ${call.followUpRequired || 'No'} (${call.followUpDate || 'None'})</div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 text-xs space-y-2 shadow-sm">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <span class="font-bold text-sm text-slate-900">
+                                <i class="fa-solid fa-phone mr-1.5 text-primary-600"></i> Call ${i} Record
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full font-semibold bg-blue-100 text-blue-800">
+                                ${call.call_connected || 'Completed'}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pt-1 text-slate-700">
+                            <div><strong>Category / Status:</strong> ${call.leadStatus || 'N/A'}</div>
+                            <div><strong>Follow-up Required:</strong> ${call.followUpRequired || 'No'}</div>
+                            <div><strong>Follow-up Date:</strong> ${call.followUpDate ? call.followUpDate + ' ' + (call.followUpTime || '') : 'None'}</div>
+                            <div><strong>Visit Scheduled:</strong> ${call.visitScheduled || 'No'}</div>
+                            <div><strong>Visit Date:</strong> ${call.visitDate ? call.visitDate + ' ' + (call.visitTime || '') : 'None'}</div>
+                        </div>
+                        <div class="pt-1 text-slate-800">
+                            <strong>Remark / Specific Detail:</strong> <span class="text-slate-600 italic">"${call.remark || 'No remark recorded'}"</span>
+                        </div>
                     </div>
                 `;
                 i++;
+            }
+
+            if (!hasCalls) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-400 italic bg-slate-50 rounded-xl border border-dashed border-slate-300">No call history logs found in database timeline for this lead.</div>`;
             }
         }
 
