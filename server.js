@@ -116,6 +116,39 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// --- API: Add Member & Provision Collection ---
+app.post('/api/add-member', async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Username and password are required.' });
+    }
+    try {
+        const trimmedUsername = username.trim();
+        const existingUser = await User.findOne({ username: trimmedUsername });
+        if (existingUser) {
+            return res.json({ success: false, message: 'Username already exists.' });
+        }
+
+        // Create the team member user
+        await User.create({
+            username: trimmedUsername,
+            password: password.trim(),
+            role: 'teammember'
+        });
+
+        // Initialize/provision their dedicated collection via helper function
+        getMemberTaskModel(trimmedUsername);
+
+        res.json({ 
+            success: true, 
+            message: `Team member '${trimmedUsername}' created successfully and collection 'tasks_${trimmedUsername}' initialized!` 
+        });
+    } catch (err) {
+        console.error('Error adding member:', err);
+        res.status(500).json({ success: false, message: 'Server error while creating team member.' });
+    }
+});
+
 app.get('/api/members', async (req, res) => {
     try {
         const members = await User.find({ role: 'teammember' }, 'username');
