@@ -223,14 +223,14 @@
         <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center space-x-4">
                 <div class="w-14 h-14 rounded-full bg-primary-600 text-white flex items-center justify-center text-xl font-bold shadow" id="profileLeadAvatar">
-                    VN
+                    VM
                 </div>
                 <div>
                     <h2 class="text-xl font-bold text-slate-900" id="profileLeadName">Vikram Malhotra</h2>
                     <p class="text-sm text-slate-500 flex items-center mt-0.5">
                         <i class="fa-solid fa-phone mr-1.5 text-slate-400"></i> <span id="profileLeadPhone">+91 98211 44556</span>
                         <span class="mx-2">&bull;</span>
-                        <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> <span id="profileLeadProperty">4 BHK Penthouse</span>
+                        <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> <span id="profileLeadProperty">4 BHK Penthouse - Bandra West</span>
                     </p>
                 </div>
             </div>
@@ -340,7 +340,7 @@
         const d2 = new Date(now); d2.setDate(now.getDate() - 2); d2.setHours(15, 30);
         const d3 = new Date(now); d3.setHours(10, 0);
 
-        // Mock Database with Multi-Call Timeline History including the exact requested call1 schema
+        // Mock Database with Vikram Malhotra and exact requested call1 schema
         let callsDatabase = [
             {
                 id: "CALL-101",
@@ -349,10 +349,10 @@
                 phone: "+91 98211 44556",
                 property: "4 BHK Penthouse - Bandra West",
                 datetime: formatDatetimeLocal(d1),
-                remark: "Requested revised floor plan and parking allotment details.",
+                remark: "Incoming Calls Not Available",
                 completed: false,
-                connectedStatus: "Call Connected",
-                callDuration: "04:15 mins",
+                connectedStatus: "Call Not Connected",
+                callDuration: "00:04 mins",
                 leadQuality: "Hot Lead",
                 history: {
                     call1: {
@@ -636,7 +636,6 @@
             document.getElementById('profileLeadProperty').innerText = call.property || 'General Inquiry';
             document.getElementById('profilePropertyBadge').innerText = call.property ? call.property.split('-')[0].trim() : 'General';
             
-            // Initials for avatar
             const initials = call.leadName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             document.getElementById('profileLeadAvatar').innerText = initials;
 
@@ -669,7 +668,7 @@
                 </div>
             `;
 
-            // Populate Tab 2: Call History Timeline (Call 1, Call 2, Call 3, Call 4)
+            // Populate Tab 2: Call History Timeline including requested exact call1 schema
             const historyContainer = document.getElementById('historyTimelineContainer');
             historyContainer.innerHTML = '';
 
