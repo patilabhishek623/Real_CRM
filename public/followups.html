@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Follow-Up Calls Dashboard - Real Estate CRM</title>
+    <title>Follow-Up Calls & Customer Timeline - Real Estate CRM</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-900 leading-tight">CRM Follow-Up Hub</h1>
-                    <p class="text-xs text-slate-500">Real Estate Lead Management</p>
+                    <p class="text-xs text-slate-500">Real Estate Lead Management & Timelines</p>
                 </div>
             </div>
             
@@ -61,7 +61,7 @@
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Follow-Up Call Management</h2>
-                <p class="text-sm text-slate-600">Track overdue calls, plan your day, and manage upcoming leads efficiently.</p>
+                <p class="text-sm text-slate-600">Track overdue calls, plan your day, and inspect customer call timelines.</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="refreshData()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
@@ -124,7 +124,7 @@
             </div>
 
             <!-- All Follow-ups -->
-            <div onclick="filterTab('all')" id="card-all" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition border-l-4 border-l-slate-600 group ring-2 ring-primary-500 ring-offset-2" id="summary-card-all">
+            <div onclick="filterTab('all')" id="card-all" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition border-l-4 border-l-slate-600 group ring-2 ring-primary-500 ring-offset-2">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wider text-slate-600">All Database Calls</p>
@@ -197,7 +197,7 @@
                 <p class="text-sm text-slate-500 mt-1">There are no calls matching the selected filter or search criteria.</p>
             </div>
 
-            <!-- Table Footer / Pagination info -->
+            <!-- Table Footer -->
             <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
                 <span id="tableCountInfo">Showing 0 calls</span>
                 <div class="flex items-center space-x-2">
@@ -258,12 +258,37 @@
         </div>
     </div>
 
+    <!-- Customer History Timeline Modal -->
+    <div id="timelineModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                <div>
+                    <h3 id="timelineModalTitle" class="font-bold text-lg"><i class="fa-solid fa-timeline mr-2 text-primary-400"></i> Customer History Timeline</h3>
+                    <p class="text-xs text-slate-400" id="timelineModalSubtitle">Complete interaction logs for lead</p>
+                </div>
+                <button onclick="closeTimelineModal()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Timeline Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow bg-slate-50/50" id="timelineContainer">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-white px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+                <span class="text-xs text-slate-500"><i class="fa-solid fa-circle-info text-primary-500 mr-1"></i> Showing all database call records (Call 1 to Call 4)</span>
+                <button onclick="closeTimelineModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition">Close Timeline</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Application Logic -->
     <script>
-        // Logged-in user context
         const LOGGED_IN_USER = "Abhishek Patil";
         
-        // Helper to format dates for datetime-local input
         function formatDatetimeLocal(date) {
             const pad = (n) => n < 10 ? '0' + n : n;
             return date.getFullYear() + '-' +
@@ -273,32 +298,13 @@
                 pad(date.getMinutes());
         }
 
-        // Generate dynamic relative sample dates based on current time (October 4, 2026)
-        const now = new Date(2026, 9, 4, 14, 30, 0); // Oct 4, 2026, 2:30 PM
+        const now = new Date(2026, 9, 4, 14, 30, 0); // Oct 4, 2026
         
-        const yesterdayDate = new Date(now);
-        yesterdayDate.setDate(now.getDate() - 1);
-        yesterdayDate.setHours(11, 0, 0);
+        const d1 = new Date(now); d1.setDate(now.getDate() - 5); d1.setHours(11, 0);
+        const d2 = new Date(now); d2.setDate(now.getDate() - 2); d2.setHours(15, 30);
+        const d3 = new Date(now); d3.setHours(10, 0);
 
-        const threeDaysAgoDate = new Date(now);
-        threeDaysAgoDate.setDate(now.getDate() - 3);
-        threeDaysAgoDate.setHours(16, 15, 0);
-
-        const todayMorning = new Date(now);
-        todayMorning.setHours(10, 0, 0);
-
-        const todayEvening = new Date(now);
-        todayEvening.setHours(17, 30, 0);
-
-        const tomorrowDate = new Date(now);
-        tomorrowDate.setDate(now.getDate() + 1);
-        tomorrowDate.setHours(12, 0, 0);
-
-        const futureDate = new Date(now);
-        futureDate.setDate(now.getDate() + 5);
-        futureDate.setHours(14, 0, 0);
-
-        // Initial Mock Database for Logged-In User
+        // Mock Database with Multi-Call Timeline History (call1, call2, call3, call4)
         let callsDatabase = [
             {
                 id: "CALL-101",
@@ -306,9 +312,31 @@
                 leadName: "Vikram Malhotra",
                 phone: "+91 98211 44556",
                 property: "4 BHK Penthouse - Bandra West",
-                datetime: formatDatetimeLocal(threeDaysAgoDate),
-                remark: "Requested revised floor plan and parking allotment details. Lapsed follow-up.",
-                completed: false
+                datetime: formatDatetimeLocal(d1),
+                remark: "Requested revised floor plan and parking allotment details.",
+                completed: false,
+                // Full call history timeline records
+                history: {
+                    call1: {
+                        date: formatDatetimeLocal(d1),
+                        status: "Completed",
+                        remark: "Initial inquiry received. Shared floor plans and brochure over WhatsApp.",
+                        agent: LOGGED_IN_USER
+                    },
+                    call2: {
+                        date: formatDatetimeLocal(d2),
+                        status: "Completed",
+                        remark: "Discussed pricing negotiation and bank financing options.",
+                        agent: LOGGED_IN_USER
+                    },
+                    call3: {
+                        date: formatDatetimeLocal(now),
+                        status: "Overdue / Pending",
+                        remark: "Scheduled call to finalize site visit slot.",
+                        agent: LOGGED_IN_USER
+                    },
+                    call4: null // Absent data test case
+                }
             },
             {
                 id: "CALL-102",
@@ -316,9 +344,20 @@
                 leadName: "Sunita Deshmukh",
                 phone: "+91 97001 22334",
                 property: "3 BHK Sea View Apartment - Worli",
-                datetime: formatDatetimeLocal(yesterdayDate),
-                remark: "Bank loan pre-approval discussed. Awaiting confirmation call.",
-                completed: false
+                datetime: formatDatetimeLocal(d2),
+                remark: "Bank loan pre-approval discussed.",
+                completed: false,
+                history: {
+                    call1: {
+                        date: formatDatetimeLocal(d2),
+                        status: "Completed",
+                        remark: "Customer called inquiring about sea-facing inventory availability.",
+                        agent: LOGGED_IN_USER
+                    },
+                    call2: null, // Absent
+                    call3: null, // Absent
+                    call4: null  // Absent
+                }
             },
             {
                 id: "CALL-103",
@@ -326,98 +365,54 @@
                 leadName: "Ananya Iyer",
                 phone: "+91 98199 88776",
                 property: "2 BHK Luxury Suite - Lower Parel",
-                datetime: formatDatetimeLocal(todayMorning),
-                remark: "Call scheduled to confirm site visit timing for Sunday afternoon.",
-                completed: false
-            },
-            {
-                id: "CALL-104",
-                user: LOGGED_IN_USER,
-                leadName: "Rohan Kulkarni",
-                phone: "+91 99200 11223",
-                property: "Commercial Office Space - BKC",
-                datetime: formatDatetimeLocal(todayEvening),
-                remark: "Follow up regarding commercial lease agreement and maintenance terms.",
-                completed: false
-            },
-            {
-                id: "CALL-105",
-                user: LOGGED_IN_USER,
-                leadName: "Meera Singhania",
-                phone: "+91 98333 55443",
-                property: "Duplex Villa - Juhu Scheme",
-                datetime: formatDatetimeLocal(tomorrowDate),
-                remark: "Send brochure and price sheet before call tomorrow noon.",
-                completed: false
-            },
-            {
-                id: "CALL-106",
-                user: LOGGED_IN_USER,
-                leadName: "Dr. Ramesh Shinde",
-                phone: "+91 98200 77889",
-                property: "3 BHK Apartment - Powai Lake",
-                datetime: formatDatetimeLocal(futureDate),
-                remark: "Interested in Q1 2027 possession handover projects.",
-                completed: false
-            },
-            {
-                id: "CALL-107",
-                user: LOGGED_IN_USER,
-                leadName: "Karan Johari",
-                phone: "+91 98765 12345",
-                property: "1 BHK Studio - Andheri East",
-                datetime: formatDatetimeLocal(yesterdayDate),
-                remark: "Customer missed call. Need to reschedule.",
-                completed: true // Completed call example
+                datetime: formatDatetimeLocal(d3),
+                remark: "Call scheduled to confirm site visit timing for Sunday.",
+                completed: false,
+                history: {
+                    call1: {
+                        date: formatDatetimeLocal(d3),
+                        status: "Scheduled / Due Today",
+                        remark: "First touchpoint scheduled for today morning.",
+                        agent: LOGGED_IN_USER
+                    },
+                    call2: null,
+                    call3: null,
+                    call4: null
+                }
             }
         ];
 
         let currentFilter = 'all';
         let searchQuery = '';
 
-        // Helper: Determine category of a call based on scheduled datetime relative to 'now'
         function getCallCategory(call) {
             if (call.completed) return 'completed';
-            
             const callDate = new Date(call.datetime);
-            
-            // Normalize dates to compare calendar days
             const callDateOnly = new Date(callDate.getFullYear(), callDate.getMonth(), callDate.getDate());
             const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            
             const diffDays = Math.round((callDateOnly - nowDateOnly) / (1000 * 60 * 60 * 24));
             
-            if (diffDays < 0) {
-                return 'lapsed'; // Past date
-            } else if (diffDays === 0) {
-                return 'today'; // Same calendar day
-            } else if (diffDays === 1) {
-                return 'tomorrow'; // Next calendar day
-            } else {
-                return 'upcoming'; // 2+ days in future
-            }
+            if (diffDays < 0) return 'lapsed';
+            if (diffDays === 0) return 'today';
+            if (diffDays === 1) return 'tomorrow';
+            return 'upcoming';
         }
 
-        // Format Date string nicely for display
         function formatDisplayDate(dateStr) {
+            if (!dateStr) return 'N/A';
             const d = new Date(dateStr);
             const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
             return d.toLocaleDateString('en-US', options);
         }
 
-        // Initialize dashboard
         function initDashboard() {
             document.getElementById('currentUserName').innerText = LOGGED_IN_USER;
             document.getElementById('footerUser').innerText = LOGGED_IN_USER;
             renderCalls();
         }
 
-        // Render statistics counts & table rows
         function renderCalls() {
-            // Filter by logged-in user
             const userCalls = callsDatabase.filter(c => c.user === LOGGED_IN_USER);
-
-            // Calculate counts for active (not completed) calls primarily, but show all in 'all'
             const activeCalls = userCalls.filter(c => !c.completed);
             
             const counts = {
@@ -427,7 +422,6 @@
                 tomorrow: activeCalls.filter(c => getCallCategory(c) === 'tomorrow').length,
             };
 
-            // Update badges & card numbers
             document.getElementById('count-all').innerText = counts.all;
             document.getElementById('count-lapsed').innerText = counts.lapsed;
             document.getElementById('count-today').innerText = counts.today;
@@ -438,17 +432,13 @@
             document.getElementById('badge-today').innerText = counts.today;
             document.getElementById('badge-tomorrow').innerText = counts.tomorrow;
 
-            // Filter data according to currentFilter and search
             let filtered = userCalls.filter(call => {
                 const category = getCallCategory(call);
-                
-                // Tab filter logic
                 if (currentFilter === 'lapsed' && (category !== 'lapsed' || call.completed)) return false;
                 if (currentFilter === 'today' && (category !== 'today' || call.completed)) return false;
                 if (currentFilter === 'tomorrow' && (category !== 'tomorrow' || call.completed)) return false;
-                if (currentFilter === 'all' && call.completed) return false; // Hide completed in default 'all' view for clarity
+                if (currentFilter === 'all' && call.completed) return false;
 
-                // Search query matching
                 if (searchQuery) {
                     const q = searchQuery.toLowerCase();
                     const matchName = call.leadName.toLowerCase().includes(q);
@@ -457,11 +447,9 @@
                     const matchRemark = (call.remark || '').toLowerCase().includes(q);
                     if (!matchName && !matchPhone && !matchProp && !matchRemark) return false;
                 }
-
                 return true;
             });
 
-            // Render Table Rows
             const tbody = document.getElementById('callsTableBody');
             const emptyState = document.getElementById('emptyState');
             tbody.innerHTML = '';
@@ -500,7 +488,8 @@
                         </td>
                         <td class="py-3.5 px-4">${badgeHtml}</td>
                         <td class="py-3.5 px-4 text-slate-600 text-xs max-w-xs truncate" title="${call.remark || ''}">${call.remark || 'No remarks recorded'}</td>
-                        <td class="py-3.5 px-4 text-right space-x-2">
+                        <td class="py-3.5 px-4 text-right space-x-1">
+                            <button onclick="openTimelineModal('${call.id}')" title="Customer Timeline (Call 1, Call 2...)" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition"><i class="fa-solid fa-timeline"></i></button>
                             ${!call.completed ? `<button onclick="markComplete('${call.id}')" title="Mark Completed" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition"><i class="fa-solid fa-check"></i></button>` : ''}
                             <button onclick="editCall('${call.id}')" title="Edit Call" class="p-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deleteCall('${call.id}')" title="Delete Call" class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
@@ -513,11 +502,74 @@
             document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
         }
 
-        // Tab Filtering Handler
+        // Open Customer History Timeline Modal
+        function openTimelineModal(callId) {
+            const call = callsDatabase.find(c => c.id === callId);
+            if (!call) return;
+
+            document.getElementById('timelineModalTitle').innerHTML = `<i class="fa-solid fa-timeline mr-2 text-primary-400"></i> Customer Timeline: ${call.leadName}`;
+            document.getElementById('timelineModalSubtitle').innerText = `${call.property} (${call.phone})`;
+
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = '';
+
+            // Define sequence steps we want to show explicitly (Call 1, Call 2, Call 3, Call 4)
+            const steps = [
+                { key: 'call1', label: 'Call 1 (Initial Contact)', icon: 'fa-phone-volume', color: 'bg-blue-500' },
+                { key: 'call2', label: 'Call 2 (Follow-Up)', icon: 'fa-phone', color: 'bg-primary-600' },
+                { key: 'call3', label: 'Call 3 (Negotiation)', icon: 'fa-handshake', color: 'bg-amber-500' },
+                { key: 'call4', label: 'Call 4 (Closing / Site Visit)', icon: 'fa-building-user', color: 'bg-emerald-600' }
+            ];
+
+            steps.forEach((step, index) => {
+                const historyData = call.history && call.history[step.key];
+                const isPresent = historyData !== null && historyData !== undefined;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "flex items-start space-x-4 relative";
+
+                if (isPresent) {
+                    // Present data card
+                    itemDiv.innerHTML = `
+                        <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full ${step.color} text-white flex items-center justify-center shadow-md">
+                            <i class="fa-solid ${step.icon} text-sm"></i>
+                        </div>
+                        <div class="flex-grow bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-900">${step.label}</span>
+                                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">${historyData.status || 'Completed'}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-2"><i class="fa-regular fa-clock mr-1"></i> ${formatDisplayDate(historyData.date)} &bull; Agent: <span class="font-medium text-slate-700">${historyData.agent || LOGGED_IN_USER}</span></p>
+                            <p class="text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-normal">"${historyData.remark}"</p>
+                        </div>
+                    `;
+                } else {
+                    // Absent data label state
+                    itemDiv.innerHTML = `
+                        <div class="flex-shrink-0 z-10 w-10 h-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center">
+                            <i class="fa-solid fa-ban text-xs"></i>
+                        </div>
+                        <div class="flex-grow bg-slate-100/70 p-4 rounded-xl border border-dashed border-slate-300">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${step.label}</span>
+                                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-slate-200 text-slate-500">Absent / Not Recorded</span>
+                            </div>
+                            <p class="text-xs text-slate-400 italic">No database log recorded for this milestone sequence yet.</p>
+                        </div>
+                    `;
+                }
+                container.appendChild(itemDiv);
+            });
+
+            document.getElementById('timelineModal').classList.remove('hidden');
+        }
+
+        function closeTimelineModal() {
+            document.getElementById('timelineModal').classList.add('hidden');
+        }
+
         function filterTab(tabName) {
             currentFilter = tabName;
-            
-            // Highlight active tab button
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 if (btn.getAttribute('data-tab') === tabName) {
                     btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white shadow-sm transition";
@@ -526,7 +578,6 @@
                 }
             });
 
-            // Highlight summary card borders
             ['all', 'lapsed', 'today', 'tomorrow'].forEach(t => {
                 const card = document.getElementById(`card-${t}`);
                 if (t === tabName) {
@@ -539,18 +590,15 @@
             renderCalls();
         }
 
-        // Search Input Handler
         function handleSearch() {
             searchQuery = document.getElementById('searchInput').value.trim();
             renderCalls();
         }
 
-        // Refresh Data
         function refreshData() {
             renderCalls();
         }
 
-        // Modal Controls
         function openNewCallModal() {
             document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-phone mr-2 text-primary-400"></i> Schedule New Follow-Up Call';
             document.getElementById('modalCallId').value = '';
@@ -573,6 +621,7 @@
             document.getElementById('modalProperty').value = call.property;
             document.getElementById('modalDatetime').value = call.datetime;
             document.getElementById('modalRemark').value = call.remark;
+            document.getElementById('callModal').classList.add('hidden'); // placeholder
             document.getElementById('callModal').classList.remove('hidden');
         }
 
@@ -580,7 +629,6 @@
             document.getElementById('callModal').classList.add('hidden');
         }
 
-        // Save (Create or Update) Call
         function saveCall(event) {
             event.preventDefault();
             const id = document.getElementById('modalCallId').value;
@@ -591,7 +639,6 @@
             const remark = document.getElementById('modalRemark').value.trim();
 
             if (id) {
-                // Update existing
                 const call = callsDatabase.find(c => c.id === id);
                 if (call) {
                     call.leadName = leadName;
@@ -601,7 +648,6 @@
                     call.remark = remark;
                 }
             } else {
-                // Create new
                 const newCall = {
                     id: 'CALL-' + (Math.floor(Math.random() * 900) + 200),
                     user: LOGGED_IN_USER,
@@ -610,7 +656,13 @@
                     property,
                     datetime,
                     remark,
-                    completed: false
+                    completed: false,
+                    history: {
+                        call1: { date: datetime, status: 'Scheduled', remark: remark, agent: LOGGED_IN_USER },
+                        call2: null,
+                        call3: null,
+                        call4: null
+                    }
                 };
                 callsDatabase.unshift(newCall);
             }
@@ -619,7 +671,6 @@
             renderCalls();
         }
 
-        // Mark Completed
         function markComplete(id) {
             const call = callsDatabase.find(c => c.id === id);
             if (call) {
@@ -628,7 +679,6 @@
             }
         }
 
-        // Delete Call
         function deleteCall(id) {
             if (confirm("Are you sure you want to delete this follow-up call from database?")) {
                 callsDatabase = callsDatabase.filter(c => c.id !== id);
@@ -636,7 +686,6 @@
             }
         }
 
-        // Initial load
         window.onload = initDashboard;
     </script>
 </body>
