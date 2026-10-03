@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50">
+<html lang="en" class="h-full bg-slate-50/70">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Add User & Collection - Real_Crm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -10,33 +10,44 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .corporate-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
         }
     </style>
 </head>
-<body class="min-h-full text-slate-800 flex flex-col selection:bg-blue-600 selection:text-white">
+<body class="min-h-full text-slate-800 flex flex-col selection:bg-blue-600 selection:text-white relative">
+
+    <!-- Ambient Background Glow Accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+    </div>
 
     <!-- Top Corporate Navigation Bar -->
-    <header class="bg-white/85 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header class="bg-white/85 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
-                <div class="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-600/25">
-                    <i class="fa-solid fa-chart-line text-lg"></i>
+                <!-- Mobile Menu Toggle Button -->
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-base cursor-pointer hover:bg-slate-200 transition">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/25">
+                    <i class="fa-solid fa-building-user text-lg"></i>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-md border border-blue-200">Team Lead Hub</span>
+                        <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-200/80">Lead Hub</span>
                     </div>
-                    <span id="liveClock" class="text-xs text-slate-500 font-medium">Synchronizing system time...</span>
+                    <span id="liveClock" class="text-[11px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
                 </div>
             </div>
             
             <div class="flex items-center gap-3">
-                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-50 text-slate-700 px-3.5 py-2.5 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
-                <a href="/" onclick="handleLogout(event)" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-xl transition border border-rose-200 shadow-2xs">
+                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100/80 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/80 hidden sm:inline-flex items-center shadow-2xs"></span>
+                <a href="/" onclick="handleLogout(event)" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="hidden sm:inline">Logout</span>
                 </a>
@@ -44,67 +55,101 @@
         </div>
     </header>
 
+    <!-- Mobile Slide-over Menu Drawer -->
+    <div id="mobileDrawer" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs hidden md:hidden flex">
+        <div class="w-72 bg-white h-full p-5 space-y-6 shadow-2xl flex flex-col justify-between animate-in slide-in-from-left duration-300">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-building-user text-sm"></i>
+                        </div>
+                        <span class="font-extrabold text-slate-900 text-sm">Real_Crm Navigation</span>
+                    </div>
+                    <button type="button" onclick="toggleMobileMenu()" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="space-y-1.5">
+                    <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> Dashboard Overview
+                    </a>
+                    <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-md shadow-blue-600/20">
+                        <i class="fa-solid fa-user-plus w-5 text-blue-100"></i> Add User & Collection
+                    </a>
+                    <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
+                        <i class="fa-solid fa-list-check w-5 text-slate-400"></i> Assign Task to Member
+                    </a>
+                </div>
+            </div>
+            <div class="pt-4 border-t border-slate-100 text-center">
+                <span id="mobileUserBadge" class="text-xs text-slate-500 font-semibold block mb-2"></span>
+            </div>
+        </div>
+        <div class="flex-grow" onclick="toggleMobileMenu()"></div>
+    </div>
+
     <!-- Main Workspace -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
         
-        <!-- Sidebar Navigation Menu -->
-        <aside class="md:col-span-1 space-y-4">
-            <div class="corporate-card rounded-2xl p-4 space-y-1.5 sticky top-28">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation Menu</p>
-                <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group">
+        <!-- Sidebar Navigation Menu (Desktop Only) -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="corporate-card rounded-3xl p-4 space-y-2 sticky top-28 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation Menu</p>
+                <a href="teamlead.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 font-semibold rounded-2xl text-sm transition group">
                     <i class="fa-solid fa-house w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Dashboard Overview
                 </a>
-                <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-sm transition">
+                <a href="leaduser.html" class="flex items-center gap-3.5 px-4 py-3.5 bg-blue-600 text-white font-bold rounded-2xl text-sm shadow-md shadow-blue-600/20 transition">
                     <i class="fa-solid fa-user-plus w-5 text-blue-100 text-base"></i> Add User & Collection
                 </a>
-                <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-xl text-sm transition group">
+                <a href="assigntaskteammember.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 font-semibold rounded-2xl text-sm transition group">
                     <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-blue-600 transition text-base"></i> Assign Task to Member
                 </a>
             </div>
         </aside>
 
         <!-- Main Form Content -->
-        <main class="md:col-span-2 space-y-6">
-            <div class="corporate-card rounded-2xl p-8 space-y-6 shadow-sm">
+        <main class="md:col-span-3 space-y-6">
+            <div class="corporate-card rounded-3xl p-6 sm:p-8 space-y-6 shadow-md">
                 <div class="flex items-center gap-4 pb-5 border-b border-slate-100">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-100 shadow-xs">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-100 shadow-xs flex-shrink-0">
                         <i class="fa-solid fa-user-plus"></i>
                     </div>
                     <div>
                         <h2 class="text-xl font-extrabold text-slate-900">Create Team Member Account</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Provision credentials & set up a dedicated MongoDB collection</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Provision credentials & set up a dedicated database collection</p>
                     </div>
                 </div>
 
-                <form id="addMemberForm" class="space-y-4">
+                <form id="addMemberForm" class="space-y-4 sm:space-y-5">
                     <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">New Member Username</label>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">New Member Username</label>
                         <div class="relative">
                             <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                             <input type="text" id="newUsername" required placeholder="e.g. alex_smith" 
-                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-xs sm:text-sm transition">
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-xs sm:text-sm transition">
                         </div>
                     </div>
                     
                     <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">New Member Password</label>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">New Member Password</label>
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                             <input type="password" id="newPassword" required placeholder="••••••••" 
-                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-xs sm:text-sm transition">
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white text-xs sm:text-sm transition">
                         </div>
                     </div>
 
                     <div class="pt-2">
                         <button type="submit" 
-                            class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-database"></i>
+                            class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                            <i class="fa-solid fa-database text-xs"></i>
                             <span>Create Account & Provision Collection</span>
                         </button>
                     </div>
                 </form>
 
-                <div id="msg" class="hidden text-center text-xs font-semibold p-3.5 rounded-xl border"></div>
+                <div id="msg" class="hidden text-center text-xs font-semibold p-4 rounded-2xl border"></div>
             </div>
         </main>
     </div>
@@ -113,6 +158,12 @@
     <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <script>
+        // Toggle Mobile Menu Drawer
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
         // Live Clock
         function updateClock() {
             const now = new Date();
@@ -126,7 +177,9 @@
         const currentUsername = localStorage.getItem('crm_username');
         if (currentUsername) {
             const badge = document.getElementById('activeUserBadge');
-            if (badge) badge.innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Lead: <b>${currentUsername}</b>`;
+            if (badge) badge.innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-2"></i> Lead: <b>${currentUsername}</b>`;
+            const mobileBadge = document.getElementById('mobileUserBadge');
+            if (mobileBadge) mobileBadge.innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Lead: <b>${currentUsername}</b>`;
         }
 
         document.getElementById('addMemberForm').addEventListener('submit', async (e) => {
@@ -147,17 +200,17 @@
 
                 msgDiv.classList.remove('hidden');
                 if (data.success) {
-                    msgDiv.className = 'text-center text-xs font-semibold p-3.5 rounded-xl border bg-emerald-50 text-emerald-700 border-emerald-200';
-                    msgDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${data.message}`;
+                    msgDiv.className = 'text-center text-xs font-semibold p-4 rounded-2xl border bg-emerald-50 text-emerald-700 border-emerald-200';
+                    msgDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5 text-sm"></i> ${data.message}`;
                     document.getElementById('addMemberForm').reset();
                 } else {
-                    msgDiv.className = 'text-center text-xs font-semibold p-3.5 rounded-xl border bg-rose-50 text-rose-700 border-rose-200';
-                    msgDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ${data.message || 'Failed to create member account.'}`;
+                    msgDiv.className = 'text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                    msgDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-sm"></i> ${data.message || 'Failed to create member account.'}`;
                 }
             } catch (err) {
                 msgDiv.classList.remove('hidden');
-                msgDiv.className = 'text-center text-xs font-semibold p-3.5 rounded-xl border bg-rose-50 text-rose-700 border-rose-200';
-                msgDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Server connection failed.`;
+                msgDiv.className = 'text-center text-xs font-semibold p-4 rounded-2xl border bg-rose-50 text-rose-700 border-rose-200';
+                msgDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-sm"></i> Server connection failed.`;
             }
         });
 
