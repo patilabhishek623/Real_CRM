@@ -27,7 +27,7 @@
                     <i class="fa-solid fa-clock-rotate-left text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
+                    <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span> Hub</span>
                     <span class="block text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400">Customer History</span>
                 </div>
             </div>
@@ -43,15 +43,28 @@
 
     <div class="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-6 w-full flex-grow space-y-6">
         
-        <!-- Page Title & Overview -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-                <h1 class="text-xl font-bold text-slate-900">Interaction Timeline</h1>
-                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Detailed breakdown of the selected call log entry.</p>
+        <!-- Lead Profile Header Card with Call Now Action -->
+        <div class="corporate-card rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h1 class="text-xl font-bold text-slate-900" id="leadName">Sneha Gupta</h1>
+                    <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-md text-[10px] border border-emerald-200 uppercase">Active Pipeline</span>
+                </div>
+                <p class="text-xs text-slate-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-phone text-slate-400"></i> <span id="leadPhone" class="font-semibold text-slate-700">9112233445</span>
+                    <span class="text-slate-300">•</span>
+                    <span class="text-[11px] text-slate-400">Source: Imported via Excel spreadsheet upload.</span>
+                </p>
             </div>
-            <a href="teammember.html" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
-                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
-            </a>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <!-- CALL NOW BUTTON -->
+                <a href="tel:9112233445" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 transition-all transform active:scale-95">
+                    <i class="fa-solid fa-phone-volume animate-bounce"></i> Call Now
+                </a>
+                <a href="teammember.html" class="inline-flex items-center justify-center px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+            </div>
         </div>
 
         <!-- Full Detail Call Log Card -->
@@ -166,6 +179,11 @@
             </div>
         </div>
 
+        <!-- Footer Branding -->
+        <div class="text-center pt-2 pb-4 text-xs text-slate-400 font-medium">
+            Real Estate CRM &copy; 2026
+        </div>
+
     </div>
 
     <!-- Mobile Sticky Bottom Navigation Bar -->
@@ -206,7 +224,6 @@
             return dateStr;
         }
 
-        // Example data mapping demonstration
         const sampleCallData = {
             "title": "Call Log",
             "call_connected": "Call Not Connected",
@@ -229,14 +246,12 @@
             "closeReason": ""
         };
 
-        // Function to populate data dynamically with DD/MM/YYYY formatting
         function populateCallDetails(call) {
             document.getElementById('callTitle').textContent = call.title || 'Call Log';
             document.getElementById('callRemark').textContent = call.remark || 'No remarks provided';
             document.getElementById('followUpRequired').innerHTML = `<i class="fa-solid fa-check text-[10px]"></i> ${call.followUpRequired || 'No'}`;
             document.getElementById('followUpOption').innerHTML = `<i class="fa-solid fa-tag text-[10px] text-amber-500"></i> ${call.followUpOption || 'N/A'}`;
             
-            // Format Date to DD/MM/YYYY
             document.getElementById('formattedFollowUpDate').textContent = formatDateToDMY(call.followUpDate);
             document.getElementById('callTime').textContent = call.followUpTime || 'N/A';
             document.getElementById('visitScheduled').textContent = call.visitScheduled || 'No';
@@ -272,7 +287,6 @@
             }
         }
 
-        // Initialize with sample data view
         populateCallDetails(sampleCallData);
     </script>
 </body>
