@@ -64,11 +64,11 @@
                         <i class="fa-solid fa-phone-volume"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-base">Call Log</h4>
+                        <h4 id="callTitle" class="font-bold text-slate-900 text-base">Call Log</h4>
                         <p class="text-xs text-slate-500 font-medium">Record Entry Details</p>
                     </div>
                 </div>
-                <span class="px-3 py-1.5 bg-rose-50 text-rose-700 font-bold rounded-xl text-xs uppercase border border-rose-200 flex items-center gap-1.5 shadow-2xs">
+                <span id="callConnectedBadge" class="px-3 py-1.5 bg-rose-50 text-rose-700 font-bold rounded-xl text-xs uppercase border border-rose-200 flex items-center gap-1.5 shadow-2xs">
                     <i class="fa-solid fa-phone-slash text-[10px]"></i> Call Not Connected
                 </span>
             </div>
@@ -83,7 +83,7 @@
                     </h5>
                     <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Remark</span>
-                        <p class="text-slate-800 font-medium text-sm">Incoming Calls Not Available</p>
+                        <p id="callRemark" class="text-slate-800 font-medium text-sm">Incoming Calls Not Available</p>
                     </div>
                 </div>
 
@@ -95,21 +95,21 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Required</span>
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-xs border border-emerald-200">
+                            <span id="followUpRequired" class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-xs border border-emerald-200">
                                 <i class="fa-solid fa-check text-[10px]"></i> Yes
                             </span>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Follow-Up Option</span>
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs border border-amber-200">
+                            <span id="followUpOption" class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs border border-amber-200">
                                 <i class="fa-solid fa-tag text-[10px] text-amber-500"></i> Call Next Week
                             </span>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1 sm:col-span-2">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Scheduled Date & Time</span>
                             <div class="flex items-center gap-2 font-semibold text-slate-800 text-sm">
-                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-calendar text-slate-400 mr-1.5"></i> 2026-10-02</span>
-                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-clock text-slate-400 mr-1.5"></i> 00:04</span>
+                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-calendar text-slate-400 mr-1.5"></i> <span id="formattedFollowUpDate">02/10/2026</span></span>
+                                <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"><i class="fa-regular fa-clock text-slate-400 mr-1.5"></i> <span id="callTime">00:04</span></span>
                             </div>
                         </div>
                     </div>
@@ -123,25 +123,25 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Scheduled</span>
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-200/60 text-slate-700 font-bold rounded-lg text-xs border border-slate-300">
+                            <span id="visitScheduled" class="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-200/60 text-slate-700 font-bold rounded-lg text-xs border border-slate-300">
                                 No
                             </span>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Date & Time</span>
-                            <p class="text-slate-400 italic font-medium">Not Scheduled</p>
+                            <p id="visitDateTime" class="text-slate-400 italic font-medium">Not Scheduled</p>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Building / Location</span>
-                            <p class="text-slate-400 italic font-medium">N/A</p>
+                            <p id="visitLocation" class="text-slate-400 italic font-medium">N/A</p>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visitor Coming / Interest</span>
-                            <p class="text-slate-400 italic font-medium">N/A</p>
+                            <p id="visitorInterest" class="text-slate-400 italic font-medium">N/A</p>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1 sm:col-span-2">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Visit Note / Reschedule Choice</span>
-                            <p class="text-slate-400 italic font-medium">No notes or reschedule preferences recorded.</p>
+                            <p id="visitNote" class="text-slate-400 italic font-medium">No notes or reschedule preferences recorded.</p>
                         </div>
                     </div>
                 </div>
@@ -154,11 +154,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Lead Status</span>
-                            <p class="text-slate-500 italic font-medium">Open / Unspecified</p>
+                            <p id="leadStatus" class="text-slate-500 italic font-medium">Open / Unspecified</p>
                         </div>
                         <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Close Reason</span>
-                            <p class="text-slate-500 italic font-medium">N/A</p>
+                            <p id="closeReason" class="text-slate-500 italic font-medium">N/A</p>
                         </div>
                     </div>
                 </div>
@@ -195,6 +195,85 @@
             window.location.href = '/';
         }
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b class="text-slate-900 ml-1">${currentUsername}</b>`;
+
+        // Helper function to convert YYYY-MM-DD into DD/MM/YYYY format
+        function formatDateToDMY(dateStr) {
+            if (!dateStr || !dateStr.includes('-')) return dateStr || 'Not Set';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateStr;
+        }
+
+        // Example data mapping demonstration
+        const sampleCallData = {
+            "title": "Call Log",
+            "call_connected": "Call Not Connected",
+            "remark": "Incoming Calls Not Available",
+            "followUpRequired": "Yes",
+            "followUpOption": "Call Next Week",
+            "followUpDate": "2026-10-02",
+            "followUpTime": "00:04",
+            "visitScheduled": "No",
+            "visitDate": "",
+            "visitTime": "",
+            "visitBuilding": "",
+            "visitLocation": "",
+            "visitNote": "",
+            "visitorComing": "",
+            "rescheduleReason": "",
+            "visitInterestCustomer": "",
+            "rescheduleVisitChoice": "",
+            "leadStatus": "",
+            "closeReason": ""
+        };
+
+        // Function to populate data dynamically with DD/MM/YYYY formatting
+        function populateCallDetails(call) {
+            document.getElementById('callTitle').textContent = call.title || 'Call Log';
+            document.getElementById('callRemark').textContent = call.remark || 'No remarks provided';
+            document.getElementById('followUpRequired').innerHTML = `<i class="fa-solid fa-check text-[10px]"></i> ${call.followUpRequired || 'No'}`;
+            document.getElementById('followUpOption').innerHTML = `<i class="fa-solid fa-tag text-[10px] text-amber-500"></i> ${call.followUpOption || 'N/A'}`;
+            
+            // Format Date to DD/MM/YYYY
+            document.getElementById('formattedFollowUpDate').textContent = formatDateToDMY(call.followUpDate);
+            document.getElementById('callTime').textContent = call.followUpTime || 'N/A';
+            document.getElementById('visitScheduled').textContent = call.visitScheduled || 'No';
+
+            if (call.visitDate) {
+                document.getElementById('visitDateTime').textContent = `${formatDateToDMY(call.visitDate)} ${call.visitTime || ''}`;
+                document.getElementById('visitDateTime').className = "text-slate-800 font-semibold";
+            }
+
+            if (call.visitBuilding || call.visitLocation) {
+                document.getElementById('visitLocation').textContent = `${call.visitBuilding || ''} ${call.visitLocation || ''}`.trim();
+                document.getElementById('visitLocation').className = "text-slate-800 font-semibold";
+            }
+
+            if (call.visitorComing || call.visitInterestCustomer) {
+                document.getElementById('visitorInterest').textContent = `${call.visitorComing || ''} ${call.visitInterestCustomer || ''}`.trim();
+                document.getElementById('visitorInterest').className = "text-slate-800 font-semibold";
+            }
+
+            if (call.visitNote || call.rescheduleReason || call.rescheduleVisitChoice) {
+                document.getElementById('visitNote').textContent = `${call.visitNote || ''} ${call.rescheduleReason || ''} ${call.rescheduleVisitChoice || ''}`.trim();
+                document.getElementById('visitNote').className = "text-slate-800 font-medium";
+            }
+
+            if (call.leadStatus) {
+                document.getElementById('leadStatus').textContent = call.leadStatus;
+                document.getElementById('leadStatus').className = "text-slate-800 font-semibold";
+            }
+
+            if (call.closeReason) {
+                document.getElementById('closeReason').textContent = call.closeReason;
+                document.getElementById('closeReason').className = "text-slate-800 font-semibold";
+            }
+        }
+
+        // Initialize with sample data view
+        populateCallDetails(sampleCallData);
     </script>
 </body>
 </html>
