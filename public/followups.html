@@ -36,38 +36,50 @@
     </header>
 
     <!-- Main Content Area -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-6">
         
-        <!-- Left Column: Lead Info & Call Input Wizard -->
-        <div class="lg:col-span-1 space-y-6">
-            <!-- Lead Profile Card -->
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm/5 space-y-4">
-                <div>
-                    <h2 id="leadNameHeader" class="text-xl font-bold text-slate-900">Loading Lead...</h2>
-                    <p id="leadContactHeader" class="text-sm text-emerald-600 font-semibold mt-0.5"><i class="fa-solid fa-phone text-xs mr-1"></i> --</p>
+        <!-- Lead Profile Header Card -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h2 id="leadNameHeader" class="text-xl font-bold text-slate-900">Loading Lead...</h2>
+                <p id="leadContactHeader" class="text-sm text-emerald-600 font-semibold mt-0.5"><i class="fa-solid fa-phone text-xs mr-1"></i> --</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <div class="bg-slate-50 px-3 py-2 rounded-xl border border-slate-200/60">
+                    <span class="text-slate-400 font-medium block">Lead Source:</span>
+                    <span id="leadSourceVal" class="font-semibold text-slate-700">--</span>
                 </div>
-                <div class="border-t border-slate-100 pt-4 space-y-2.5 text-xs">
-                    <div class="flex justify-between">
-                        <span class="text-slate-400 font-medium">Lead Source:</span>
-                        <span id="leadSourceVal" class="font-semibold text-slate-700">--</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-400 font-medium">Account Status:</span>
-                        <span id="leadStatusVal" class="inline-flex px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-md">Active Pipeline</span>
-                    </div>
+                <div class="bg-emerald-50/60 px-3 py-2 rounded-xl border border-emerald-200/60">
+                    <span class="text-emerald-700/70 font-medium block">Account Status:</span>
+                    <span id="leadStatusVal" class="font-bold text-emerald-800">Active Pipeline</span>
                 </div>
             </div>
+        </div>
 
-            <!-- Call Input Wizard Form -->
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm/5">
-                <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-phone-volume text-emerald-600"></i> Call Input Wizard
-                </h3>
-                
-                <form id="callLogForm" class="space-y-4 text-xs">
+        <!-- Navigation Tabs -->
+        <div class="flex gap-2 border-b border-slate-200 pb-3">
+            <button onclick="switchTab('wizard')" id="tabBtn-wizard" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-phone-volume"></i>
+                <span>Call Input Wizard</span>
+            </button>
+            <button onclick="switchTab('history')" id="tabBtn-history" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Call History</span>
+                <span id="historyCountBadge" class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+        </div>
+
+        <!-- Tab 1: Call Input Wizard Content -->
+        <div id="tabContent-wizard" class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm/5">
+            <h3 class="text-base font-bold text-slate-900 mb-6 flex items-center gap-2 pb-4 border-b border-slate-100">
+                <i class="fa-solid fa-phone-volume text-emerald-600"></i> Record Call Interaction & Schedule Follow-Up
+            </h3>
+            
+            <form id="callLogForm" class="space-y-5 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1.5">1. Was the call connected?</label>
-                        <select id="callConnectedSelect" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                        <select id="callConnectedSelect" required class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
                             <option value="">Select connection status...</option>
                             <option value="Yes, Connected">Yes, Connected</option>
                             <option value="Call Not Connected">No, Not Connected</option>
@@ -75,60 +87,59 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1.5">Call Remarks / Notes</label>
-                        <textarea id="callRemarkInput" rows="3" placeholder="Enter remarks or notes about the call..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700 font-medium"></textarea>
-                    </div>
-
-                    <div>
                         <label class="block font-bold text-slate-700 mb-1.5">Follow-up Required?</label>
-                        <select id="followUpRequiredSelect" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                        <select id="followUpRequiredSelect" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                         </select>
                     </div>
+                </div>
 
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1.5">Call Remarks / Notes</label>
+                    <textarea id="callRemarkInput" rows="3" placeholder="Enter remarks or notes about the call..." class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700 font-medium"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1.5">Follow-Up Option</label>
+                    <input type="text" id="followUpOptionInput" placeholder="e.g. Call After Arranging Funds" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1.5">Follow-Up Option</label>
-                        <input type="text" id="followUpOptionInput" placeholder="e.g. Call After Arranging Funds" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                        <label class="block font-bold text-slate-700 mb-1.5">Follow-Up Date</label>
+                        <input type="date" id="followUpDateInput" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
                     </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5">Follow-Up Date</label>
-                            <input type="date" id="followUpDateInput" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5">Follow-Up Time</label>
-                            <input type="time" id="followUpTimeInput" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full mt-2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm">
-                        Save Call Response
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Right Column: Customer History Timeline -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm/5">
-                <div class="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900">Customer History Timeline</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Chronological log of calls, remarks, and scheduled follow-ups.</p>
+                        <label class="block font-bold text-slate-700 mb-1.5">Follow-Up Time</label>
+                        <input type="time" id="followUpTimeInput" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
                     </div>
                 </div>
 
-                <!-- Timeline Container -->
-                <div id="customerTimelineContainer" class="space-y-6 relative">
-                    <div class="text-center py-12 text-slate-400">
-                        <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
-                        <p class="text-xs font-medium">Loading interaction history...</p>
-                    </div>
+                <button type="submit" class="w-full mt-4 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm">
+                    Save Call Response
+                </button>
+            </form>
+        </div>
+
+        <!-- Tab 2: Call History Content -->
+        <div id="tabContent-history" class="hidden bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm/5 space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900">Customer History Timeline</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Chronological log of past calls, remarks, and scheduled follow-ups.</p>
+                </div>
+            </div>
+
+            <!-- Timeline Container -->
+            <div id="customerTimelineContainer" class="space-y-6 relative">
+                <div class="text-center py-12 text-slate-400">
+                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-emerald-500 border-t-transparent mb-2"></div>
+                    <p class="text-xs font-medium">Loading interaction history...</p>
                 </div>
             </div>
         </div>
+
     </main>
 
     <!-- Footer -->
@@ -151,6 +162,25 @@
 
         let currentLeadData = null;
 
+        function switchTab(tabName) {
+            const wizardTab = document.getElementById('tabContent-wizard');
+            const historyTab = document.getElementById('tabContent-history');
+            const btnWizard = document.getElementById('tabBtn-wizard');
+            const btnHistory = document.getElementById('tabBtn-history');
+
+            if (tabName === 'wizard') {
+                wizardTab.classList.remove('hidden');
+                historyTab.classList.add('hidden');
+                btnWizard.className = "px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-2";
+                btnHistory.className = "px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2";
+            } else {
+                wizardTab.classList.add('hidden');
+                historyTab.classList.remove('hidden');
+                btnHistory.className = "px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-2";
+                btnWizard.className = "px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2";
+            }
+        }
+
         async function loadLeadDetails() {
             if (!leadId) {
                 alert('No Lead ID specified.');
@@ -170,27 +200,32 @@
                         document.getElementById('leadContactHeader').innerHTML = `<i class="fa-solid fa-phone text-xs mr-1"></i> ${currentLeadData.contactNumber || 'N/A'}`;
                         document.getElementById('leadSourceVal').textContent = currentLeadData.leadSource || 'Imported via Excel spreadsheet upload.';
                         
-                        const historyLogs = currentLeadData.history || currentLeadData.logs || [
-                            {
-                                title: currentLeadData.title || "Call Log",
-                                call_connected: currentLeadData.call_connected || "",
-                                remark: currentLeadData.remark || "",
-                                followUpRequired: currentLeadData.followUpRequired || "",
-                                followUpOption: currentLeadData.followUpOption || "",
-                                followUpDate: currentLeadData.followUpDate || "",
-                                followUpTime: currentLeadData.followUpTime || "",
-                                visitScheduled: currentLeadData.visitScheduled || "",
-                                visitDate: currentLeadData.visitDate || "",
-                                visitTime: currentLeadData.visitTime || "",
-                                visitBuilding: currentLeadData.visitBuilding || "",
-                                visitLocation: currentLeadData.visitLocation || "",
-                                visitNote: currentLeadData.visitNote || "",
-                                leadStatus: currentLeadData.leadStatus || "",
-                                closeReason: currentLeadData.closeReason || "",
-                                timestamp: currentLeadData.timestamp || "04/10/2026, 00:10:53"
-                            }
-                        ];
+                        // Collect history logs (checking array or fallback object)
+                        let historyLogs = currentLeadData.history || currentLeadData.logs;
+                        if (!historyLogs || historyLogs.length === 0) {
+                            historyLogs = [
+                                {
+                                    title: currentLeadData.title || "Call Log",
+                                    call_connected: currentLeadData.call_connected || "",
+                                    remark: currentLeadData.remark || "",
+                                    followUpRequired: currentLeadData.followUpRequired || "",
+                                    followUpOption: currentLeadData.followUpOption || "",
+                                    followUpDate: currentLeadData.followUpDate || "",
+                                    followUpTime: currentLeadData.followUpTime || "",
+                                    visitScheduled: currentLeadData.visitScheduled || "",
+                                    visitDate: currentLeadData.visitDate || "",
+                                    visitTime: currentLeadData.visitTime || "",
+                                    visitBuilding: currentLeadData.visitBuilding || "",
+                                    visitLocation: currentLeadData.visitLocation || "",
+                                    visitNote: currentLeadData.visitNote || "",
+                                    leadStatus: currentLeadData.leadStatus || "",
+                                    closeReason: currentLeadData.closeReason || "",
+                                    timestamp: currentLeadData.timestamp || "04/10/2026, 00:10:53"
+                                }
+                            ];
+                        }
 
+                        document.getElementById('historyCountBadge').textContent = historyLogs.length;
                         renderCustomerTimeline(historyLogs);
                     } else {
                         document.getElementById('customerTimelineContainer').innerHTML = `<div class="text-xs text-rose-500 font-semibold text-center py-8">Lead record not found.</div>`;
@@ -221,7 +256,6 @@
                 
                 const iconClass = callConn ? (isConnected ? 'fa-phone' : 'fa-phone-slash') : 'fa-circle-question';
 
-                // Helper to check if a value is empty and show label/value explicitly
                 const valOrEmpty = (val) => (val && val.toString().trim() !== '') ? val : '<span class="text-slate-400 italic font-normal">Empty</span>';
 
                 return `
@@ -231,7 +265,6 @@
                         </div>
 
                         <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-2xs space-y-3">
-                            <!-- Title & Timestamp Header -->
                             <div class="flex items-center justify-between flex-wrap gap-2">
                                 <span class="text-xs font-bold uppercase tracking-wider text-slate-700">
                                     ${valOrEmpty(log.title)}
@@ -241,7 +274,6 @@
                                 </span>
                             </div>
 
-                            <!-- Call Connection Status -->
                             <div>
                                 <span class="text-[11px] font-bold text-slate-400 block mb-1">Call Connection Status:</span>
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${badgeClass}">
@@ -250,13 +282,11 @@
                                 </span>
                             </div>
 
-                            <!-- Call Remarks / Notes -->
                             <div class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                                 <span class="font-bold text-slate-700 block mb-0.5"><i class="fa-solid fa-comment-dots text-emerald-600 mr-1"></i> Call Remarks / Notes:</span>
                                 <p class="text-slate-600">${valOrEmpty(log.remark)}</p>
                             </div>
 
-                            <!-- Follow-up Details Info Box -->
                             <div class="text-xs text-amber-800 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/60 space-y-1">
                                 <div class="font-bold flex items-center gap-1 text-amber-900">
                                     <i class="fa-solid fa-calendar-days text-amber-600"></i> Follow-up Required: <span class="font-normal">${valOrEmpty(log.followUpRequired)}</span>
@@ -267,7 +297,6 @@
                                 </div>
                             </div>
 
-                            <!-- Visit Details Info Box -->
                             <div class="text-xs text-teal-800 bg-teal-50/70 p-2.5 rounded-xl border border-teal-200/60 space-y-1">
                                 <div class="font-bold flex items-center gap-1 text-teal-900">
                                     <i class="fa-solid fa-map-location-dot text-teal-600"></i> Visit Scheduled: <span class="font-normal">${valOrEmpty(log.visitScheduled)}</span>
@@ -279,7 +308,6 @@
                                 </div>
                             </div>
 
-                            <!-- Lead Status / Close Reason Footer Tag -->
                             <div class="pt-1 flex items-center gap-3 text-[11px] text-slate-500 font-medium flex-wrap">
                                 <span class="bg-slate-100 px-2 py-1 rounded text-slate-700">Lead Status: <b>${valOrEmpty(log.leadStatus)}</b></span>
                                 <span class="bg-rose-50 text-rose-700 px-2 py-1 rounded">Close Reason: <b>${valOrEmpty(log.closeReason)}</b></span>
