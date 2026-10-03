@@ -44,11 +44,11 @@
             <!-- Logged-in User Profile -->
             <div class="flex items-center space-x-4">
                 <div class="hidden sm:flex flex-col text-right">
-                    <span class="text-sm font-semibold text-slate-700" id="currentUserName">Abhishek Patil</span>
-                    <span class="text-xs text-slate-500" id="currentUserRole">Senior Sales Executive</span>
+                    <span class="text-sm font-semibold text-slate-700" id="currentUserName">User</span>
+                    <span class="text-xs text-slate-500" id="currentUserRole">Team Member</span>
                 </div>
                 <div class="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold border border-primary-200 shadow-inner" id="currentUserAvatar">
-                    AP
+                    U
                 </div>
                 <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-rose-600 transition ml-2">
                     <i class="fa-solid fa-right-from-bracket text-lg"></i>
@@ -64,7 +64,7 @@
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Follow-Up Call Management</h2>
-                <p class="text-sm text-slate-600">Track overdue calls from MongoDB database, plan your day, and click any lead name to inspect details.</p>
+                <p class="text-sm text-slate-600">Track database tasks, plan your day, and click any lead name to log dispositions.</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="fetchDatabaseTasks()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
@@ -196,14 +196,14 @@
                     <i class="fa-solid fa-folder-open"></i>
                 </div>
                 <h3 class="text-base font-bold text-slate-700">No follow-up calls found</h3>
-                <p class="text-sm text-slate-500 mt-1">There are no calls matching the selected filter or search criteria.</p>
+                <p class="text-sm text-slate-500 mt-1">There are no calls matching your database collection.</p>
             </div>
 
             <!-- Table Footer -->
             <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
                 <span id="tableCountInfo">Showing 0 calls</span>
                 <div class="flex items-center space-x-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> MongoDB Database synchronized with user (<span id="footerUser">Abhishek Patil</span>)
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> Connected to MongoDB Collection (<span id="footerUser">User</span>)
                 </div>
             </div>
         </div>
@@ -226,14 +226,14 @@
         <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center space-x-4">
                 <div class="w-14 h-14 rounded-full bg-primary-600 text-white flex items-center justify-center text-xl font-bold shadow" id="profileLeadAvatar">
-                    VM
+                    LD
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900" id="profileLeadName">Vikram Malhotra</h2>
+                    <h2 class="text-xl font-bold text-slate-900" id="profileLeadName">Lead Name</h2>
                     <p class="text-sm text-slate-500 flex items-center mt-0.5">
-                        <i class="fa-solid fa-phone mr-1.5 text-slate-400"></i> <span id="profileLeadPhone">+91 98211 44556</span>
+                        <i class="fa-solid fa-phone mr-1.5 text-slate-400"></i> <span id="profileLeadPhone">+91 00000 00000</span>
                         <span class="mx-2">&bull;</span>
-                        <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> <span id="profileLeadProperty">4 BHK Penthouse - Bandra West</span>
+                        <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> <span id="profileLeadProperty">Requirement</span>
                     </p>
                 </div>
             </div>
@@ -375,7 +375,7 @@
         <div id="tabContentHistory" class="space-y-6 hidden">
             <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
                 <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-6 flex items-center">
-                    <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs (Call 1 to Call N) from Database
+                    <i class="fa-solid fa-timeline text-primary-600 mr-2"></i> Complete Call History Logs from MongoDB Collection
                 </h3>
                 <div class="space-y-6" id="historyTimelineContainer">
                     <!-- Injected via JS -->
@@ -433,17 +433,17 @@
         </div>
     </div>
 
-    <!-- JavaScript Application Logic connected to MongoDB backend -->
+    <!-- JavaScript Application Logic Connected to MongoDB -->
     <script>
-        // Retrieve dynamic logged-in user from localStorage or fallback to Abhishek Patil
-        const LOGGED_IN_USER = localStorage.getItem('crm_username') || "Abhishek Patil";
+        // Retrieve dynamic logged-in user from localStorage
+        const LOGGED_IN_USER = localStorage.getItem('crm_username') || "member";
         let dbCallsDatabase = [];
         let currentFilter = 'all';
         let searchQuery = '';
         let currentSelectedTaskId = null;
         let currentSelectedLeadObject = null;
 
-        const now = new Date(2026, 9, 4, 14, 30, 0); // October 4, 2026 reference time
+        const now = new Date(); 
 
         function formatDatetimeLocal(date) {
             const pad = (n) => n < 10 ? '0' + n : n;
@@ -479,7 +479,6 @@
                             datetimeStr = formatDatetimeLocal(now);
                         }
 
-                        // Extract latest remark or description
                         let latestRemark = t.description || '';
                         let i = 1;
                         while(t[`call${i}`]) {
@@ -620,7 +619,6 @@
             document.getElementById('tableCountInfo').innerText = `Showing ${filtered.length} calls`;
         }
 
-        // Toggle Form Fields based on Call Connection Status (Yes/No)
         function toggleConnectionFields() {
             const val = document.getElementById('selectCallConnected').value;
             const container = document.getElementById('dispositionDependentFields');
@@ -638,7 +636,6 @@
             }
         }
 
-        // Toggle Visit Fields based on Site Visit Scheduled Yes/No
         function toggleVisitFields() {
             const val = document.getElementById('selectVisitScheduled').value;
             const container = document.getElementById('visitDateContainer');
@@ -649,7 +646,6 @@
             }
         }
 
-        // Open Lead Profile Page
         function openLeadProfile(taskId) {
             const call = dbCallsDatabase.find(c => c.id === taskId);
             if (!call) return;
@@ -723,7 +719,6 @@
             });
         }
 
-        // Submit and Save Call Disposition to MongoDB Backend API
         async function submitCallDisposition(event) {
             event.preventDefault();
             if (!currentSelectedTaskId) return;
@@ -758,7 +753,7 @@
                 visitScheduled: visitScheduled,
                 visitDate: visitDate,
                 visitTime: visitTime,
-                visitBuilding: currentSelectedLeadObject.description || 'Bandra Property',
+                visitBuilding: currentSelectedLeadObject.description || 'Property Unit',
                 visitLocation: "Bandra West",
                 visitNote: remark,
                 visitorComing: visitScheduled === 'Yes' ? "Self + Family" : "",
