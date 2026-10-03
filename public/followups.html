@@ -114,17 +114,17 @@
 
                     <hr class="border-slate-100 my-2">
 
-                    <!-- Field Visit Schedule Section (Newly Added) -->
+                    <!-- Field Visit Schedule Section (Always Visible) -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Field Visit Required? *</label>
-                            <select id="visitRequired" required onchange="toggleVisitFields()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Field Visit Required?</label>
+                            <select id="visitRequired" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition">
                                 <option value="No">No</option>
                                 <option value="Yes">Yes</option>
                             </select>
                         </div>
 
-                        <div id="visitDateTimeFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 hidden">
+                        <div id="visitDateTimeFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Visit Schedule Date</label>
                                 <input type="date" id="visitDate" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition">
@@ -174,16 +174,6 @@
             }
         }
 
-        function toggleVisitFields() {
-            const val = document.getElementById('visitRequired').value;
-            const section = document.getElementById('visitDateTimeFields');
-            if (val === 'Yes') {
-                section.classList.remove('hidden');
-            } else {
-                section.classList.add('hidden');
-            }
-        }
-
         function handleCallStatusChange() {
             const status = document.getElementById('callConnectedStatus').value;
             const remarks = document.getElementById('callRemarks');
@@ -203,7 +193,7 @@
                         document.getElementById('leadPhoneDisplay').innerHTML = `<i class="fa-solid fa-phone mr-1"></i> ${task.contactNumber || 'N/A'}`;
                         document.getElementById('leadStatusBadge').textContent = task.status || 'Pending';
 
-                        // Build timeline history
+                        // Build timeline history showing Visit Date/Time even if empty
                         const timelineContainer = document.getElementById('timelineContainer');
                         if (task.history && task.history.length > 0) {
                             timelineContainer.innerHTML = task.history.map((h, idx) => `
@@ -212,8 +202,10 @@
                                     <p class="text-xs font-bold text-slate-800">Call ${idx + 1}: ${h.callStatus || 'Logged'}</p>
                                     <p class="text-[10px] text-slate-400 mt-0.5">${h.timestamp || ''}</p>
                                     <p class="text-xs text-slate-600 mt-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-medium">${h.remarks || 'No remarks recorded.'}</p>
-                                    ${h.followUpDate ? `<p class="text-[11px] text-emerald-600 font-semibold mt-1"><i class="fa-solid fa-calendar-days mr-1"></i>Follow-up: ${h.followUpDate} at${h.followUpTime || ''}</p>` : ''}
-                                    ${h.visitDate ? `<p class="text-[11px] text-teal-600 font-semibold mt-1"><i class="fa-solid fa-map-location-dot mr-1"></i>Visit Scheduled: ${h.visitDate} at${h.visitTime || ''}</p>` : ''}
+                                    ${h.followUpDate ? `<p class="text-[11px] text-emerald-600 font-semibold mt-1"><i class="fa-solid fa-calendar-days mr-1"></i>Follow-up Scheduled: ${h.followUpDate} at ${h.followUpTime \vert{}\vert{} ''}${h.followUpOption ? '(' + h.followUpOption + ')' : ''}</p>` : ''}
+                                    <p class="text-[11px] font-semibold mt-1 ${h.visitDate ? 'text-teal-600' : 'text-slate-400 italic'}">
+                                        <i class="fa-solid fa-map-location-dot mr-1"></i>Visit Scheduled: ${h.visitDate ? `${h.visitDate} at${h.visitTime || ''}` : 'Not Scheduled'}
+                                    </p>
                                 </div>
                             `).join('');
                         } else {
@@ -223,7 +215,8 @@
                                     <p class="text-xs font-bold text-slate-800">Call 1: Call Not Connected</p>
                                     <p class="text-[10px] text-slate-400 mt-0.5">04/10/2026, 00:10:53</p>
                                     <p class="text-xs text-slate-600 mt-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-medium">Client Disconnected the Call</p>
-                                    <p class="text-[11px] text-emerald-600 font-semibold mt-1"><i class="fa-solid fa-calendar-days mr-1"></i>Follow-up Scheduled: 2026-10-05 at 00:10</p>
+                                    <p class="text-[11px] text-emerald-600 font-semibold mt-1"><i class="fa-solid fa-calendar-days mr-1"></i>Follow-up Scheduled: 2026-10-05 at 00:10 (Call After Arranging Funds)</p>
+                                    <p class="text-[11px] text-slate-400 font-semibold mt-1 italic"><i class="fa-solid fa-map-location-dot mr-1"></i>Visit Scheduled: Not Scheduled</p>
                                 </div>`;
                         }
                     }
@@ -246,7 +239,7 @@
                 visitRequired: document.getElementById('visitRequired').value,
                 visitDate: document.getElementById('visitDate').value,
                 visitTime: document.getElementById('visitTime').value,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toLocaleString()
             };
 
             try {
