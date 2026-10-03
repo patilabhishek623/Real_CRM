@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50/80">
+<html lang="en" class="h-full bg-slate-50/90">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -35,14 +35,13 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .corporate-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(16px);
+            background: #ffffff;
             border: 1px solid #cbd5e1;
-            box-shadow: 0 12px 30px -10px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
         }
         .corporate-card-hover:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-            border-color: #94a3b8;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+            border-color: #64748b;
         }
     </style>
 </head>
@@ -50,40 +49,40 @@
 
     <!-- Ambient Background Glow Accents -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute top-1/4 -right-40 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/4 -right-40 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"></div>
     </div>
 
     <!-- Top Corporate Navigation Bar -->
     <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
                 <!-- Mobile Menu Toggle Button -->
                 <button type="button" onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-base cursor-pointer hover:bg-slate-200 transition">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/25 border border-emerald-400/20">
+                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-700 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-600/20 border border-emerald-500/20">
                     <i class="fa-solid fa-chart-line text-lg"></i>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
+                        <span class="text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
                         <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200">Member Portal</span>
                     </div>
-                    <span id="liveClock" class="text-[11px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
+                    <span id="liveClock" class="text-[11px] sm:text-xs text-slate-500 font-medium">Synchronizing system time...</span>
                 </div>
             </div>
             
             <div class="flex items-center gap-2.5 sm:gap-4">
                 <!-- Status Switcher -->
                 <div class="hidden md:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-                    <button onclick="setStatus('Online')" id="statusOnline" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-xs">
+                    <button onclick="setStatus('Online')" id="statusOnline" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-xs cursor-pointer">
                         <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Active
                     </button>
-                    <button onclick="setStatus('Away')" id="statusAway" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Away</button>
+                    <button onclick="setStatus('Away')" id="statusAway" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer">Away</button>
                 </div>
 
-                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
+                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2.5 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
                 
                 <!-- Notification Trigger -->
                 <button onclick="triggerNotificationCenter()" class="relative p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-emerald-700 transition border border-slate-200 cursor-pointer">
@@ -92,7 +91,7 @@
                 </button>
 
                 <!-- Logout -->
-                <a href="/" onclick="handleLogout(event)" class="inline-flex items-center gap-2 px-3.5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
+                <a href="/" onclick="handleLogout(event)" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="hidden sm:inline">Logout</span>
                 </a>
@@ -104,7 +103,7 @@
     <div id="mobileDrawer" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs hidden md:hidden flex">
         <div class="w-72 bg-white h-full p-5 space-y-6 shadow-2xl flex flex-col justify-between border-r border-slate-200 animate-in slide-in-from-left duration-300">
             <div class="space-y-4">
-                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-200">
                     <div class="flex items-center gap-2.5">
                         <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold">
                             <i class="fa-solid fa-user-tie text-sm"></i>
@@ -119,18 +118,18 @@
                     <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20">
                         <i class="fa-solid fa-house w-5 text-emerald-100"></i> Dashboard
                     </a>
-                    <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
+                    <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm transition">
                         <i class="fa-solid fa-list-check w-5 text-slate-400"></i> Assigned Tasks
                     </a>
-                    <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
+                    <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm transition">
                         <i class="fa-solid fa-calendar-days w-5 text-slate-400"></i> Follow Ups
                     </a>
-                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">
+                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm transition">
                         <i class="fa-solid fa-map-location-dot w-5 text-slate-400"></i> Visits
                     </a>
                 </div>
             </div>
-            <div class="pt-4 border-t border-slate-100 text-center">
+            <div class="pt-4 border-t border-slate-200 text-center">
                 <span id="mobileUserBadge" class="text-xs text-slate-500 font-semibold block mb-2"></span>
             </div>
         </div>
@@ -142,26 +141,26 @@
         
         <!-- Left Sidebar Navigation Menu (Desktop Only) -->
         <aside class="hidden md:block md:col-span-1 space-y-4">
-            <div class="corporate-card rounded-3xl p-4 space-y-2 sticky top-28 shadow-sm border border-slate-200">
+            <div class="corporate-card rounded-2xl p-4 space-y-2 sticky top-28 shadow-sm border border-slate-200">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation Menu</p>
-                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3.5 bg-emerald-600 text-white font-bold rounded-2xl text-sm shadow-md shadow-emerald-600/20 transition border border-emerald-600">
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20 transition border border-emerald-600">
                     <i class="fa-solid fa-house w-5 text-emerald-100 text-base"></i> Dashboard
                 </a>
-                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-2xl text-sm transition border border-transparent hover:border-slate-200 group">
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
                     <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Assigned Tasks
-                    <span id="sidebarPendingCount" class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200">0</span>
+                    <span id="sidebarPendingCount" class="ml-auto bg-amber-50 text-amber-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-amber-200">0</span>
                 </a>
-                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-2xl text-sm transition border border-transparent hover:border-slate-200 group">
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
                     <i class="fa-solid fa-calendar-days w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Follow Ups
                     <span id="sidebarFollowupCount" class="ml-auto bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-200">0</span>
                 </a>
-                <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold rounded-2xl text-sm transition border border-transparent hover:border-slate-200 group">
+                <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
                     <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Visits
                     <span id="sidebarVisitCount" class="ml-auto bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-teal-200">0</span>
                 </a>
 
                 <div class="pt-5 mt-5 border-t border-slate-200">
-                    <div class="bg-slate-900 rounded-2xl p-4 text-white shadow-md relative overflow-hidden border border-slate-800">
+                    <div class="bg-slate-900 rounded-xl p-4 text-white shadow-md relative overflow-hidden border border-slate-800">
                         <p class="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Monthly Target Progress</p>
                         <div class="flex items-baseline justify-between mt-1.5">
                             <span id="targetPercent" class="text-2xl font-black">0%</span>
@@ -180,7 +179,7 @@
         <main class="md:col-span-3 space-y-6">
             
             <!-- Corporate Welcome Banner -->
-            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex justify-between items-center border border-slate-800">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden flex justify-between items-center border border-slate-800">
                 <div class="absolute -right-12 -top-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="relative z-10 space-y-2">
                     <div class="inline-flex items-center gap-2 bg-emerald-500/20 px-3 py-1 rounded-full text-xs font-semibold text-emerald-300 border border-emerald-500/30">
@@ -312,7 +311,7 @@
             </div>
 
             <!-- Recent Task Stream / Search Widget -->
-            <div class="corporate-card rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl border border-slate-200">
+            <div class="corporate-card rounded-2xl p-6 sm:p-8 space-y-4 shadow-md border border-slate-200">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
                     <div>
                         <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
@@ -436,7 +435,7 @@
                     : `<span class="px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-[10px] uppercase border border-amber-200 flex items-center gap-1"><i class="fa-solid fa-clock"></i> ${task.status || 'Pending'}</span>`;
 
                 return `
-                    <div class="flex items-center justify-between p-3.5 bg-slate-50/80 hover:bg-slate-100/90 rounded-2xl border border-slate-200/80 transition shadow-2xs">
+                    <div class="flex items-center justify-between p-3.5 bg-slate-50/80 hover:bg-slate-100/90 rounded-xl border border-slate-200 transition shadow-2xs">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-xl bg-white shadow-xs border border-slate-200 flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
                                 ${(task.name || 'U').charAt(0).toUpperCase()}
@@ -478,14 +477,14 @@
             const text = document.getElementById('liveStatusText');
 
             if (state === 'Online') {
-                onlineBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-xs";
-                awayBtn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition";
+                onlineBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-xs cursor-pointer";
+                awayBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer";
                 dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
                 text.textContent = "Active CRM Workspace";
                 showToast("Status updated to Active", "success");
             } else {
-                awayBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-600 text-white shadow-xs";
-                onlineBtn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition";
+                awayBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-600 text-white shadow-xs cursor-pointer";
+                onlineBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer";
                 dot.className = "w-2 h-2 rounded-full bg-amber-400";
                 text.textContent = "Away Mode";
                 showToast("Status updated to Away", "success");
@@ -495,7 +494,7 @@
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold transform translate-y-4 opacity-0 transition-all duration-300 ${
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-xs font-semibold transform translate-y-4 opacity-0 transition-all duration-300 ${
                 type === 'success' ? 'bg-slate-900 border border-emerald-500/40 text-emerald-400' : 'bg-slate-900 border border-rose-500/40 text-rose-400'
             }`;
             toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'} text-sm"></i> <span>${message}</span>`;
