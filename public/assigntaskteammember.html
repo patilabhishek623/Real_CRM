@@ -31,26 +31,26 @@
     <!-- Top Navigation Bar -->
     <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3.5">
+            <div class="flex items-center space-x-3">
                 <!-- Mobile Menu Toggle Button -->
                 <button type="button" onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-base cursor-pointer hover:bg-slate-200 transition">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/25 border border-blue-400/20">
-                    <i class="fa-solid fa-building-user text-lg"></i>
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/25 border border-blue-400/20">
+                    <i class="fa-solid fa-building-user text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
                         <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Real_Crm</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">Lead Portal</span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">Lead Portal</span>
                     </div>
                     <span id="liveClock" class="text-[11px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
-                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
-                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
+            <div class="flex items-center gap-2.5">
+                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-2 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-2 px-3.5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="hidden sm:inline">Logout</span>
                 </a>
@@ -93,7 +93,7 @@
     </div>
 
     <!-- Main Workspace with Left Sidebar Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
         <!-- Sidebar Navigation Menu (Desktop Only) -->
         <aside class="hidden md:block md:col-span-1 space-y-4">
@@ -113,21 +113,21 @@
 
         <!-- Main Form Content -->
         <main class="md:col-span-3 space-y-6">
-            <div class="corporate-card rounded-3xl p-6 sm:p-10 space-y-6 shadow-xl border border-slate-200">
-                <div class="flex items-center gap-4 pb-6 border-b border-slate-200">
-                    <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl border border-blue-200 shadow-xs flex-shrink-0">
+            <div class="corporate-card rounded-3xl p-5 sm:p-10 space-y-6 shadow-xl border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 pb-6 border-b border-slate-200">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg sm:text-xl border border-blue-200 shadow-xs flex-shrink-0">
                         <i class="fa-solid fa-file-excel"></i>
                     </div>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Assign Tasks / Excel Bulk Import</h2>
+                        <h2 class="text-lg sm:text-2xl font-extrabold text-slate-900">Assign Tasks / Excel Bulk Import</h2>
                         <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Upload spreadsheet or assign individual tasks as <b>Pending</b> to member's collection</p>
                     </div>
                 </div>
 
                 <!-- Mode selection tabs -->
-                <div class="flex gap-3 mb-6 border-b border-slate-200 pb-4">
-                    <button type="button" id="tabSingle" onclick="switchMode('single')" class="px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer">Single Task</button>
-                    <button type="button" id="tabExcel" onclick="switchMode('excel')" class="px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">Excel Spreadsheet Bulk Upload</button>
+                <div class="grid grid-cols-2 gap-2 sm:flex sm:gap-3 mb-6 border-b border-slate-200 pb-4">
+                    <button type="button" id="tabSingle" onclick="switchMode('single')" class="py-3 px-4 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer text-center">Single Task</button>
+                    <button type="button" id="tabExcel" onclick="switchMode('excel')" class="py-3 px-4 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer text-center">Excel Bulk Upload</button>
                 </div>
 
                 <!-- Member Selection (Shared) -->
@@ -165,7 +165,7 @@
 
                 <!-- Excel Upload Form (Hidden by default) -->
                 <form id="excelTaskForm" class="space-y-4 hidden">
-                    <div class="p-6 sm:p-8 border-2 border-dashed border-slate-300 rounded-3xl bg-slate-50/80 text-center hover:bg-slate-100 transition">
+                    <div class="p-5 sm:p-8 border-2 border-dashed border-slate-300 rounded-3xl bg-slate-50/85 text-center hover:bg-slate-100 transition">
                         <i class="fa-solid fa-file-excel text-4xl text-emerald-600 mb-2"></i>
                         <h4 class="text-sm font-bold text-slate-700">Upload Excel Spreadsheet (.xlsx, .xls, .csv)</h4>
                         <p class="text-xs text-slate-500 mt-1 mb-4">Ensure your file has columns for Name and Contact Number / Phone.</p>
@@ -242,13 +242,13 @@
             msg.classList.add('hidden');
 
             if (mode === 'single') {
-                tabSingle.className = 'px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer';
-                tabExcel.className = 'px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
+                tabSingle.className = 'py-3 px-4 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer text-center';
+                tabExcel.className = 'py-3 px-4 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer text-center';
                 singleForm.classList.remove('hidden');
                 excelForm.classList.add('hidden');
             } else {
-                tabExcel.className = 'px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold transition cursor-pointer';
-                tabSingle.className = 'px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer';
+                tabExcel.className = 'py-3 px-4 bg-emerald-600 text-white rounded-xl text-xs font-bold transition cursor-pointer text-center';
+                tabSingle.className = 'py-3 px-4 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition cursor-pointer text-center';
                 excelForm.classList.remove('hidden');
                 singleForm.classList.add('hidden');
             }
