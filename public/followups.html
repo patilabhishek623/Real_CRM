@@ -187,6 +187,7 @@
                 const data = await res.json();
 
                 if (data.success && data.tasks && data.tasks.length > 0) {
+                    // Safe fallback if URL has no ID parameter
                     if (!leadId) {
                         currentLeadData = data.tasks[0];
                         leadId = currentLeadData._id || currentLeadData.id;
