@@ -111,7 +111,7 @@
                         <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Team Lead Control Hub
                     </div>
                     <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight">Welcome back, <span class="text-blue-400">Team Lead</span></h1>
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-xl">Monitor your registered team members, check task progress, and assign leads securely.</p>
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-xl">Monitor your registered team members, inspect task performance, and assign leads securely.</p>
                 </div>
                 <div class="hidden lg:block relative z-10">
                     <div class="w-20 h-20 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center text-blue-400 text-3xl shadow-inner">
@@ -153,7 +153,7 @@
                         <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
                             <i class="fa-solid fa-users-gear text-blue-600"></i> Member Task Performance & Status
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Real-time breakdown of assigned vs. completed tasks per member collection.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Click any member card to view their complete assigned and completed task breakdown.</p>
                     </div>
                 </div>
                 
@@ -167,6 +167,47 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- Task Breakdown Modal -->
+    <div id="taskModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-base">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalMemberTitle" class="font-extrabold text-slate-900 text-base sm:text-lg">Member Tasks</h3>
+                        <p id="modalCollectionSub" class="text-xs text-slate-400 font-mono">tasks_username</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeTaskModal()" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer hover:bg-slate-200 transition">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body Content -->
+            <div class="overflow-y-auto space-y-6 flex-grow pr-1">
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-blue-600 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-hourglass-half"></i> Pending / Assigned Tasks (<span id="modalAssignedCount">0</span>)
+                    </h4>
+                    <div id="modalAssignedList" class="space-y-2">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Completed Tasks (<span id="modalCompletedCount">0</span>)
+                    </h4>
+                    <div id="modalCompletedList" class="space-y-2">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Toast Notification Container -->
@@ -210,25 +251,28 @@
                 if (data.success && data.members.length > 0) {
                     countElem.textContent = `${data.members.length} Active Member${data.members.length > 1 ? 's' : ''}`;
                     
-                    // Iterate through members and fetch their respective tasks to calculate assigned vs completed counts
                     for (const m of data.members) {
-                        let assignedCount = 0;
-                        let completedCount = 0;
+                        let assignedTasks = [];
+                        let completedTasks = [];
 
                         try {
                             const taskRes = await fetch(`/api/member-tasks/${encodeURIComponent(m.username)}`);
                             const taskData = await taskRes.json();
                             if (taskData.success && taskData.tasks) {
-                                assignedCount = taskData.tasks.length;
-                                // Count tasks marked as Completed
-                                completedCount = taskData.tasks.filter(t => t.status === 'Completed').res || taskData.tasks.filter(t => t.status === 'Completed').length;
+                                assignedTasks = taskData.tasks.filter(t => !t.status || t.status === 'Pending' || t.status === 'Initialized');
+                                completedTasks = taskData.tasks.filter(t => t.status === 'Completed');
                             }
                         } catch (err) {
                             console.error(`Failed to fetch tasks for ${m.username}`);
                         }
 
+                        const cleanName = m.username.trim().replace(/[^a-zA-Z0-9_]/g, '_');
                         const badge = document.createElement('div');
-                        badge.className = 'w-full p-4 bg-white text-slate-800 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition hover:border-blue-300 hover:shadow-xs';
+                        badge.className = 'w-full p-4 bg-white text-slate-800 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition hover:border-blue-400 hover:shadow-md cursor-pointer';
+                        
+                        // Attach click event to open modal breakdown
+                        badge.onclick = () => openTaskModal(m.username, assignedTasks, completedTasks);
+
                         badge.innerHTML = `
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
@@ -236,15 +280,15 @@
                                 </div>
                                 <div>
                                     <span class="font-bold text-slate-900 text-sm block">${m.username}</span>
-                                    <span class="text-[10px] text-slate-400 font-mono">tasks_${m.username.trim().replace(/[^a-zA-Z0-9_]/g, '_')}</span>
+                                    <span class="text-[10px] text-slate-400 font-mono">tasks_${cleanName}</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                                 <div class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-100 text-[11px] font-bold">
-                                    <i class="fa-solid fa-list-check mr-1"></i> Assigned: ${assignedCount}
+                                    <i class="fa-solid fa-list-check mr-1"></i> Assigned: ${assignedTasks.length}
                                 </div>
                                 <div class="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 text-[11px] font-bold">
-                                    <i class="fa-solid fa-circle-check mr-1"></i> Completed: ${completedCount}
+                                    <i class="fa-solid fa-circle-check mr-1"></i> Completed: ${completedTasks.length}
                                 </div>
                             </div>
                         `;
@@ -257,6 +301,59 @@
             } catch (err) {
                 console.error('Failed to load dashboard data');
             }
+        }
+
+        function openTaskModal(username, assigned, completed) {
+            document.getElementById('modalMemberTitle').textContent = `Tasks for ${username}`;
+            document.getElementById('modalCollectionSub').textContent = `tasks_${username.trim().replace(/[^a-zA-Z0-9_]/g, '_')}`;
+            document.getElementById('modalAssignedCount').textContent = assigned.length;
+            document.getElementById('modalCompletedCount').textContent = completed.length;
+
+            const assignedList = document.getElementById('modalAssignedList');
+            const completedList = document.getElementById('modalCompletedList');
+
+            assignedList.innerHTML = '';
+            completedList.innerHTML = '';
+
+            if (assigned.length > 0) {
+                assigned.forEach((t, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs';
+                    item.innerHTML = `
+                        <div>
+                            <span class="font-bold text-slate-800 block">#${i + 1} ${t.name || 'Untitled Lead'}</span>
+                            <span class="text-blue-600 font-medium"><i class="fa-solid fa-phone mr-1"></i>${t.contactNumber || 'No Number'}</span>
+                        </div>
+                        <span class="px-2.5 py-1 bg-amber-100 text-amber-700 font-bold rounded-lg text-[10px]">Pending</span>
+                    `;
+                    assignedList.appendChild(item);
+                });
+            } else {
+                assignedList.innerHTML = '<p class="text-xs text-slate-400 italic py-2">No pending assigned tasks.</p>';
+            }
+
+            if (completed.length > 0) {
+                completed.forEach((t, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs';
+                    item.innerHTML = `
+                        <div>
+                            <span class="font-bold text-slate-900 block">#${i + 1} ${t.name || 'Untitled Lead'}</span>
+                            <span class="text-emerald-700 font-medium"><i class="fa-solid fa-phone mr-1"></i>${t.contactNumber || 'No Number'}</span>
+                        </div>
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-lg text-[10px]">Completed</span>
+                    `;
+                    completedList.appendChild(item);
+                });
+            } else {
+                completedList.innerHTML = '<p class="text-xs text-slate-400 italic py-2">No completed tasks yet.</p>';
+            }
+
+            document.getElementById('taskModal').classList.remove('hidden');
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.add('hidden');
         }
 
         function handleLogout(e) {
