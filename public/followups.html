@@ -271,15 +271,17 @@
                         </div>
 
                         <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-2xs space-y-3">
+                            <!-- Title & Timestamp -->
                             <div class="flex items-center justify-between flex-wrap gap-2">
                                 <span class="text-xs font-bold uppercase tracking-wider text-slate-700">
-                                    ${valOrEmpty(log.title)}
+                                    Title: <span class="font-normal">${valOrEmpty(log.title)}</span>
                                 </span>
                                 <span class="text-[11px] text-slate-400 font-medium">
-                                    ${valOrEmpty(log.timestamp || log.createdAt)}
+                                    Timestamp: ${valOrEmpty(log.timestamp || log.createdAt)}
                                 </span>
                             </div>
 
+                            <!-- Call Connection Status -->
                             <div>
                                 <span class="text-[11px] font-bold text-slate-400 block mb-1">Call Connection Status:</span>
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${badgeClass}">
@@ -288,36 +290,43 @@
                                 </span>
                             </div>
 
+                            <!-- Call Remarks / Notes -->
                             <div class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                                 <span class="font-bold text-slate-700 block mb-0.5"><i class="fa-solid fa-comment-dots text-emerald-600 mr-1"></i> Call Remarks / Notes:</span>
                                 <p class="text-slate-600">${valOrEmpty(log.remark)}</p>
                             </div>
 
+                            <!-- Follow-up Details Section -->
                             <div class="text-xs text-amber-800 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/60 space-y-1">
                                 <div class="font-bold flex items-center gap-1 text-amber-900">
                                     <i class="fa-solid fa-calendar-days text-amber-600"></i> Follow-up Required: <span class="font-normal">${valOrEmpty(log.followUpRequired)}</span>
                                 </div>
                                 <div class="text-slate-700 font-medium pl-4 space-y-0.5">
                                     <div>Follow-Up Option: ${valOrEmpty(log.followUpOption)}</div>
-                                    <div>Follow-Up Date & Time: ${log.followUpDate || log.followUpTime ? `${valOrEmpty(log.followUpDate)} at${valOrEmpty(log.followUpTime)}` : '<span class="text-slate-400 italic">Empty</span>'}</div>
+                                    <div>Follow-Up Date: ${valOrEmpty(log.followUpDate)}</div>
+                                    <div>Follow-Up Time: ${valOrEmpty(log.followUpTime)}</div>
                                 </div>
                             </div>
 
+                            <!-- Visit Options Section -->
                             <div class="text-xs text-teal-800 bg-teal-50/70 p-2.5 rounded-xl border border-teal-200/60 space-y-1">
                                 <div class="font-bold flex items-center gap-1 text-teal-900">
                                     <i class="fa-solid fa-map-location-dot text-teal-600"></i> Visit Scheduled: <span class="font-normal">${valOrEmpty(log.visitScheduled)}</span>
                                 </div>
                                 <div class="text-slate-700 font-medium pl-4 space-y-0.5">
-                                    <div>Visit Date & Time: ${log.visitDate || log.visitTime ? `${valOrEmpty(log.visitDate)} at${valOrEmpty(log.visitTime)}` : '<span class="text-slate-400 italic">Empty</span>'}</div>
-                                    <div>Building / Location: ${log.visitBuilding || log.visitLocation ? `${valOrEmpty(log.visitBuilding)}${valOrEmpty(log.visitLocation)}` : '<span class="text-slate-400 italic">Empty</span>'}</div>
+                                    <div>Visit Date: ${valOrEmpty(log.visitDate)}</div>
+                                    <div>Visit Time: ${valOrEmpty(log.visitTime)}</div>
+                                    <div>Visit Building: ${valOrEmpty(log.visitBuilding)}</div>
+                                    <div>Visit Location: ${valOrEmpty(log.visitLocation)}</div>
                                     <div>Visit Note: ${valOrEmpty(log.visitNote)}</div>
                                     <div>Visitor Coming: ${valOrEmpty(log.visitorComing)}</div>
                                     <div>Reschedule Reason: ${valOrEmpty(log.rescheduleReason)}</div>
                                     <div>Customer Visit Interest: ${valOrEmpty(log.visitInterestCustomer)}</div>
-                                    <div>Reschedule Choice: ${valOrEmpty(log.rescheduleVisitChoice)}</div>
+                                    <div>Reschedule Visit Choice: ${valOrEmpty(log.rescheduleVisitChoice)}</div>
                                 </div>
                             </div>
 
+                            <!-- Lead Status & Close Reason -->
                             <div class="pt-1 flex items-center gap-3 text-[11px] text-slate-500 font-medium flex-wrap">
                                 <span class="bg-slate-100 px-2 py-1 rounded text-slate-700">Lead Status: <b>${valOrEmpty(log.leadStatus)}</b></span>
                                 <span class="bg-rose-50 text-rose-700 px-2 py-1 rounded">Close Reason: <b>${valOrEmpty(log.closeReason)}</b></span>
