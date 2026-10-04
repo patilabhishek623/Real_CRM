@@ -1,225 +1,369 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50/90">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Follow-Up Leads - Real Estate CRM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Follow-Up Leads - Real_Crm</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter Font & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .corporate-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+            transition: all 0.2s ease-in-out;
+        }
+        .corporate-card:active {
+            transform: scale(0.99);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="min-h-full text-slate-800 flex flex-col selection:bg-emerald-600 selection:text-white relative pb-24 md:pb-8">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-indigo-600 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <!-- Ambient Background Decorative Accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Top Corporate Navigation Bar -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-calendar-check text-2xl"></i>
-                <h1 class="text-xl font-bold">Follow-Up Management</h1>
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-tr from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/20 border border-emerald-400/20 flex-shrink-0">
+                    <i class="fa-solid fa-calendar-check text-base sm:text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <span class="text-base sm:text-xl font-black tracking-tight text-slate-900">Real_Crm</span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md border border-blue-200">Follow-Ups</span>
+                    </div>
+                    <span id="liveClock" class="text-[10px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
+                </div>
             </div>
-            <div class="flex items-center space-x-4">
-                <span id="loggedInUserDisplay" class="text-sm bg-indigo-700 px-3 py-1 rounded-full"></span>
-                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm transition">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
-                </button>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span id="activeUserBadge" class="text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-2 rounded-xl border border-slate-200 hidden sm:inline-flex items-center shadow-2xs"></span>
+                
+                <!-- Logout -->
+                <a href="/" onclick="handleLogout(event)" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6">
+    <!-- Main Workspace Layout -->
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
-        <!-- Back Navigation & Header Title -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <div>
-                <a href="javascript:history.back()" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-2 inline-block">
-                    <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
+        <!-- Left Sidebar Navigation Menu (Desktop Only) -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="corporate-card rounded-2xl p-4 space-y-2 sticky top-28 border border-slate-200">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Navigation Menu</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200">
+                    <i class="fa-solid fa-house w-5 text-slate-400 text-base"></i> Dashboard
                 </a>
-                <h2 class="text-2xl font-bold text-gray-800">Your Lead Follow-Ups</h2>
-                <p class="text-sm text-gray-500">Categorized by Lapsed, Today, Tomorrow, and Upcoming schedules.</p>
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Assigned Tasks
+                </a>
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-md shadow-blue-600/20 transition border border-blue-600">
+                    <i class="fa-solid fa-calendar-days w-5 text-blue-100 text-base"></i> Follow Ups
+                </a>
+                <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Visits
+                </a>
             </div>
-            <!-- Category Tabs / Filter Pills -->
-            <div class="flex flex-wrap gap-2">
-                <button onclick="filterTab('all')" id="tab-all" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white transition shadow-sm">All</button>
-                <button onclick="filterTab('lapsed')" id="tab-lapsed" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 transition border border-gray-200">Lapsed</button>
-                <button onclick="filterTab('today')" id="tab-today" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 transition border border-gray-200">Today</button>
-                <button onclick="filterTab('tomorrow')" id="tab-tomorrow" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 transition border border-gray-200">Tomorrow</button>
-                <button onclick="filterTab('upcoming')" id="tab-upcoming" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 transition border border-gray-200">Upcoming</button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="md:col-span-3 space-y-5 sm:space-y-6">
+            
+            <!-- Corporate Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-2xl p-5 sm:p-8 text-white shadow-xl relative overflow-hidden flex justify-between items-center border border-slate-800">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 space-y-2">
+                    <div class="inline-flex items-center gap-2 bg-blue-500/20 px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-blue-300 border border-blue-500/30">
+                        <i class="fa-solid fa-clock"></i> Active Benchmark Date: <span class="text-white font-bold">Oct 5, 2026</span>
+                    </div>
+                    <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight">Follow-Up Call Schedule</h1>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Inspect, filter, and execute your scheduled callbacks fetched directly from your collection database.</p>
+                </div>
             </div>
-        </div>
 
-        <!-- Loading State -->
-        <div id="loadingState" class="text-center py-16">
-            <i class="fa-solid fa-spinner fa-spin text-4xl text-indigo-600 mb-3"></i>
-            <p class="text-gray-500 text-sm">Fetching follow-up details from your collection...</p>
-        </div>
+            <!-- Filter Tabs & Search Bar Header -->
+            <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
+                <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+                    <!-- Tabs -->
+                    <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                        <button onclick="filterTab('all')" id="tab-all" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm transition">All (<span id="count-all">0</span>)</button>
+                        <button onclick="filterTab('lapsed')" id="tab-lapsed" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Lapsed (<span id="count-lapsed">0</span>)</button>
+                        <button onclick="filterTab('today')" id="tab-today" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Today (<span id="count-today">0</span>)</button>
+                        <button onclick="filterTab('tomorrow')" id="tab-tomorrow" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Tomorrow (<span id="count-tomorrow">0</span>)</button>
+                        <button onclick="filterTab('upcoming')" id="tab-upcoming" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Upcoming (<span id="count-upcoming">0</span>)</button>
+                    </div>
 
-        <!-- Follow-ups Table Container -->
-        <div id="tableContainer" class="hidden bg-white shadow-md rounded-xl overflow-hidden border border-gray-200">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Lead Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Contact Number</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Follow-Up Date & Time</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Option / Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Latest Remark</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="followupsTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Dynamic Rows Will Be Injected Here -->
-                    </tbody>
-                </table>
+                    <!-- Search Input -->
+                    <div class="relative w-full lg:w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search lead name or phone..." class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white transition shadow-2xs">
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-16 text-slate-400 text-xs">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-blue-600 mb-3"></i>
+                    <p>Fetching follow-up logs from database collection...</p>
+                </div>
+
+                <!-- Table Container -->
+                <div id="tableContainer" class="hidden overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="min-w-full divide-y divide-slate-200 bg-white">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Lead Name</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Contact Number</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Category</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Callback Date & Time</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Latest Remark</th>
+                                <th class="px-4.5 py-3 text-center text-[11px] font-bold text-slate-600 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="followupsTableBody" class="divide-y divide-slate-200">
+                            <!-- Rows injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-16 text-slate-400 text-xs">
+                    <i class="fa-regular fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                    <p class="font-semibold text-sm text-slate-600">No follow-up leads found</p>
+                    <p class="text-slate-400 mt-0.5">There are no callbacks scheduled under this filter view.</p>
+                </div>
             </div>
-        </div>
 
-        <!-- Empty State -->
-        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200 mt-4">
-            <i class="fa-regular fa-folder-open text-5xl text-gray-300 mb-3"></i>
-            <p class="text-gray-600 font-medium text-lg">No follow-ups found</p>
-            <p class="text-gray-400 text-sm mt-1">There are no pending follow-up calls scheduled under this category.</p>
-        </div>
+        </main>
+    </div>
 
-    </main>
+    <!-- Mobile Sticky Bottom Navigation Bar (Mobile Only) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2.5 z-50 flex items-center justify-around shadow-lg">
+        <a href="teammember.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+            <i class="fa-solid fa-house text-base"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="assignedmembertask.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+            <i class="fa-solid fa-list-check text-base"></i>
+            <span>Tasks</span>
+        </a>
+        <a href="followups.html" class="flex flex-col items-center text-blue-600 font-bold text-[10px] gap-1">
+            <i class="fa-solid fa-calendar-days text-base"></i>
+            <span>Follow-ups</span>
+        </a>
+        <a href="visits.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+            <i class="fa-solid fa-map-location-dot text-base"></i>
+            <span>Visits</span>
+        </a>
+    </nav>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 py-4 mt-8">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
-            Real Estate CRM &copy; 2026 - All Rights Reserved
-        </div>
-    </footer>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-16 md:bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- Client Script -->
+    <!-- JavaScript Controller -->
     <script>
-        // System current base date (October 5, 2026)
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.textContent = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Active Session Check matching teammember.html
+        const currentUsername = localStorage.getItem('crm_username');
+        if (!currentUsername) {
+            showToast('No active session found. Redirecting to login...', 'error');
+            setTimeout(() => { window.location.href = '/'; }, 1000);
+        }
+
+        document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-2"></i> User: <b>${currentUsername}</b>`;
+
+        // Benchmark date reference: October 5, 2026
         const TODAY_STR = '2026-10-05';
-        let allFollowUpsData = [];
+        let rawFollowUps = [];
         let currentFilter = 'all';
 
-        // Retrieve logged-in username from localStorage (set during login)
-        const username = localStorage.getItem('username') || sessionStorage.getItem('username');
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!username) {
-                alert('Session expired or unauthorized. Please log in first.');
-                window.location.href = 'index.html';
-                return;
-            }
-
-            document.getElementById('loggedInUserDisplay').innerHTML = `<i class="fa-solid fa-user-circle mr-1"></i> ${username}`;
-            fetchFollowUps();
-        });
-
-        async function fetchFollowUps() {
+        async function loadFollowUps() {
             try {
-                const response = await fetch(`/api/followups/${username}`);
-                const data = await response.json();
+                const res = await fetch(`/api/followups/${encodeURIComponent(currentUsername)}`);
+                const data = await res.json();
 
-                if (data.success) {
-                    allFollowUpsData = data.followups.map(item => {
+                if (data.success && data.followups) {
+                    rawFollowUps = data.followups.map(item => {
                         const category = classifyDate(item.followUpDate);
                         return { ...item, category };
                     });
-                    renderTable(allFollowUpsData);
+                    updateCounts();
+                    renderList(rawFollowUps);
                 } else {
                     showEmpty();
                 }
             } catch (err) {
-                console.error('Error loading follow-ups:', err);
+                console.error('Error fetching follow-ups:', err);
+                showToast('Failed to connect to backend collection.', 'error');
                 showEmpty();
             } finally {
                 document.getElementById('loadingState').classList.add('hidden');
             }
         }
 
-        // Categorize follow-up dates relative to 2026-10-05
-        function classifyDate(dateString) {
-            if (!dateString) return 'upcoming';
-            // Normalize formatting YYYY-MM-DD
-            const fDate = dateString.split('T')[0];
-            
+        function classifyDate(dateStr) {
+            if (!dateStr) return 'upcoming';
+            const fDate = dateStr.split('T')[0];
+
             if (fDate < TODAY_STR) return 'lapsed';
             if (fDate === TODAY_STR) return 'today';
 
-            // Calculate tomorrow dynamically
-            const todayDateObj = new Date(TODAY_STR + 'T00:00:00');
-            const tomorrowDateObj = new Date(todayDateObj);
-            tomorrowDateObj.setDate(todayDateObj.getDate() + 1);
-            const tomorrowStr = tomorrowDateObj.toISOString().split('T')[0];
+            // Calculate tomorrow dynamically based on 2026-10-05
+            const todayObj = new Date(TODAY_STR + 'T00:00:00');
+            const tomorrowObj = new Date(todayObj);
+            tomorrowObj.setDate(todayObj.getDate() + 1);
+            const tomorrowStr = tomorrowObj.toISOString().split('T')[0];
 
             if (fDate === tomorrowStr) return 'tomorrow';
             return 'upcoming';
         }
 
-        function filterTab(type) {
-            currentFilter = type;
-            
-            // Update Tab active styling styles
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 transition border border-gray-200";
-            });
-            const activeBtn = document.getElementById(`tab-${type}`);
-            activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white transition shadow-sm";
+        function updateCounts() {
+            const counts = {
+                all: rawFollowUps.length,
+                lapsed: rawFollowUps.filter(i => i.category === 'lapsed').length,
+                today: rawFollowUps.filter(i => i.category === 'today').length,
+                tomorrow: rawFollowUps.filter(i => i.category === 'tomorrow').length,
+                upcoming: rawFollowUps.filter(i => i.category === 'upcoming').length,
+            };
 
-            if (type === 'all') {
-                renderTable(allFollowUpsData);
-            } else {
-                const filtered = allFollowUpsData.filter(item => item.category === type);
-                renderTable(filtered);
+            for (const key in counts) {
+                const el = document.getElementById(`count-${key}`);
+                if (el) el.textContent = counts[key];
             }
         }
 
-        function renderTable(dataList) {
-            const tbody = document.getElementById('followupsTableBody');
-            tbody.innerHTML = '';
+        function filterTab(type) {
+            currentFilter = type;
 
-            if (!dataList || dataList.length === 0) {
-                document.getElementById('tableContainer').classList.add('hidden');
-                document.getElementById('emptyState').classList.remove('hidden');
+            // Highlight active tab style
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition";
+            });
+            const activeBtn = document.getElementById(`tab-${type}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm transition";
+            }
+
+            applyFiltersAndSearch();
+        }
+
+        function handleSearch() {
+            applyFiltersAndSearch();
+        }
+
+        function applyFiltersAndSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = rawFollowUps.filter(item => {
+                const matchTab = (currentFilter === 'all' || item.category === currentFilter);
+                const matchQuery = (item.name && item.name.toLowerCase().includes(query)) || 
+                                   (item.contactNumber && item.contactNumber.toLowerCase().includes(query)) ||
+                                   (item.remark && item.remark.toLowerCase().includes(query));
+                return matchTab && matchQuery;
+            });
+
+            renderList(filtered);
+        }
+
+        function renderList(list) {
+            const tbody = document.getElementById('followupsTableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!list || list.length === 0) {
+                tableContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
                 return;
             }
 
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('tableContainer').classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            tableContainer.classList.remove('hidden');
 
-            dataList.forEach(item => {
-                const badgeColor = getBadgeStyling(item.category);
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 transition";
-                tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${escapeHtml(item.name)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                        <a href="tel:${escapeHtml(item.contactNumber)}" class="text-indigo-600 hover:underline">
-                            <i class="fa-solid fa-phone text-xs mr-1"></i> ${escapeHtml(item.contactNumber || 'N/A')}
-                        </a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${badgeColor}">${item.category.toUpperCase()}</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        <div class="font-medium">${escapeHtml(item.followUpDate || '')}</div>
-                        <div class="text-xs text-gray-400">${escapeHtml(item.followUpTime || '')}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHtml(item.followUpOption || 'Standard')}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="${escapeHtml(item.remark || '')}">${escapeHtml(item.remark || 'No remark logged')}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <a href="lead-response.html?username=${encodeURIComponent(username)}&taskId=${item.taskId}" class="inline-flex items-center bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                            <i class="fa-solid fa-headset mr-1"></i> Call Action
-                        </a>
-                    </td>
+            tbody.innerHTML = list.map(item => {
+                const badge = getCategoryBadge(item.category);
+                return `
+                    <tr class="hover:bg-slate-50/80 transition text-xs">
+                        <td class="px-4.5 py-3.5 font-bold text-slate-900 whitespace-nowrap">${escapeHtml(item.name)}</td>
+                        <td class="px-4.5 py-3.5 text-slate-600 whitespace-nowrap">
+                            <a href="tel:${escapeHtml(item.contactNumber)}" class="text-blue-600 hover:underline flex items-center gap-1 font-medium">
+                                <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(item.contactNumber || 'N/A')}
+                            </a>
+                        </td>
+                        <td class="px-4.5 py-3.5 whitespace-nowrap">${badge}</td>
+                        <td class="px-4.5 py-3.5 text-slate-700 whitespace-nowrap">
+                            <div class="font-bold">${escapeHtml(item.followUpDate || '')}</div>
+                            <div class="text-[10px] text-slate-400">${escapeHtml(item.followUpTime || 'Anytime')}</div>
+                        </td>
+                        <td class="px-4.5 py-3.5 text-slate-600 max-w-xs truncate" title="${escapeHtml(item.remark || '')}">${escapeHtml(item.remark || 'No remark logged')}</td>
+                        <td class="px-4.5 py-3.5 text-center whitespace-nowrap">
+                            <a href="lead-response.html?username=${encodeURIComponent(currentUsername)}&taskId=${item.taskId}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white font-bold rounded-lg transition shadow-2xs">
+                                <i class="fa-solid fa-headset"></i> Call Action
+                            </a>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
-            });
+            }).join('');
         }
 
-        function getBadgeStyling(category) {
+        function getCategoryBadge(category) {
             switch(category) {
-                case 'lapsed': return 'bg-red-100 text-red-800';
-                case 'today': return 'bg-amber-100 text-amber-800 animate-pulse';
-                case 'tomorrow': return 'bg-blue-100 text-blue-800';
-                case 'upcoming': return 'bg-emerald-100 text-emerald-800';
-                default: return 'bg-gray-100 text-gray-800';
+                case 'lapsed':
+                    return `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 font-bold rounded-lg text-[10px] uppercase border border-rose-200 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Lapsed</span>`;
+                case 'today':
+                    return `<span class="px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-[10px] uppercase border border-amber-200 inline-flex items-center gap-1 animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Today</span>`;
+                case 'tomorrow':
+                    return `<span class="px-2.5 py-1 bg-blue-50 text-blue-700 font-bold rounded-lg text-[10px] uppercase border border-blue-200 inline-flex items-center gap-1"><i class="fa-solid fa-calendar-day"></i> Tomorrow</span>`;
+                case 'upcoming':
+                    return `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-[10px] uppercase border border-emerald-200 inline-flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Upcoming</span>`;
+                default:
+                    return `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-bold rounded-lg text-[10px] uppercase border border-slate-200">Scheduled</span>`;
             }
         }
 
@@ -229,16 +373,36 @@
             document.getElementById('emptyState').classList.remove('hidden');
         }
 
-        function logout() {
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-xs font-semibold transform translate-y-4 opacity-0 transition-all duration-300 ${
+                type === 'success' ? 'bg-slate-900 border border-emerald-500/40 text-emerald-400' : 'bg-slate-900 border border-rose-500/40 text-rose-400'
+            }`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'} text-sm"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function handleLogout(e) {
+            e.preventDefault();
             localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = 'index.html';
+            showToast('Logged out successfully...', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 800);
         }
 
         function escapeHtml(str) {
             if (!str) return '';
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
+
+        // Initialize Data Load
+        loadFollowUps();
     </script>
 </body>
 </html>
