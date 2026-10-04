@@ -252,7 +252,7 @@
             }
         }
 
-        // Strict Date Classification Logic (No one-day offset shifts)
+        // Strict Date Classification Logic
         function classifyDate(dateStr) {
             if (!dateStr) return 'upcoming';
             const fDate = dateStr.split('T')[0];
