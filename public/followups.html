@@ -250,6 +250,7 @@
             }
         }
 
+        // Exact strict calendar mapping (Strictly matches date without any day-shifting)
         function classifyDate(dateStr) {
             if (!dateStr) return 'upcoming';
             const fDate = dateStr.split('T')[0];
@@ -257,6 +258,7 @@
             if (fDate < TODAY_STR) return 'lapsed';
             if (fDate === TODAY_STR) return 'today';
 
+            // Calculate exact tomorrow string ('2026-10-06')
             const todayObj = new Date(TODAY_STR + 'T00:00:00');
             const tomorrowObj = new Date(todayObj);
             tomorrowObj.setDate(todayObj.getDate() + 1);
