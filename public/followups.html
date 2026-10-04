@@ -122,9 +122,8 @@
             <!-- Filter Tabs & Search Bar Header -->
             <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
                 <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-                    <!-- Tabs with Exact Requested Text Format -->
+                    <!-- Tabs showing Lapsed, Today, Tomorrow, Upcoming without 'All' -->
                     <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                        <button onclick="filterTab('all')" id="tab-all" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm transition">All (<span id="count-all">0</span>)</button>
                         <button onclick="filterTab('lapsed')" id="tab-lapsed" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Lapsed (<span id="count-lapsed">0</span>)</button>
                         <button onclick="filterTab('today')" id="tab-today" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Today (<span id="count-today">0</span>)</button>
                         <button onclick="filterTab('tomorrow')" id="tab-tomorrow" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Tomorrow (<span id="count-tomorrow">0</span>)</button>
@@ -224,7 +223,7 @@
         // Benchmark date reference: October 5, 2026
         const TODAY_STR = '2026-10-05';
         let rawFollowUps = [];
-        let currentFilter = 'all';
+        let currentFilter = 'today'; // Default active view
 
         async function loadFollowUps() {
             try {
@@ -237,7 +236,7 @@
                         return { ...item, category };
                     });
                     updateCounts();
-                    renderList(rawFollowUps);
+                    filterTab(currentFilter);
                 } else {
                     showEmpty();
                 }
@@ -250,7 +249,6 @@
             }
         }
 
-        // Exact strict calendar mapping (Strictly matches date without any day-shifting)
         function classifyDate(dateStr) {
             if (!dateStr) return 'upcoming';
             const fDate = dateStr.split('T')[0];
@@ -258,7 +256,6 @@
             if (fDate < TODAY_STR) return 'lapsed';
             if (fDate === TODAY_STR) return 'today';
 
-            // Calculate exact tomorrow string ('2026-10-06')
             const todayObj = new Date(TODAY_STR + 'T00:00:00');
             const tomorrowObj = new Date(todayObj);
             tomorrowObj.setDate(todayObj.getDate() + 1);
@@ -270,7 +267,6 @@
 
         function updateCounts() {
             const counts = {
-                all: rawFollowUps.length,
                 lapsed: rawFollowUps.filter(i => i.category === 'lapsed').length,
                 today: rawFollowUps.filter(i => i.category === 'today').length,
                 tomorrow: rawFollowUps.filter(i => i.category === 'tomorrow').length,
@@ -305,7 +301,7 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
 
             let filtered = rawFollowUps.filter(item => {
-                const matchTab = (currentFilter === 'all' || item.category === currentFilter);
+                const matchTab = (item.category === currentFilter);
                 const matchQuery = (item.name && item.name.toLowerCase().includes(query)) || 
                                    (item.contactNumber && item.contactNumber.toLowerCase().includes(query)) ||
                                    (item.remark && item.remark.toLowerCase().includes(query));
