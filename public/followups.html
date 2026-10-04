@@ -209,11 +209,15 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Active Session Check matching teammember.html
-        const currentUsername = localStorage.getItem('crm_username');
+        // Support both storage keys ('crm_username' or 'username') to prevent unauthorized session errors[cite: 1, 2]
+        const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
+        
         if (!currentUsername) {
             showToast('No active session found. Redirecting to login...', 'error');
             setTimeout(() => { window.location.href = '/'; }, 1000);
+        } else {
+            // Ensure consistency in storage
+            localStorage.setItem('crm_username', currentUsername);
         }
 
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-2"></i> User: <b>${currentUsername}</b>`;
@@ -401,8 +405,10 @@
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
-        // Initialize Data Load
-        loadFollowUps();
+        // Initialize Data Load if user exists
+        if (currentUsername) {
+            loadFollowUps();
+        }
     </script>
 </body>
 </html>
