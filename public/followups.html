@@ -122,7 +122,7 @@
             <!-- Filter Tabs & Search Bar Header -->
             <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
                 <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-                    <!-- Tabs -->
+                    <!-- Tabs with Exact Requested Text Format -->
                     <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                         <button onclick="filterTab('all')" id="tab-all" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm transition">All (<span id="count-all">0</span>)</button>
                         <button onclick="filterTab('lapsed')" id="tab-lapsed" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Lapsed (<span id="count-lapsed">0</span>)</button>
@@ -209,14 +209,13 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Support both storage keys ('crm_username' or 'username') to prevent unauthorized session errors[cite: 1, 2]
+        // Support both storage keys to prevent unauthorized session errors
         const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
         
         if (!currentUsername) {
             showToast('No active session found. Redirecting to login...', 'error');
             setTimeout(() => { window.location.href = '/'; }, 1000);
         } else {
-            // Ensure consistency in storage
             localStorage.setItem('crm_username', currentUsername);
         }
 
@@ -258,7 +257,6 @@
             if (fDate < TODAY_STR) return 'lapsed';
             if (fDate === TODAY_STR) return 'today';
 
-            // Calculate tomorrow dynamically based on 2026-10-05
             const todayObj = new Date(TODAY_STR + 'T00:00:00');
             const tomorrowObj = new Date(todayObj);
             tomorrowObj.setDate(todayObj.getDate() + 1);
@@ -286,7 +284,6 @@
         function filterTab(type) {
             currentFilter = type;
 
-            // Highlight active tab style
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.className = "tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition";
             });
@@ -405,7 +402,6 @@
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
-        // Initialize Data Load if user exists
         if (currentUsername) {
             loadFollowUps();
         }
