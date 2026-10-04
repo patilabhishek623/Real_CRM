@@ -221,8 +221,10 @@
 
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-2"></i> User: <b>${currentUsername}</b>`;
 
-        // Set Today benchmark date to October 4, 2026
+        // Today's Date Benchmark: October 4, 2026
         const TODAY_STR = '2026-10-04';
+        const TOMORROW_STR = '2026-10-05';
+
         let rawFollowUps = [];
         let currentFilter = 'today';
 
@@ -250,19 +252,15 @@
             }
         }
 
+        // Strict Date Classification Logic (No one-day offset shifts)
         function classifyDate(dateStr) {
             if (!dateStr) return 'upcoming';
             const fDate = dateStr.split('T')[0];
 
             if (fDate < TODAY_STR) return 'lapsed';
             if (fDate === TODAY_STR) return 'today';
-
-            const todayObj = new Date(TODAY_STR + 'T00:00:00');
-            const tomorrowObj = new Date(todayObj);
-            tomorrowObj.setDate(todayObj.getDate() + 1);
-            const tomorrowStr = tomorrowObj.toISOString().split('T')[0]; // '2026-10-05'
-
-            if (fDate === tomorrowStr) return 'tomorrow';
+            if (fDate === TOMORROW_STR) return 'tomorrow';
+            
             return 'upcoming';
         }
 
