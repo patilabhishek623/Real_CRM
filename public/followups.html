@@ -109,7 +109,7 @@
                 <div class="absolute -right-12 -top-12 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="relative z-10 space-y-1.5">
                     <div class="inline-flex items-center gap-1.5 bg-blue-500/20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-blue-300 border border-blue-500/30">
-                        <i class="fa-solid fa-clock"></i> Today's Benchmark Date: <span class="text-white font-bold">Oct 4, 2026</span>
+                        <i class="fa-solid fa-clock"></i> Today's Benchmark Date: <span class="text-white font-bold">4 October 2026</span>
                     </div>
                     <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Follow-Up Call Schedule</h1>
                     <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Inspect and execute your scheduled callbacks from your collection database.</p>
@@ -228,6 +228,24 @@
         let rawFollowUps = [];
         let currentFilter = 'today';
 
+        // Helper function to format date string (YYYY-MM-DD -> Date MonthName Year)
+        function formatDateReadable(dateStr) {
+            if (!dateStr) return 'N/A';
+            const cleanDate = dateStr.split('T')[0];
+            const parts = cleanDate.split('-');
+            if (parts.length !== 3) return cleanDate;
+
+            const year = parts[0];
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const monthIndex = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+
+            if (monthIndex >= 0 && monthIndex < 12) {
+                return `${day} ${monthNames[monthIndex]} ${year}`;
+            }
+            return cleanDate;
+        }
+
         async function loadFollowUps() {
             try {
                 const res = await fetch(`/api/followups/${encodeURIComponent(currentUsername)}`);
@@ -301,9 +319,11 @@
 
             let filtered = rawFollowUps.filter(item => {
                 const matchTab = (item.category === currentFilter);
+                const readableDate = formatDateReadable(item.followUpDate).toLowerCase();
                 const matchQuery = (item.name && item.name.toLowerCase().includes(query)) || 
                                    (item.contactNumber && item.contactNumber.toLowerCase().includes(query)) ||
-                                   (item.remark && item.remark.toLowerCase().includes(query));
+                                   (item.remark && item.remark.toLowerCase().includes(query)) ||
+                                   readableDate.includes(query);
                 return matchTab && matchQuery;
             });
 
@@ -330,6 +350,7 @@
             // Render Desktop Table Rows
             tbody.innerHTML = list.map(item => {
                 const badge = getCategoryBadge(item.category);
+                const formattedDate = formatDateReadable(item.followUpDate);
                 return `
                     <tr class="hover:bg-slate-50/80 transition text-xs">
                         <td class="px-4.5 py-3.5 font-bold text-slate-900 whitespace-nowrap">${escapeHtml(item.name)}</td>
@@ -340,7 +361,7 @@
                         </td>
                         <td class="px-4.5 py-3.5 whitespace-nowrap">${badge}</td>
                         <td class="px-4.5 py-3.5 text-slate-700 whitespace-nowrap">
-                            <div class="font-bold">${escapeHtml(item.followUpDate || '')}</div>
+                            <div class="font-bold">${escapeHtml(formattedDate)}</div>
                             <div class="text-[10px] text-slate-400">${escapeHtml(item.followUpTime || 'Anytime')}</div>
                         </td>
                         <td class="px-4.5 py-3.5 text-slate-600 max-w-xs truncate" title="${escapeHtml(item.remark || '')}">${escapeHtml(item.remark || 'No remark logged')}</td>
@@ -356,6 +377,7 @@
             // Render Professional Mobile Cards
             mobileCardContainer.innerHTML = list.map(item => {
                 const badge = getCategoryBadge(item.category);
+                const formattedDate = formatDateReadable(item.followUpDate);
                 return `
                     <div class="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
                         <!-- Top Header: Lead Name & Category Badge -->
@@ -378,7 +400,7 @@
                             <div>
                                 <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Callback Schedule</span>
                                 <div class="text-xs font-bold text-slate-800 mt-0.5">
-                                    <div>${escapeHtml(item.followUpDate || 'N/A')}</div>
+                                    <div>${escapeHtml(formattedDate)}</div>
                                     <div class="text-[10px] text-slate-500 font-medium">${escapeHtml(item.followUpTime || 'Anytime')}</div>
                                 </div>
                             </div>
