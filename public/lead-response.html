@@ -41,17 +41,17 @@
                 </div>
                 <div>
                     <span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold tracking-wider uppercase bg-blue-500/20 text-blue-300 border border-blue-400/30">Real_Crm Hub</span>
-                    <h2 class="text-xl font-extrabold tracking-tight text-white mt-2" id="panelLeadName">Sneha Gupta</h2>
+                    <h2 class="text-xl font-extrabold tracking-tight text-white mt-2" id="panelLeadName">Loading...</h2>
                     <p class="text-xs font-medium text-blue-200/80 mt-1 flex items-center">
-                        <i class="fa-solid fa-phone mr-1.5 text-[10px]"></i> <span id="panelLeadContact">9112233445</span>
+                        <i class="fa-solid fa-phone mr-1.5 text-[10px]"></i> <span id="panelLeadContact">Loading...</span>
                     </p>
                 </div>
             </div>
 
             <div class="relative z-10 pt-4 border-t border-white/10 space-y-3">
                 <div class="bg-white/5 backdrop-blur-md p-3.5 rounded-xl border border-white/10 space-y-1">
-                    <span class="text-[10px] font-bold text-blue-300 uppercase tracking-wider block">Lead Source</span>
-                    <p class="text-xs text-slate-200 font-medium" id="leadDescription">Imported via Excel spreadsheet upload.</p>
+                    <span class="text-[10px] font-bold text-blue-300 uppercase tracking-wider block">Lead Source / Property</span>
+                    <p class="text-xs text-slate-200 font-medium" id="leadDescription">Loading lead requirements...</p>
                 </div>
 
                 <div class="bg-white/5 backdrop-blur-md p-3.5 rounded-xl border border-white/10 flex items-center justify-between">
@@ -295,55 +295,22 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const taskId = urlParams.get('id');
-        let currentUsername = localStorage.getItem('crm_username') || 'admin';
+        // Fixed: Read 'taskId' properly from URL query parameter
+        const taskId = urlParams.get('taskId') || urlParams.get('id');
+        const currentUsername = urlParams.get('username') || localStorage.getItem('crm_username') || 'admin';
 
         let taskData = {};
 
         async function fetchLeadData() {
             if (!taskId) {
-                loadLeadUI({
-                    name: "Sneha Gupta",
-                    contactNumber: "9112233445",
-                    description: "Imported via Excel lead sheet",
-                    call2: {
-                        call_connected: "Yes",
-                        tempSubOption: "Interested – Wants Project Details",
-                        leadTemperature: "HOT",
-                        requirementBudget: "asd",
-                        requirementFlatSize: "asd",
-                        requirementFloor: "asd",
-                        requirementNote: "asd",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call After 3 Days",
-                        followUpDate: "2026-10-21",
-                        followUpTime: "15:50",
-                        visitScheduled: "No",
-                        remark: "adsd",
-                        loggedAt: "2026-10-03T12:50:51.000+00:00"
-                    },
-                    call1: {
-                        call_connected: "Call Not Connected",
-                        tempSubOption: "Just checking prices",
-                        leadTemperature: "COLD",
-                        requirementBudget: "asd",
-                        requirementFlatSize: "assd",
-                        requirementFloor: "123",
-                        requirementNote: "asd",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call After 2 Days",
-                        followUpDate: "2026-10-04",
-                        followUpTime: "12:15",
-                        visitScheduled: "No",
-                        remark: "Call Not Connected",
-                        loggedAt: "2026-10-03T12:15:03.000+00:00"
-                    }
-                });
+                alert('No Task ID provided in URL!');
+                window.location.href = 'followups.html';
                 return;
             }
 
             try {
-                const res = await fetch(`/api/lead-details/${encodeURIComponent(currentUsername)}/${taskId}`);
+                // Correct API endpoint matching server.js route
+                const res = await fetch(`/api/lead-details/${encodeURIComponent(currentUsername)}/${encodeURIComponent(taskId)}`);
                 const data = await res.json();
                 
                 if (data.success && data.lead) {
@@ -352,25 +319,18 @@
                     return;
                 }
                 
-                loadLeadUI({
-                    name: "Sneha Gupta",
-                    contactNumber: "9112233445",
-                    description: "Lead ID: " + taskId
-                });
+                alert('Lead details not found.');
+                window.location.href = 'followups.html';
             } catch (err) {
                 console.error('Error fetching lead details:', err);
-                loadLeadUI({
-                    name: "Sneha Gupta",
-                    contactNumber: "9112233445",
-                    description: "Active Real Estate Lead"
-                });
+                alert('Failed to connect to backend server.');
             }
         }
 
         function loadLeadUI(lead) {
             taskData = lead;
-            const name = lead.name || 'Sneha Gupta';
-            const contact = lead.contactNumber || '9112233445';
+            const name = lead.name || 'Untitled Lead';
+            const contact = lead.contactNumber || 'N/A';
             const description = lead.description || 'Active Real Estate Lead';
 
             document.getElementById('panelLeadName').textContent = name;
@@ -410,25 +370,8 @@
             }
 
             if (calls.length === 0) {
-                calls.push({
-                    callNum: "Call 1",
-                    data: {
-                        call_connected: "Call Not Connected",
-                        tempSubOption: "Just checking prices",
-                        leadTemperature: "COLD",
-                        requirementBudget: "asd",
-                        requirementFlatSize: "assd",
-                        requirementFloor: "123",
-                        requirementNote: "asd",
-                        followUpRequired: "Yes",
-                        followUpOption: "Call After 2 Days",
-                        followUpDate: "2026-10-04",
-                        followUpTime: "12:15",
-                        visitScheduled: "No",
-                        remark: "Call Not Connected",
-                        loggedAt: "2026-10-03T12:15:03.000+00:00"
-                    }
-                });
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">No call history logged yet for this lead.</p>`;
+                return;
             }
 
             calls.reverse().forEach(({ callNum, data }) => {
@@ -685,7 +628,7 @@
             }
 
             try {
-                const res = await fetch(`/api/update-task-status/${encodeURIComponent(currentUsername)}/${taskId || 'demo'}`, {
+                const res = await fetch(`/api/update-task-status/${encodeURIComponent(currentUsername)}/${taskId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(callPayload)
@@ -696,17 +639,15 @@
                     alert('Call logged successfully!');
                     window.location.href = 'followups.html';
                 } else {
-                    alert('Call logged successfully!');
-                    window.location.href = 'followups.html';
+                    alert('Error saving call log: ' + (result.message || 'Unknown error'));
                 }
             } catch (err) {
                 console.error('Error saving call log:', err);
-                alert('Call log saved successfully!');
-                window.location.href = 'followups.html';
+                alert('Server connection error while saving call log.');
             }
         }
 
-        // Initialize Lead Data
+        // Initialize Lead Data on load
         fetchLeadData();
     </script>
 </body>
