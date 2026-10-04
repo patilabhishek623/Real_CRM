@@ -83,7 +83,7 @@
     </header>
 
     <!-- Main Workspace Layout -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
         <!-- Left Sidebar Navigation Menu (Desktop Only) -->
         <aside class="hidden md:block md:col-span-1 space-y-4">
@@ -105,33 +105,33 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="md:col-span-3 space-y-5 sm:space-y-6">
+        <main class="md:col-span-3 space-y-4 sm:space-y-6">
             
             <!-- Corporate Banner -->
-            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-2xl p-5 sm:p-8 text-white shadow-xl relative overflow-hidden flex justify-between items-center border border-slate-800">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-2xl p-4 sm:p-8 text-white shadow-xl relative overflow-hidden flex justify-between items-center border border-slate-800">
                 <div class="absolute -right-12 -top-12 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10 space-y-2">
-                    <div class="inline-flex items-center gap-2 bg-blue-500/20 px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-blue-300 border border-blue-500/30">
-                        <i class="fa-solid fa-clock"></i> Active Benchmark Date: <span class="text-white font-bold">Oct 5, 2026</span>
+                <div class="relative z-10 space-y-1.5">
+                    <div class="inline-flex items-center gap-1.5 bg-blue-500/20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-blue-300 border border-blue-500/30">
+                        <i class="fa-solid fa-clock"></i> Benchmark Date: <span class="text-white font-bold">Oct 5, 2026</span>
                     </div>
-                    <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight">Follow-Up Call Schedule</h1>
-                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Inspect, filter, and execute your scheduled callbacks fetched directly from your collection database.</p>
+                    <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Follow-Up Call Schedule</h1>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Inspect and execute your scheduled callbacks from your collection database.</p>
                 </div>
             </div>
 
             <!-- Filter Tabs & Search Bar Header -->
-            <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
-                <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-                    <!-- Tabs showing Lapsed, Today, Tomorrow, Upcoming (Without All) -->
-                    <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                        <button onclick="filterTab('lapsed')" id="tab-lapsed" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Lapsed (<span id="count-lapsed">0</span>)</button>
-                        <button onclick="filterTab('today')" id="tab-today" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Today (<span id="count-today">0</span>)</button>
-                        <button onclick="filterTab('tomorrow')" id="tab-tomorrow" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Tomorrow (<span id="count-tomorrow">0</span>)</button>
-                        <button onclick="filterTab('upcoming')" id="tab-upcoming" class="tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">Upcoming (<span id="count-upcoming">0</span>)</button>
+            <div class="corporate-card rounded-2xl p-3 sm:p-6 space-y-4">
+                <div class="flex flex-col gap-3">
+                    <!-- Tabs (Scrollable horizontally on very small mobile screens) -->
+                    <div class="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200 overflow-x-auto">
+                        <button onclick="filterTab('lapsed')" id="tab-lapsed" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-lg text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition text-center whitespace-nowrap">Lapsed (<span id="count-lapsed">0</span>)</button>
+                        <button onclick="filterTab('today')" id="tab-today" class="tab-btn flex-1 min-w-[80px] py-2 px-2 rounded-lg text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition text-center whitespace-nowrap">Today (<span id="count-today">0</span>)</button>
+                        <button onclick="filterTab('tomorrow')" id="tab-tomorrow" class="tab-btn flex-1 min-w-[90px] py-2 px-2 rounded-lg text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition text-center whitespace-nowrap">Tomorrow (<span id="count-tomorrow">0</span>)</button>
+                        <button onclick="filterTab('upcoming')" id="tab-upcoming" class="tab-btn flex-1 min-w-[90px] py-2 px-2 rounded-lg text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition text-center whitespace-nowrap">Upcoming (<span id="count-upcoming">0</span>)</button>
                     </div>
 
                     <!-- Search Input -->
-                    <div class="relative w-full lg:w-72">
+                    <div class="relative w-full">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                         <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search lead name or phone..." class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white transition shadow-2xs">
                     </div>
@@ -143,8 +143,8 @@
                     <p>Fetching follow-up logs from database collection...</p>
                 </div>
 
-                <!-- Table Container -->
-                <div id="tableContainer" class="hidden overflow-x-auto rounded-xl border border-slate-200">
+                <!-- Desktop Table View (Hidden on Mobile) -->
+                <div id="tableContainer" class="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
                     <table class="min-w-full divide-y divide-slate-200 bg-white">
                         <thead class="bg-slate-100">
                             <tr>
@@ -160,6 +160,11 @@
                             <!-- Rows injected dynamically -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card Feed View (Shown only on Mobile devices) -->
+                <div id="mobileCardContainer" class="block md:hidden space-y-3">
+                    <!-- Mobile Cards Injected Dynamically -->
                 </div>
 
                 <!-- Empty State -->
@@ -208,7 +213,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Support both storage keys to prevent unauthorized session errors
         const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
         
         if (!currentUsername) {
@@ -220,10 +224,9 @@
 
         document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-blue-600 mr-2"></i> User: <b>${currentUsername}</b>`;
 
-        // Benchmark date reference: October 5, 2026
         const TODAY_STR = '2026-10-05';
         let rawFollowUps = [];
-        let currentFilter = 'today'; // Default active view
+        let currentFilter = 'today';
 
         async function loadFollowUps() {
             try {
@@ -283,11 +286,11 @@
             currentFilter = type;
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition";
+                btn.className = "tab-btn flex-1 py-2 px-2 rounded-lg text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition text-center whitespace-nowrap";
             });
             const activeBtn = document.getElementById(`tab-${type}`);
             if (activeBtn) {
-                activeBtn.className = "tab-btn px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm transition";
+                activeBtn.className = "tab-btn flex-1 py-2 px-2 rounded-lg text-[11px] sm:text-xs font-bold bg-white text-slate-900 shadow-sm transition text-center whitespace-nowrap";
             }
 
             applyFiltersAndSearch();
@@ -313,18 +316,22 @@
 
         function renderList(list) {
             const tbody = document.getElementById('followupsTableBody');
+            const mobileCardContainer = document.getElementById('mobileCardContainer');
             const tableContainer = document.getElementById('tableContainer');
             const emptyState = document.getElementById('emptyState');
 
             if (!list || list.length === 0) {
                 tableContainer.classList.add('hidden');
+                mobileCardContainer.classList.add('hidden');
                 emptyState.classList.remove('hidden');
                 return;
             }
 
             emptyState.classList.add('hidden');
             tableContainer.classList.remove('hidden');
+            mobileCardContainer.classList.remove('hidden');
 
+            // Render Desktop Table Rows
             tbody.innerHTML = list.map(item => {
                 const badge = getCategoryBadge(item.category);
                 return `
@@ -349,6 +356,42 @@
                     </tr>
                 `;
             }).join('');
+
+            // Render Mobile Card Feed View
+            mobileCardContainer.innerHTML = list.map(item => {
+                const badge = getCategoryBadge(item.category);
+                return `
+                    <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-xs space-y-3">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(item.name)}</h3>
+                                <a href="tel:${escapeHtml(item.contactNumber)}" class="text-xs text-blue-600 font-semibold flex items-center gap-1 mt-0.5">
+                                    <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(item.contactNumber || 'N/A')}
+                                </a>
+                            </div>
+                            <div>${badge}</div>
+                        </div>
+
+                        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-center justify-between text-xs text-slate-700">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold block">Callback Time</span>
+                                <span class="font-bold text-slate-900"><i class="fa-regular fa-clock mr-1 text-blue-500"></i> ${escapeHtml(item.followUpDate || '')} (${escapeHtml(item.followUpTime || 'Anytime')})</span>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-600">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Remark</span>
+                            <p class="italic text-slate-700 mt-0.5">"${escapeHtml(item.remark || 'No remark logged')}"</p>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-end">
+                            <a href="lead-response.html?username=${encodeURIComponent(currentUsername)}&taskId=${item.taskId}" class="w-full text-center py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-headset"></i> Call Action / Update
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function getCategoryBadge(category) {
@@ -369,6 +412,7 @@
         function showEmpty() {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('tableContainer').classList.add('hidden');
+            document.getElementById('mobileCardContainer').classList.add('hidden');
             document.getElementById('emptyState').classList.remove('hidden');
         }
 
