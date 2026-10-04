@@ -8,42 +8,43 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .fade-in { animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-200 min-h-screen text-slate-800 flex items-center justify-center p-4 sm:p-6 relative">
+<body class="bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-200 min-h-screen text-slate-800 flex items-center justify-center p-3 sm:p-6 relative">
 
-    <!-- Top Right Executive Back Button -->
-    <a href="followups.html" class="absolute top-6 right-6 bg-white/95 backdrop-blur-md hover:bg-white text-slate-700 hover:text-blue-600 border border-slate-200/80 px-4 py-2.5 rounded-xl shadow-sm hover:shadow-md transition text-xs font-bold flex items-center space-x-2 group z-10">
+    <!-- Top Right Executive Back Button (Optimized for Mobile Touch) -->
+    <a href="followups.html" class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/95 backdrop-blur-md hover:bg-white text-slate-700 hover:text-blue-600 border border-slate-200/80 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl shadow-sm hover:shadow-md transition text-xs font-bold flex items-center space-x-1.5 group z-10">
         <i class="fa-solid fa-arrow-left text-[10px] transition-transform group-hover:-translate-x-0.5"></i>
-        <span>Return to Follow-Ups</span>
+        <span class="hidden xs:inline">Return to Follow-Ups</span>
+        <span class="xs:hidden">Back</span>
     </a>
 
     <!-- UNIFIED MASTER CONTAINER WITH COMMON BORDER -->
-    <div class="max-w-6xl w-full bg-white rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-200/70 p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mt-12 sm:mt-0">
+    <div class="max-w-6xl w-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/95 shadow-2xl shadow-slate-200/70 p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start mt-14 sm:mt-0">
         
         <!-- ================= LEFT SIDE PANEL: BRANDING & SUMMARY ================= -->
-        <div class="lg:col-span-4 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white rounded-2xl p-6 shadow-xl space-y-6 relative overflow-hidden border border-slate-800">
-            <div class="absolute -right-12 -top-12 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute -left-12 -bottom-12 w-44 h-44 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div class="lg:col-span-4 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white rounded-2xl p-5 sm:p-6 shadow-xl space-y-5 relative overflow-hidden border border-slate-800">
+            <div class="absolute -right-12 -top-12 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-12 -bottom-12 w-44 h-44 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="relative z-10 space-y-4">
-                <div class="w-14 h-14 bg-white/10 text-blue-400 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner backdrop-blur-md">
-                    <i class="fa-solid fa-building-user text-xl"></i>
+            <div class="relative z-10 flex items-center space-x-4 lg:block lg:space-x-0 lg:space-y-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 text-blue-400 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner backdrop-blur-md flex-shrink-0">
+                    <i class="fa-solid fa-building-user text-lg sm:text-xl"></i>
                 </div>
-                <div>
-                    <span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold tracking-wider uppercase bg-blue-500/20 text-blue-300 border border-blue-400/30">Real_Crm Hub</span>
-                    <h2 class="text-xl font-extrabold tracking-tight text-white mt-2" id="panelLeadName">Loading...</h2>
-                    <p class="text-xs font-medium text-blue-200/80 mt-1 flex items-center">
-                        <i class="fa-solid fa-phone mr-1.5 text-[10px]"></i> <span id="panelLeadContact">Loading...</span>
+                <div class="min-w-0 flex-1">
+                    <span class="px-2.5 py-0.5 rounded-md text-[9px] sm:text-[10px] font-extrabold tracking-wider uppercase bg-blue-500/20 text-blue-300 border border-blue-400/30">Real_Crm Hub</span>
+                    <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-white mt-1.5 truncate" id="panelLeadName">Loading...</h2>
+                    <p class="text-xs font-medium text-blue-200/80 mt-0.5 flex items-center truncate">
+                        <i class="fa-solid fa-phone mr-1.5 text-[10px] flex-shrink-0"></i> <span id="panelLeadContact" class="truncate">Loading...</span>
                     </p>
                 </div>
             </div>
@@ -51,7 +52,7 @@
             <div class="relative z-10 pt-4 border-t border-white/10 space-y-3">
                 <div class="bg-white/5 backdrop-blur-md p-3.5 rounded-xl border border-white/10 space-y-1">
                     <span class="text-[10px] font-bold text-blue-300 uppercase tracking-wider block">Lead Source / Property</span>
-                    <p class="text-xs text-slate-200 font-medium" id="leadDescription">Loading lead requirements...</p>
+                    <p class="text-xs text-slate-200 font-medium leading-relaxed" id="leadDescription">Loading lead requirements...</p>
                 </div>
 
                 <div class="bg-white/5 backdrop-blur-md p-3.5 rounded-xl border border-white/10 flex items-center justify-between">
@@ -61,38 +62,38 @@
                             <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Active Pipeline
                         </span>
                     </div>
-                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
                         <i class="fa-solid fa-shield-check text-sm"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="relative z-10 pt-2 text-center">
+            <div class="relative z-10 pt-1 text-center">
                 <p class="text-[10px] font-medium text-slate-400">Real Estate CRM &copy; 2026</p>
             </div>
         </div>
 
         <!-- ================= RIGHT SIDE PANEL: WIZARD & HISTORY ================= -->
-        <div class="lg:col-span-8 space-y-6">
+        <div class="lg:col-span-8 space-y-5">
             
             <!-- Navigation Tabs -->
-            <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200/80">
-                <button onclick="switchTab('input')" id="tabCallInput" class="py-2.5 px-4 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-phone-volume"></i>
-                    <span>Call Input Wizard</span>
+            <div class="grid grid-cols-2 gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200/80">
+                <button onclick="switchTab('input')" id="tabCallInput" class="py-2.5 px-3 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm flex items-center justify-center space-x-1.5 truncate">
+                    <i class="fa-solid fa-phone-volume text-[11px]"></i>
+                    <span class="truncate">Call Wizard</span>
                 </button>
-                <button onclick="switchTab('history')" id="tabCustomerHistory" class="py-2.5 px-4 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-timeline"></i>
-                    <span>Customer History Timeline</span>
+                <button onclick="switchTab('history')" id="tabCustomerHistory" class="py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-1.5 truncate">
+                    <i class="fa-solid fa-timeline text-[11px]"></i>
+                    <span class="truncate">History Timeline</span>
                 </button>
             </div>
 
             <!-- ================= TAB 1: CALL INPUT WIZARD ================= -->
             <div id="sectionCallInput" class="space-y-4 fade-in">
                 <!-- Step 1: Was the call connected? -->
-                <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2">
+                <div class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">1. Was the call connected?</label>
-                    <select id="callConnected" onchange="onConnectionChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="callConnected" onchange="onConnectionChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select connection status...</option>
                         <option value="Yes">Yes, Connected</option>
                         <option value="No">No, Not Connected</option>
@@ -100,9 +101,9 @@
                 </div>
 
                 <!-- CONNECTED FLOW -->
-                <div id="stepConnectedSub" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2 hidden fade-in">
+                <div id="stepConnectedSub" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">2. Select Specific Remark / Detail</label>
-                    <select id="tempSubOption" onchange="showConnectedCloseLead()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="tempSubOption" onchange="showConnectedCloseLead()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Choose specific requirement...</option>
                         <option value="Interested – Wants Project Details">Interested – Wants Project Details</option>
                         <option value="Interested – Wants Price Details">Interested – Wants Price Details</option>
@@ -119,9 +120,9 @@
                     </select>
                 </div>
 
-                <div id="stepConnectedCloseLead" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepConnectedCloseLead" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">Close Lead (Unsuccessful Lead)?</label>
-                    <select id="connectedCloseLeadOption" onchange="onConnectedCloseLeadChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="connectedCloseLeadOption" onchange="onConnectedCloseLeadChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select option...</option>
                         <option value="Yes">Yes, Close Lead</option>
                         <option value="No">No, Keep Active</option>
@@ -132,18 +133,18 @@
                     </div>
                 </div>
 
-                <div id="stepConnectedTemp" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2 hidden fade-in">
+                <div id="stepConnectedTemp" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">3. Lead Temperature</label>
-                    <div class="grid grid-cols-3 gap-2.5">
-                        <button type="button" onclick="selectTemperature('HOT', this)" class="temp-btn py-3 px-3 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-white hover:bg-rose-50 hover:border-rose-300 hover:text-rose-600 transition shadow-sm">🔥 Hot</button>
-                        <button type="button" onclick="selectTemperature('WARM', this)" class="temp-btn py-3 px-3 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-white hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition shadow-sm">☀ Warm</button>
-                        <button type="button" onclick="selectTemperature('COLD', this)" class="temp-btn py-3 px-3 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-white hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition shadow-sm">❄️ Cold</button>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="selectTemperature('HOT', this)" class="temp-btn py-3 px-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-white hover:bg-rose-50 hover:border-rose-300 hover:text-rose-600 transition shadow-sm truncate">🔥 Hot</button>
+                        <button type="button" onclick="selectTemperature('WARM', this)" class="temp-btn py-3 px-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-white hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition shadow-sm truncate">☀ Warm</button>
+                        <button type="button" onclick="selectTemperature('COLD', this)" class="temp-btn py-3 px-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-white hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition shadow-sm truncate">❄️ Cold</button>
                     </div>
                     <input type="hidden" id="leadTemperature" value="">
                 </div>
 
                 <!-- FULL REQUIREMENT CAPTURE SECTION -->
-                <div id="stepRequirements" class="p-4 bg-blue-50/50 rounded-2xl border border-blue-200 space-y-3 hidden fade-in">
+                <div id="stepRequirements" class="p-3.5 sm:p-4 bg-blue-50/50 rounded-2xl border border-blue-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">4. Client Property Requirements</label>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
@@ -165,14 +166,14 @@
                     </div>
                 </div>
 
-                <div id="stepConnectedFollowUp" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepConnectedFollowUp" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">5. Follow-up Required?</label>
-                    <select id="followUpRequired" onchange="onConnectedFollowUpChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="followUpRequired" onchange="onConnectedFollowUpChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select follow-up option...</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
-                    <div id="followUpDateTimeSection" class="grid grid-cols-2 gap-3 hidden pt-1">
+                    <div id="followUpDateTimeSection" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden pt-1">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Follow-up Date</label>
                             <input type="date" id="followUpDate" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
@@ -184,14 +185,14 @@
                     </div>
                 </div>
 
-                <div id="stepConnectedVisit" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepConnectedVisit" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">6. Visit Scheduled?</label>
-                    <select id="visitScheduled" onchange="onConnectedVisitChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="visitScheduled" onchange="onConnectedVisitChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select visit option...</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
-                    <div id="visitDateTimeSection" class="grid grid-cols-2 gap-3 hidden pt-1">
+                    <div id="visitDateTimeSection" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden pt-1">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Visit Date</label>
                             <input type="date" id="visitDate" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
@@ -204,9 +205,9 @@
                 </div>
 
                 <!-- NOT CONNECTED FLOW -->
-                <div id="stepNotConnectedSub" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2 hidden fade-in">
+                <div id="stepNotConnectedSub" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">2. Select Specific Remark / Detail</label>
-                    <select id="notConnectedSubOption" onchange="showNotConnectedCloseLead()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="notConnectedSubOption" onchange="showNotConnectedCloseLead()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Choose call failure reason...</option>
                         <option value="Call Not Connected">Call Not Connected</option>
                         <option value="Ringing But No Answer">Ringing But No Answer</option>
@@ -221,9 +222,9 @@
                     </select>
                 </div>
 
-                <div id="stepCloseLead" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepCloseLead" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">3. Close Lead (Unsuccessful Lead)?</label>
-                    <select id="closeLeadOption" onchange="onCloseLeadChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="closeLeadOption" onchange="onCloseLeadChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select option...</option>
                         <option value="Yes">Yes, Close Lead</option>
                         <option value="No">No, Keep Active</option>
@@ -234,14 +235,14 @@
                     </div>
                 </div>
 
-                <div id="stepNotConnectedFollowUp" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepNotConnectedFollowUp" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">4. Follow-up Required?</label>
-                    <select id="notConnectedFollowUpRequired" onchange="onNotConnectedFollowUpChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="notConnectedFollowUpRequired" onchange="onNotConnectedFollowUpChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select follow-up option...</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
-                    <div id="ncFollowUpDateTimeSection" class="grid grid-cols-2 gap-3 hidden pt-1">
+                    <div id="ncFollowUpDateTimeSection" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden pt-1">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Follow-up Date</label>
                             <input type="date" id="ncFollowUpDate" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
@@ -253,14 +254,14 @@
                     </div>
                 </div>
 
-                <div id="stepNotConnectedVisit" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepNotConnectedVisit" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">5. Visit Scheduled?</label>
-                    <select id="ncVisitScheduled" onchange="onNcVisitChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <select id="ncVisitScheduled" onchange="onNcVisitChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
                         <option value="" disabled selected>Select visit option...</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
-                    <div id="ncVisitDateTimeSection" class="grid grid-cols-2 gap-3 hidden pt-1">
+                    <div id="ncVisitDateTimeSection" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden pt-1">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Visit Date</label>
                             <input type="date" id="ncVisitDate" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
@@ -273,11 +274,11 @@
                 </div>
 
                 <!-- Remarks & Submit -->
-                <div id="stepSubmit" class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
+                <div id="stepSubmit" class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3 hidden fade-in">
                     <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">Call Remarks / General Notes</label>
-                    <textarea id="callRemarks" rows="3" placeholder="Enter conversation details or notes..." class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm"></textarea>
+                    <textarea id="callRemarks" rows="3" placeholder="Enter conversation details or notes..." class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm"></textarea>
 
-                    <button onclick="saveCallLog()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg shadow-blue-600/25 transition text-sm flex items-center justify-center space-x-2">
+                    <button onclick="saveCallLog()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 sm:py-4 px-4 rounded-xl shadow-lg shadow-blue-600/25 transition text-sm flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-check-circle"></i>
                         <span>Save & Submit Call Log</span>
                     </button>
@@ -286,7 +287,7 @@
 
             <!-- ================= TAB 2: CUSTOMER HISTORY ================= -->
             <div id="sectionCustomerHistory" class="space-y-4 hidden fade-in">
-                <div class="space-y-3 max-h-[440px] overflow-y-auto pr-1" id="historyTimelineContainer">
+                <div class="space-y-3 max-h-[420px] sm:max-h-[480px] overflow-y-auto pr-1" id="historyTimelineContainer">
                     <p class="text-xs text-slate-400 text-center py-8">Loading customer history...</p>
                 </div>
             </div>
@@ -343,13 +344,13 @@
             const secHistory = document.getElementById('sectionCustomerHistory');
 
             if (tab === 'input') {
-                btnInput.className = "py-2.5 px-4 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm flex items-center justify-center space-x-2";
-                btnHistory.className = "py-2.5 px-4 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2";
+                btnInput.className = "py-2.5 px-3 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm flex items-center justify-center space-x-1.5 truncate";
+                btnHistory.className = "py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-1.5 truncate";
                 secInput.classList.remove('hidden');
                 secHistory.classList.add('hidden');
             } else {
-                btnHistory.className = "py-2.5 px-4 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm flex items-center justify-center space-x-2";
-                btnInput.className = "py-2.5 px-4 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2";
+                btnHistory.className = "py-2.5 px-3 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm flex items-center justify-center space-x-1.5 truncate";
+                btnInput.className = "py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-1.5 truncate";
                 secHistory.classList.remove('hidden');
                 secInput.classList.add('hidden');
                 renderCustomerHistory();
@@ -376,79 +377,79 @@
                 const isConnected = data.call_connected === 'Yes' || data.call_connected === 'Connected';
                 
                 const connectedBadge = isConnected 
-                    ? `<span class="inline-flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase"><i class="fa-solid fa-phone-volume mr-1.5 text-emerald-600"></i> Connected</span>`
-                    : `<span class="inline-flex items-center bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase"><i class="fa-solid fa-phone-slash mr-1.5 text-rose-600"></i> ${data.call_connected || 'Call Not Connected'}</span>`;
+                    ? `<span class="inline-flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wide uppercase flex-shrink-0"><i class="fa-solid fa-phone-volume mr-1 text-emerald-600"></i> Connected</span>`
+                    : `<span class="inline-flex items-center bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wide uppercase flex-shrink-0"><i class="fa-solid fa-phone-slash mr-1 text-rose-600"></i> ${data.call_connected || 'Call Not Connected'}</span>`;
 
-                // Render ALL fields explicitly, displaying fields even if empty/blank
+                // Render ALL fields explicitly with responsive grids and break-all for clean mobile wrapping
                 const detailsHtml = `
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50/90 p-4 rounded-2xl border border-slate-200 my-2 text-xs">
-                        <div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-slate-50/90 p-3 sm:p-4 rounded-2xl border border-slate-200 my-2 text-xs">
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Title</span>
-                            <span class="text-slate-800 font-bold">${data.title || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.title || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Call Connected</span>
-                            <span class="text-slate-800 font-bold">${data.call_connected || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.call_connected || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Remark</span>
-                            <span class="text-slate-800 font-semibold italic">${data.remark || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold italic block break-words">${data.remark || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Required</span>
-                            <span class="text-slate-800 font-bold">${data.followUpRequired || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.followUpRequired || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Option</span>
-                            <span class="text-slate-800 font-semibold">${data.followUpOption || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.followUpOption || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Date & Time</span>
-                            <span class="text-slate-800 font-semibold">${data.followUpDate || 'N/A'} ${data.followUpTime ? '@ ' + data.followUpTime : ''}</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.followUpDate || 'N/A'} ${data.followUpTime ? '@ ' + data.followUpTime : ''}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Scheduled</span>
-                            <span class="text-slate-800 font-bold">${data.visitScheduled || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.visitScheduled || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Date & Time</span>
-                            <span class="text-slate-800 font-semibold">${data.visitDate || 'N/A'} ${data.visitTime ? '@ ' + data.visitTime : ''}</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.visitDate || 'N/A'} ${data.visitTime ? '@ ' + data.visitTime : ''}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Building</span>
-                            <span class="text-slate-800 font-semibold">${data.visitBuilding || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.visitBuilding || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Location</span>
-                            <span class="text-slate-800 font-semibold">${data.visitLocation || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.visitLocation || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Note</span>
-                            <span class="text-slate-800 font-semibold">${data.visitNote || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold block break-words">${data.visitNote || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visitor Coming</span>
-                            <span class="text-slate-800 font-bold">${data.visitorComing || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.visitorComing || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Reschedule Reason</span>
-                            <span class="text-slate-800 font-semibold">${data.rescheduleReason || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold block break-words">${data.rescheduleReason || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Interest Customer</span>
-                            <span class="text-slate-800 font-bold">${data.visitInterestCustomer || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.visitInterestCustomer || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Reschedule Visit Choice</span>
-                            <span class="text-slate-800 font-semibold">${data.rescheduleVisitChoice || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.rescheduleVisitChoice || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Status</span>
-                            <span class="text-slate-800 font-bold">${data.leadStatus || 'N/A'}</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.leadStatus || 'N/A'}</span>
                         </div>
-                        <div>
+                        <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Close Reason</span>
-                            <span class="text-slate-800 font-semibold text-rose-600">${data.closeReason || 'N/A'}</span>
+                            <span class="text-slate-800 font-semibold text-rose-600 block break-words">${data.closeReason || 'N/A'}</span>
                         </div>
                     </div>
                 `;
@@ -456,13 +457,13 @@
                 const dateStr = data.loggedAt ? new Date(data.loggedAt).toLocaleString() : '';
 
                 const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition space-y-3";
+                card.className = "bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition space-y-3";
                 card.innerHTML = `
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                        <span class="text-xs font-extrabold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg flex items-center space-x-1"><i class="fa-solid fa-headset text-blue-600 mr-1.5"></i> ${callNum}</span>
-                        <div class="flex items-center space-x-3">
+                    <div class="flex flex-col xs:flex-row xs:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                        <span class="text-xs font-extrabold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg flex items-center space-x-1 w-fit"><i class="fa-solid fa-headset text-blue-600 mr-1.5"></i> ${callNum}</span>
+                        <div class="flex items-center justify-between xs:justify-end space-x-2 sm:space-x-3">
                             ${connectedBadge}
-                            <span class="text-[11px] font-medium text-slate-400"><i class="fa-regular fa-calendar mr-1"></i> ${dateStr}</span>
+                            <span class="text-[10px] sm:text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar mr-1"></i> ${dateStr}</span>
                         </div>
                     </div>
                     <div>
