@@ -205,79 +205,62 @@
                 </h3>
                 
                 <form id="callLogForm" onsubmit="submitCallLog(event)" class="space-y-3.5">
-                    <!-- Connection Status -->
-                    <div class="space-y-1.5">
-                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">1. Was the call connected?</label>
-                        <select id="callConnected" onchange="onConnectionChange()" required class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            <option value="" disabled selected>Select connection status...</option>
-                            <option value="Yes">Yes, Connected</option>
-                            <option value="No">No, Not Connected</option>
+                    
+                    <!-- Is the client interested? -->
+                    <div class="space-y-1.5 p-3.5 bg-emerald-50/80 rounded-xl border border-emerald-200">
+                        <label class="block text-[11px] font-extrabold text-emerald-900 uppercase tracking-wider">Is the client interested?</label>
+                        <select id="clientInterestSelect" onchange="onClientInterestChange()" required class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="" disabled selected>Select client interest...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
                     </div>
 
-                    <!-- Connected Details & Remark -->
-                    <div id="connectedSection" class="space-y-3.5 hidden fade-in">
-                        <div class="space-y-1.5">
-                            <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">2. Initial Connection / Remark Details</label>
-                            <input type="text" id="callRemark" placeholder="e.g. Client requested project details..." class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        </div>
+                    <!-- IF NOT INTERESTED: RESCHEDULE VISIT CHOICE -->
+                    <div id="rescheduleChoiceSection" class="space-y-1.5 hidden fade-in">
+                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Ask for Re-schedule Visit?</label>
+                        <select id="rescheduleVisitChoice" onchange="onRescheduleChoiceChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="" disabled selected>Select re-schedule preference...</option>
+                            <option value="Yes">Yes, Re-schedule Visit</option>
+                            <option value="No">No Re-schedule</option>
+                        </select>
+                    </div>
 
-                        <!-- CLIENT INTEREST CHECK (Right below remark) -->
-                        <div class="space-y-1.5 p-3.5 bg-emerald-50/80 rounded-xl border border-emerald-200">
-                            <label class="block text-[11px] font-extrabold text-emerald-900 uppercase tracking-wider">Is the client interested?</label>
-                            <select id="clientInterestSelect" onchange="onClientInterestChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="" disabled selected>Select client interest...</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
+                    <!-- VISIT SCHEDULED DROPDOWN -->
+                    <div id="visitScheduledSection" class="space-y-1.5 hidden fade-in">
+                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Visit Scheduled?</label>
+                        <select id="visitScheduled" onchange="onVisitScheduledChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="" disabled selected>Select visit option...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
 
-                        <!-- IF NOT INTERESTED: RESCHEDULE VISIT CHOICE -->
-                        <div id="rescheduleChoiceSection" class="space-y-1.5 hidden fade-in">
-                            <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Ask for Re-schedule Visit?</label>
-                            <select id="rescheduleVisitChoice" onchange="onRescheduleChoiceChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="" disabled selected>Select re-schedule preference...</option>
-                                <option value="Yes">Yes, Re-schedule Visit</option>
-                                <option value="No">No Re-schedule</option>
-                            </select>
-                        </div>
-
-                        <!-- VISIT SCHEDULED DROPDOWN -->
-                        <div id="visitScheduledSection" class="space-y-1.5 hidden fade-in">
-                            <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Visit Scheduled?</label>
-                            <select id="visitScheduled" onchange="onVisitScheduledChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="" disabled selected>Select visit option...</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
-
-                        <!-- FULL SITE VISIT DETAILS -->
-                        <div id="siteVisitDetailsSection" class="space-y-3 p-3 bg-white rounded-xl border border-slate-200 hidden fade-in">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Date</label>
-                                    <input type="date" id="visitDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Time</label>
-                                    <input type="time" id="visitTime" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Building Name / Project</label>
-                                    <input type="text" id="visitBuilding" placeholder="e.g. Prestige Heights" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Location / Address</label>
-                                    <input type="text" id="visitLocation" placeholder="e.g. Andheri West, Mumbai" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                                </div>
+                    <!-- FULL SITE VISIT DETAILS -->
+                    <div id="siteVisitDetailsSection" class="space-y-3 p-3 bg-white rounded-xl border border-slate-200 hidden fade-in">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Date</label>
+                                <input type="date" id="visitDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Proposed Details / Notes</label>
-                                <textarea id="visitNote" rows="2" placeholder="Enter notes..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none"></textarea>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Time</label>
+                                <input type="time" id="visitTime" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
                             </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Building Name / Project</label>
+                                <input type="text" id="visitBuilding" placeholder="e.g. Prestige Heights" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Location / Address</label>
+                                <input type="text" id="visitLocation" placeholder="e.g. Andheri West, Mumbai" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Proposed Details / Notes</label>
+                            <textarea id="visitNote" rows="2" placeholder="Enter notes..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none"></textarea>
                         </div>
                     </div>
 
@@ -449,7 +432,9 @@
 
                 renderCallHistory();
                 document.getElementById('callLogForm').reset();
-                document.getElementById('connectedSection').classList.add('hidden');
+                document.getElementById('rescheduleChoiceSection').classList.add('hidden');
+                document.getElementById('visitScheduledSection').classList.add('hidden');
+                document.getElementById('siteVisitDetailsSection').classList.add('hidden');
                 document.getElementById('leadModal').classList.remove('hidden');
             } catch (err) {
                 alert('Error connecting to server.');
@@ -463,12 +448,7 @@
             while (currentLeadData[`call${i}`]) {
                 const c = currentLeadData[`call${i}`];
                 const loggedDateStr = c.loggedAt ? new Date(c.loggedAt).toLocaleString() : 'Recent';
-                const isConnected = c.call_connected === 'Yes' || c.call_connected === 'Connected';
                 
-                const connectionBadge = isConnected 
-                    ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1"><i class="fa-solid fa-phone text-emerald-600"></i> Connected</span>`
-                    : `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1"><i class="fa-solid fa-phone-slash text-rose-600"></i> ${escapeHtml(c.call_connected || 'Not Connected')}</span>`;
-
                 historyHtml += `
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -476,37 +456,23 @@
                                 <span class="bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-black">Call #${i}</span>
                                 <span class="text-xs font-bold text-slate-700">${escapeHtml(c.title || 'Call Interaction')}</span>
                             </div>
-                            <div class="flex items-center justify-between sm:justify-end gap-2">
-                                ${connectionBadge}
-                                <span class="text-[10px] text-slate-400 font-medium">${loggedDateStr}</span>
-                            </div>
+                            <span class="text-[10px] text-slate-400 font-medium">${loggedDateStr}</span>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Remark</span><span class="text-slate-800 font-semibold italic mt-0.5 block">${escapeHtml(c.remark || 'N/A')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visit Interest Customer</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitInterestCustomer || 'N/A')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Visit Choice</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.rescheduleVisitChoice || 'N/A')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visit Scheduled</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitScheduled || 'No')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visit Date & Time</span><span class="text-teal-700 font-bold mt-0.5 block">${formatDateDMY(c.visitDate)} ${escapeHtml(c.visitTime ? '@ ' + c.visitTime : '')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Building / Project</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitBuilding || 'N/A')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Location / Address</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.visitLocation || 'N/A')}</span></div>
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Site Visit Notes</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.visitNote || 'N/A')}</span></div>
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 sm:col-span-2 lg:col-span-3"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Site Visit Notes</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.visitNote || 'N/A')}</span></div>
                         </div>
                     </div>
                 `;
                 i++;
             }
             document.getElementById('modalCallHistory').innerHTML = historyHtml || '<p class="text-xs text-slate-400 italic text-center py-6">No prior calls recorded yet.</p>';
-        }
-
-        function onConnectionChange() {
-            const val = document.getElementById('callConnected').value;
-            const connectedSec = document.getElementById('connectedSection');
-            if (val === 'Yes') {
-                connectedSec.classList.remove('hidden');
-            } else {
-                connectedSec.classList.add('hidden');
-            }
         }
 
         function onClientInterestChange() {
@@ -558,8 +524,8 @@
             const payload = {
                 callKey: `call${nextIndex}`,
                 title: "Call Log",
-                call_connected: document.getElementById('callConnected').value,
-                remark: document.getElementById('callRemark').value || '',
+                call_connected: "Yes",
+                remark: "",
                 visitInterestCustomer: document.getElementById('clientInterestSelect').value || '',
                 rescheduleVisitChoice: document.getElementById('rescheduleVisitChoice').value || '',
                 visitScheduled: document.getElementById('visitScheduled').value || 'No',
@@ -580,7 +546,6 @@
                 const data = await res.json();
                 if (data.success) {
                     alert('Call interaction saved successfully!');
-                    // Refresh modal data
                     openLeadModal(activeModalUsername, activeModalTaskId);
                     fetchVisits();
                 } else {
