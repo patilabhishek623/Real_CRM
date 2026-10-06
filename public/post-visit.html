@@ -208,31 +208,42 @@
 
                 let pastVisits = visits.filter(v => v.visitDate && v.visitDate < todayStr);
 
+                let filteredVisits = [];
                 for (let v of pastVisits) {
                     try {
                         const detailRes = await fetch(`/api/lead-details/${v.memberUsername}/${v.taskId}`);
                         const detailData = await detailRes.json();
                         if (detailData.success && detailData.lead) {
+                            let isInterested = false;
                             let hasFeedback = false;
                             let j = 1;
                             while (detailData.lead[`call${j}`]) {
                                 const c = detailData.lead[`call${j}`];
+                                if (c.visitInterestCustomer === 'Yes') {
+                                    isInterested = true;
+                                    break;
+                                }
                                 if (c.title === 'Post-Visit Feedback') {
                                     hasFeedback = true;
-                                    break;
                                 }
                                 j++;
                             }
-                            v.feedbackDone = hasFeedback;
+                            // Filter out interested clients from post-visit feedback page
+                            if (!isInterested) {
+                                v.feedbackDone = hasFeedback;
+                                filteredVisits.push(v);
+                            }
                         } else {
                             v.feedbackDone = false;
+                            filteredVisits.push(v);
                         }
                     } catch (e) {
                         v.feedbackDone = false;
+                        filteredVisits.push(v);
                     }
                 }
 
-                renderTable(pastVisits);
+                renderTable(filteredVisits);
             } catch (err) {
                 console.error('Error loading post-visits:', err);
             }
