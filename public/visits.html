@@ -515,14 +515,7 @@
             e.preventDefault();
             if (!activeModalUsername || !activeModalTaskId) return;
 
-            // Determine next call index (call1, call2, ..., callN)
-            let nextIndex = 1;
-            while (currentLeadData[`call${nextIndex}`]) {
-                nextIndex++;
-            }
-
             const payload = {
-                callKey: `call${nextIndex}`,
                 title: "Call Log",
                 call_connected: "Yes",
                 remark: "",
@@ -533,12 +526,11 @@
                 visitTime: document.getElementById('visitTime').value || '',
                 visitBuilding: document.getElementById('visitBuilding').value || '',
                 visitLocation: document.getElementById('visitLocation').value || '',
-                visitNote: document.getElementById('visitNote').value || '',
-                loggedAt: new Date().toISOString()
+                visitNote: document.getElementById('visitNote').value || ''
             };
 
             try {
-                const res = await fetch(`/api/update-lead-call/${encodeURIComponent(activeModalUsername)}/${encodeURIComponent(activeModalTaskId)}`, {
+                const res = await fetch(`/api/update-task-status/${encodeURIComponent(activeModalUsername)}/${encodeURIComponent(activeModalTaskId)}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
