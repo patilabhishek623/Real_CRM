@@ -217,8 +217,8 @@
             <!-- Lead Summary Grid -->
             <div id="modalLeadSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200/85 text-xs shadow-inner"></div>
 
-            <!-- Interaction Form Wizard -->
-            <div class="bg-blue-50/40 p-4 sm:p-5 rounded-2xl border border-blue-200/70 space-y-4">
+            <!-- Interaction Form Wizard (Conditionally Hidden if Client is Already Interested) -->
+            <div id="interactionFormContainer" class="bg-blue-50/40 p-4 sm:p-5 rounded-2xl border border-blue-200/70 space-y-4">
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-blue-900 flex items-center gap-2">
                     <i class="fa-solid fa-headset text-emerald-600 text-sm"></i> Log New Call Interaction
                 </h3>
@@ -450,11 +450,29 @@
                     <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-emerald-600 text-xs sm:text-sm mt-0.5 block">${escapeHtml(currentLeadData.status || 'Active Pipeline')}</span></div>
                 `;
 
+                // Check if client is already marked interested in any past call log
+                let isAlreadyInterested = false;
+                let i = 1;
+                while (currentLeadData[`call${i}`]) {
+                    if (currentLeadData[`call${i}`].visitInterestCustomer === 'Yes') {
+                        isAlreadyInterested = true;
+                        break;
+                    }
+                    i++;
+                }
+
+                const interactionContainer = document.getElementById('interactionFormContainer');
+                if (isAlreadyInterested) {
+                    interactionContainer.classList.add('hidden');
+                } else {
+                    interactionContainer.classList.remove('hidden');
+                    document.getElementById('callLogForm').reset();
+                    document.getElementById('rescheduleChoiceSection').classList.add('hidden');
+                    document.getElementById('visitScheduledSection').classList.add('hidden');
+                    document.getElementById('siteVisitDetailsSection').classList.add('hidden');
+                }
+
                 renderCallHistory();
-                document.getElementById('callLogForm').reset();
-                document.getElementById('rescheduleChoiceSection').classList.add('hidden');
-                document.getElementById('visitScheduledSection').classList.add('hidden');
-                document.getElementById('siteVisitDetailsSection').classList.add('hidden');
                 document.getElementById('leadModal').classList.remove('hidden');
             } catch (err) {
                 alert('Error connecting to server.');
