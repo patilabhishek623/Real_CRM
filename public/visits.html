@@ -1,111 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50/90">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Scheduled Visits - Real_Crm</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .corporate-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="min-h-full text-slate-800 flex flex-col selection:bg-emerald-600 selection:text-white relative pb-28 md:pb-8">
+
+    <!-- Ambient Background Accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+    </div>
 
     <!-- Top Navigation Bar -->
-    <header class="bg-white/85 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-map-location-dot text-lg"></i>
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-tr from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/20 border border-emerald-400/20 flex-shrink-0">
+                    <i class="fa-solid fa-map-location-dot text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
-                    <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">Scheduled Site Visits</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <span class="text-base sm:text-xl font-black tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200">Visits</span>
+                    </div>
+                    <span id="activeUserBadge" class="text-[10px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <span id="activeUserBadge" class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"></span>
-                <a href="/" onclick="localStorage.clear()" class="px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition">Logout</a>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
             </div>
         </div>
     </header>
 
     <!-- Main Workspace -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
-        <!-- Left Sidebar Navigation Menu -->
-        <aside class="md:col-span-1 space-y-2">
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">Member Menu</p>
-                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Dashboard</a>
-                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Assigned Tasks</a>
-                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Follow Ups</a>
+        <!-- Left Sidebar Navigation Menu (Desktop Only) -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="corporate-card rounded-2xl p-4 space-y-2 sticky top-28 border border-slate-200">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Member Menu</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200">
+                    <i class="fa-solid fa-house w-5 text-slate-400 text-base"></i> Dashboard
+                </a>
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Assigned Tasks
+                </a>
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-calendar-days w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Follow Ups
+                </a>
                 <div>
-                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm transition">Visits</a>
+                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20 transition border border-emerald-600">
+                        <i class="fa-solid fa-map-location-dot w-5 text-emerald-100 text-base"></i> Visits
+                    </a>
                     <div class="pl-4 mt-2 space-y-1 border-l-2 border-emerald-100 ml-4">
                         <a href="visits.html" class="flex items-center gap-2.5 px-3 py-2 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg">Schedule Total Visit</a>
-                        <a href="pre-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs">Pre-Visit Call</a>
-                        <a href="post-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs">Post-Visit Call</a>
+                        <a href="pre-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs transition">Pre-Visit Call</a>
+                        <a href="post-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs transition">Post-Visit Call</a>
                     </div>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="md:col-span-3 space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Total Scheduled Site Visits</h1>
-                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Overview of all active customer tours and inspection schedules across team members.</p>
+        <main class="md:col-span-3 space-y-4 sm:space-y-6">
+            
+            <!-- Corporate Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-2xl p-4 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-slate-800">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 space-y-1.5">
+                    <div class="inline-flex items-center gap-1.5 bg-emerald-500/20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-emerald-300 border border-emerald-500/30">
+                        <i class="fa-solid fa-building-shield"></i> Active Customer Tours
                     </div>
-                    <div id="visitCountBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs border border-emerald-200/60">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>0 Visits Scheduled</span>
-                    </div>
+                    <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Total Scheduled Site Visits</h1>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Overview of all active customer tours and inspection schedules across team members.</p>
+                </div>
+                <div id="visitCountBadge" class="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-500/20 text-emerald-300 font-bold rounded-xl text-xs border border-emerald-500/30 backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>0 Visits Scheduled</span>
+                </div>
+            </div>
+
+            <!-- Visits Content Card Container -->
+            <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
+                
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-16 text-slate-400 text-xs">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600 mb-3"></i>
+                    <p>Synchronizing visit schedules from database collection...</p>
                 </div>
 
-                <div class="overflow-x-auto mt-6">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                                <th class="py-3.5 px-4">Lead Name</th>
-                                <th class="py-3.5 px-4">Contact Number</th>
-                                <th class="py-3.5 px-4">Visit Date & Time</th>
-                                <th class="py-3.5 px-4">Building / Location</th>
-                                <th class="py-3.5 px-4">Assigned Member</th>
-                                <th class="py-3.5 px-4">Action</th>
+                <!-- Desktop Table View -->
+                <div id="tableContainer" class="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="min-w-full divide-y divide-slate-200 bg-white">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Lead Name</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Contact Number</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Visit Schedule</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Building / Location</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Assigned Member</th>
+                                <th class="px-4.5 py-3 text-center text-[11px] font-bold text-slate-600 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="visitTableBody" class="divide-y divide-slate-100 text-sm">
-                            <tr><td colspan="6" class="text-center py-12 text-slate-400">Loading scheduled visits...</td></tr>
+                        <tbody id="visitTableBody" class="divide-y divide-slate-200">
+                            <!-- Rows injected dynamically -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card Feed View -->
+                <div id="mobileCardContainer" class="block md:hidden space-y-3.5">
+                    <!-- Mobile Cards Injected Dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-16 text-slate-400 text-xs">
+                    <i class="fa-regular fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                    <p class="font-semibold text-sm text-slate-600">No scheduled visits found</p>
+                    <p class="text-slate-400 mt-0.5">There are no site tours or visits currently scheduled.</p>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Mobile Sticky Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-3 z-50 flex items-center justify-around shadow-lg">
+        <a href="teammember.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+            <i class="fa-solid fa-house text-base"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="assignedmembertask.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+            <i class="fa-solid fa-list-check text-base"></i>
+            <span>Tasks</span>
+        </a>
+        <a href="followups.html" class="flex flex-col items-center text-slate-500 hover:text-slate-900 font-medium text-[10px] gap-1">
+            <i class="fa-solid fa-calendar-days text-base"></i>
+            <span>Follow-ups</span>
+        </a>
+        <a href="visits.html" class="flex flex-col items-center text-emerald-600 font-bold text-[10px] gap-1">
+            <i class="fa-solid fa-map-location-dot text-base"></i>
+            <span>Visits</span>
+        </a>
+    </nav>
+
     <!-- Lead Detail Modal Overlay -->
     <div id="leadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto border border-slate-100">
+        <div class="bg-white rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto border border-slate-100">
             
             <!-- Modal Header -->
             <div class="flex justify-between items-start border-b border-slate-100 pb-4">
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">Customer Profile & History</span>
-                    <h2 id="modalLeadName" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">Lead Details</h2>
+                    <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">Customer Profile & History</span>
+                    <h2 id="modalLeadName" class="text-lg sm:text-2xl font-extrabold text-slate-900 mt-2">Lead Details</h2>
                 </div>
-                <button onclick="closeModal()" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition shadow-xs"><i class="fa-solid fa-xmark text-base"></i></button>
+                <button onclick="closeModal()" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition shadow-xs flex-shrink-0"><i class="fa-solid fa-xmark text-sm sm:text-base"></i></button>
             </div>
 
             <!-- Lead Summary Grid -->
-            <div id="modalLeadSummary" class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 text-xs shadow-inner"></div>
+            <div id="modalLeadSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200/85 text-xs shadow-inner"></div>
 
             <!-- Call Logs Timeline -->
             <div class="space-y-3">
@@ -115,73 +201,148 @@
         </div>
     </div>
 
+    <!-- JavaScript Controller -->
     <script>
-        const currentUsername = localStorage.getItem('crm_username');
-        if (currentUsername) document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b>${currentUsername}</b>`;
+        const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
+        if (currentUsername) {
+            document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-2"></i> User: <b>${currentUsername}</b>`;
+        }
 
         // Helper: Convert YYYY-MM-DD to DD/MM/YYYY
         function formatDateDMY(dateStr) {
             if (!dateStr) return 'TBD';
-            const parts = dateStr.split('-');
+            const clean = dateStr.split('T')[0];
+            const parts = clean.split('-');
             if (parts.length === 3) {
                 return `${parts[2]}/${parts[1]}/${parts[0]}`;
             }
-            return dateStr;
+            return clean;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
         async function fetchVisits() {
             try {
                 const response = await fetch('/api/all-visits');
                 const data = await response.json();
+                
                 const tbody = document.getElementById('visitTableBody');
+                const mobileContainer = document.getElementById('mobileCardContainer');
+                const tableContainer = document.getElementById('tableContainer');
+                const emptyState = document.getElementById('emptyState');
                 const countBadge = document.getElementById('visitCountBadge');
+                document.getElementById('loadingState').classList.add('hidden');
 
                 if (!data.success || !data.visits || data.visits.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-slate-400"><p class="text-sm font-semibold text-slate-700">No scheduled visits found.</p></td></tr>`;
-                    countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span>0 Visits Scheduled</span>`;
+                    tableContainer.classList.add('hidden');
+                    mobileContainer.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span>0 Visits Scheduled</span>`;
                     return;
                 }
 
                 const visits = data.visits;
-                countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span>${visits.length} Visit${visits.length > 1 ? 's' : ''} Scheduled</span>`;
-                tbody.innerHTML = '';
+                countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span>${visits.length} Visit${visits.length > 1 ? 's' : ''} Scheduled</span>`;
+                
+                emptyState.classList.add('hidden');
+                tableContainer.classList.remove('hidden');
+                mobileContainer.classList.remove('hidden');
 
-                visits.forEach(v => {
-                    const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-50 transition-colors group";
-                    row.innerHTML = `
-                        <td class="py-4 px-4 whitespace-nowrap">
-                            <button onclick="openLeadModal('${v.memberUsername}', '${v.taskId}')" class="font-bold text-emerald-600 hover:underline flex items-center gap-1.5 text-left">
-                                <i class="fa-solid fa-circle-user text-xs"></i> ${v.name}
+                // Render Desktop Table Rows
+                tbody.innerHTML = visits.map(v => `
+                    <tr class="hover:bg-slate-50/80 transition text-xs">
+                        <td class="px-4.5 py-3.5 font-bold text-slate-900 whitespace-nowrap">
+                            <button onclick="openLeadModal('${escapeHtml(v.memberUsername)}', '${escapeHtml(v.taskId)}')" class="text-emerald-600 hover:underline flex items-center gap-1.5 text-left font-bold">
+                                <i class="fa-solid fa-circle-user text-xs"></i> ${escapeHtml(v.name)}
                             </button>
                         </td>
-                        <td class="py-4 px-4 whitespace-nowrap text-slate-600">${v.contactNumber || 'N/A'}</td>
-                        <td class="py-4 px-4 whitespace-nowrap font-medium text-slate-900"><span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-lg text-xs font-semibold">${formatDateDMY(v.visitDate)}</span> ${v.visitTime || ''}</td>
-                        <td class="py-4 px-4 text-slate-600 text-xs"><b>${v.visitBuilding || 'Standard Tower'}</b><br><span class="text-slate-400">${v.visitLocation || ''}</span></td>
-                        <td class="py-4 px-4 whitespace-nowrap"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold">${v.memberUsername}</span></td>
-                        <td class="py-4 px-4 whitespace-nowrap">
-                            <button onclick="openLeadModal('${v.memberUsername}', '${v.taskId}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition">View Details</button>
+                        <td class="px-4.5 py-3.5 text-slate-600 whitespace-nowrap">
+                            <a href="tel:${escapeHtml(v.contactNumber)}" class="text-blue-600 hover:underline flex items-center gap-1 font-medium">
+                                <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(v.contactNumber || 'N/A')}
+                            </a>
                         </td>
-                    `;
-                    tbody.appendChild(row);
-                });
+                        <td class="px-4.5 py-3.5 text-slate-700 whitespace-nowrap">
+                            <span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-md text-[11px] font-bold">${formatDateDMY(v.visitDate)}</span>
+                            <span class="text-[10px] text-slate-500 ml-1">${escapeHtml(v.visitTime || '')}</span>
+                        </td>
+                        <td class="px-4.5 py-3.5 text-slate-600 text-xs">
+                            <div class="font-bold text-slate-800">${escapeHtml(v.visitBuilding || 'Standard Tower')}</div>
+                            <div class="text-[10px] text-slate-400">${escapeHtml(v.visitLocation || 'N/A')}</div>
+                        </td>
+                        <td class="px-4.5 py-3.5 whitespace-nowrap">
+                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase border border-slate-200">${escapeHtml(v.memberUsername)}</span>
+                        </td>
+                        <td class="px-4.5 py-3.5 text-center whitespace-nowrap">
+                            <button onclick="openLeadModal('${escapeHtml(v.memberUsername)}', '${escapeHtml(v.taskId)}')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition inline-flex items-center gap-1.5">
+                                <i class="fa-solid fa-eye"></i> View Details
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Render Mobile Card Feed
+                mobileContainer.innerHTML = visits.map(v => `
+                    <div class="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
+                        <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
+                            <div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Lead Name</span>
+                                <h3 class="font-bold text-slate-900 text-sm tracking-tight mt-0.5">${escapeHtml(v.name)}</h3>
+                            </div>
+                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase border border-slate-200">${escapeHtml(v.memberUsername)}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100/80 text-xs">
+                            <div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Contact Number</span>
+                                <a href="tel:${escapeHtml(v.contactNumber)}" class="text-xs font-bold text-blue-600 flex items-center gap-1 mt-0.5 hover:underline">
+                                    <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(v.contactNumber || 'N/A')}
+                                </a>
+                            </div>
+                            <div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Visit Schedule</span>
+                                <div class="text-xs font-bold text-slate-800 mt-0.5">
+                                    <span class="text-blue-700">${formatDateDMY(v.visitDate)}</span>
+                                    <span class="text-[10px] text-slate-500">${escapeHtml(v.visitTime || '')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-600 space-y-0.5 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
+                            <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Building & Location</span>
+                            <div class="font-bold text-slate-800">${escapeHtml(v.visitBuilding || 'Standard Tower')}</div>
+                            <div class="text-[10px] text-slate-500">${escapeHtml(v.visitLocation || 'N/A')}</div>
+                        </div>
+
+                        <div class="pt-1">
+                            <button onclick="openLeadModal('${escapeHtml(v.memberUsername)}', '${escapeHtml(v.taskId)}')" class="w-full text-center py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Details & History
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
             } catch (err) {
                 console.error('Error loading visits:', err);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
             }
         }
 
         async function openLeadModal(username, taskId) {
             try {
-                const res = await fetch(`/api/lead-details/${username}/${taskId}`);
+                const res = await fetch(`/api/lead-details/${encodeURIComponent(username)}/${encodeURIComponent(taskId)}`);
                 const data = await res.json();
                 if (!data.success) { alert('Failed to load lead details'); return; }
 
                 const lead = data.lead;
                 document.getElementById('modalLeadName').textContent = lead.name || 'Untitled Lead';
                 document.getElementById('modalLeadSummary').innerHTML = `
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Contact Number</span><span class="font-bold text-slate-800 text-sm mt-0.5 block">${lead.contactNumber || 'N/A'}</span></div>
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Member</span><span class="font-bold text-slate-800 text-sm mt-0.5 block">${username}</span></div>
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-emerald-600 text-sm mt-0.5 block">${lead.status || 'Active Pipeline'}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Contact Number</span><span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">${escapeHtml(lead.contactNumber || 'N/A')}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Member</span><span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">${escapeHtml(username)}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-emerald-600 text-xs sm:text-sm mt-0.5 block">${escapeHtml(lead.status || 'Active Pipeline')}</span></div>
                 `;
 
                 let historyHtml = '';
@@ -192,38 +353,38 @@
                     const isConnected = c.call_connected === 'Yes' || c.call_connected === 'Connected';
                     
                     const connectionBadge = isConnected 
-                        ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-phone text-emerald-600 mr-1"></i> Connected</span>`
-                        : `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-phone-slash text-rose-600 mr-1"></i> ${c.call_connected || 'Not Connected'}</span>`;
+                        ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1"><i class="fa-solid fa-phone text-emerald-600"></i> Connected</span>`
+                        : `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1"><i class="fa-solid fa-phone-slash text-rose-600"></i> ${escapeHtml(c.call_connected || 'Not Connected')}</span>`;
 
                     historyHtml += `
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                                 <div class="flex items-center gap-2">
                                     <span class="bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-black">Call #${i}</span>
-                                    <span class="text-xs font-bold text-slate-700">${c.title || 'Call Interaction'}</span>
+                                    <span class="text-xs font-bold text-slate-700">${escapeHtml(c.title || 'Call Interaction')}</span>
                                 </div>
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center justify-between sm:justify-end gap-2">
                                     ${connectionBadge}
                                     <span class="text-[10px] text-slate-400 font-medium">${loggedDateStr}</span>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Remark</span><span class="text-slate-800 font-semibold italic mt-0.5 block">${c.remark || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Required</span><span class="text-slate-800 font-bold mt-0.5 block">${c.followUpRequired || 'No'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Option</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.followUpOption || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Schedule</span><span class="text-blue-700 font-bold mt-0.5 block">${formatDateDMY(c.followUpDate)} ${c.followUpTime ? '@ ' + c.followUpTime : ''}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visit Scheduled</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitScheduled || 'No'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visit Date & Time</span><span class="text-teal-700 font-bold mt-0.5 block">${formatDateDMY(c.visitDate)} ${c.visitTime ? '@ ' + c.visitTime : ''}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Building / Project</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitBuilding || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Location / Address</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.visitLocation || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Site Visit Notes</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.visitNote || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visitor Coming</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitorComing || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Reason</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.rescheduleReason || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visit Interest Customer</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitInterestCustomer || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Visit Choice</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.rescheduleVisitChoice || 'N/A'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="text-slate-800 font-bold mt-0.5 block">${c.leadStatus || 'Active'}</span></div>
-                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider block">Close Reason</span><span class="text-rose-600 font-semibold mt-0.5 block">${c.closeReason || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Remark</span><span class="text-slate-800 font-semibold italic mt-0.5 block">${escapeHtml(c.remark || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Required</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.followUpRequired || 'No')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Option</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.followUpOption || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Schedule</span><span class="text-blue-700 font-bold mt-0.5 block">${formatDateDMY(c.followUpDate)} ${escapeHtml(c.followUpTime ? '@ ' + c.followUpTime : '')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visit Scheduled</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitScheduled || 'No')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visit Date & Time</span><span class="text-teal-700 font-bold mt-0.5 block">${formatDateDMY(c.visitDate)} ${escapeHtml(c.visitTime ? '@ ' + c.visitTime : '')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Building / Project</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitBuilding || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Location / Address</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.visitLocation || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Site Visit Notes</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.visitNote || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visitor Coming</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitorComing || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Reason</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.rescheduleReason || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Visit Interest Customer</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.visitInterestCustomer || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Visit Choice</span><span class="text-slate-800 font-semibold mt-0.5 block">${escapeHtml(c.rescheduleVisitChoice || 'N/A')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="text-slate-800 font-bold mt-0.5 block">${escapeHtml(c.leadStatus || 'Active')}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-rose-600 uppercase tracking-wider block">Close Reason</span><span class="text-rose-600 font-semibold mt-0.5 block">${escapeHtml(c.closeReason || 'N/A')}</span></div>
                             </div>
                         </div>
                     `;
