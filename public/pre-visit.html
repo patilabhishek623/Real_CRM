@@ -292,29 +292,40 @@
             try {
                 const response = await fetch('/api/all-visits');
                 const data = await response.json();
-                rawVisitsData = (data.success && data.visits) ? data.visits : [];
+                const fetchedVisits = (data.success && data.visits) ? data.visits : [];
                 
-                for (let v of rawVisitsData) {
+                rawVisitsData = [];
+                for (let v of fetchedVisits) {
                     try {
                         const detailRes = await fetch(`/api/lead-details/${encodeURIComponent(v.memberUsername)}/${encodeURIComponent(v.taskId)}`);
                         const detailData = await detailRes.json();
                         if (detailData.success && detailData.lead) {
+                            let isInterested = false;
                             let hasPreVisitCall = false;
                             let j = 1;
                             while (detailData.lead[`call${j}`]) {
                                 const c = detailData.lead[`call${j}`];
+                                if (c.visitInterestCustomer === 'Yes') {
+                                    isInterested = true;
+                                    break;
+                                }
                                 if (c.title === 'Pre-Visit Call' && c.visitDate === v.visitDate) {
                                     hasPreVisitCall = true;
-                                    break;
                                 }
                                 j++;
                             }
-                            v.callDone = hasPreVisitCall;
+                            // Filter out interested clients from pre-visit calls page
+                            if (!isInterested) {
+                                v.callDone = hasPreVisitCall;
+                                rawVisitsData.push(v);
+                            }
                         } else {
                             v.callDone = false;
+                            rawVisitsData.push(v);
                         }
                     } catch (e) {
                         v.callDone = false;
+                        rawVisitsData.push(v);
                     }
                 }
 
