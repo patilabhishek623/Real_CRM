@@ -6,8 +6,13 @@
     <title>Scheduled Visits - Real_Crm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
@@ -87,21 +92,25 @@
     </div>
 
     <!-- Lead Detail Modal Overlay -->
-    <div id="leadModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+    <div id="leadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto border border-slate-100">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-start border-b border-slate-100 pb-4">
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">Customer Profile & History</span>
-                    <h2 id="modalLeadName" class="text-xl font-extrabold text-slate-900 mt-1">Lead Details</h2>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">Customer Profile & History</span>
+                    <h2 id="modalLeadName" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">Lead Details</h2>
                 </div>
-                <button onclick="closeModal()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal()" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition shadow-xs"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
 
-            <div id="modalLeadSummary" class="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs"></div>
+            <!-- Lead Summary Grid -->
+            <div id="modalLeadSummary" class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 text-xs shadow-inner"></div>
 
-            <div>
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-3"><i class="fa-solid fa-timeline text-emerald-600 mr-1.5"></i> Full Call History & Detailed Logs</h3>
-                <div id="modalCallHistory" class="space-y-3"></div>
+            <!-- Call Logs Timeline -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2"><i class="fa-solid fa-timeline text-emerald-600 text-sm"></i> Full Call History & Detailed Logs</h3>
+                <div id="modalCallHistory" class="space-y-4"></div>
             </div>
         </div>
     </div>
@@ -168,32 +177,59 @@
                 if (!data.success) { alert('Failed to load lead details'); return; }
 
                 const lead = data.lead;
-                document.getElementById('modalLeadName').textContent = lead.name;
+                document.getElementById('modalLeadName').textContent = lead.name || 'Untitled Lead';
                 document.getElementById('modalLeadSummary').innerHTML = `
-                    <div><b>Contact:</b><br>${lead.contactNumber || 'N/A'}</div>
-                    <div><b>Assigned Member:</b><br>${username}</div>
-                    <div><b>Status:</b><br>${lead.status || 'Pending'}</div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Contact Number</span><span class="font-bold text-slate-800 text-sm mt-0.5 block">${lead.contactNumber || 'N/A'}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Member</span><span class="font-bold text-slate-800 text-sm mt-0.5 block">${username}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-emerald-600 text-sm mt-0.5 block">${lead.status || 'Active Pipeline'}</span></div>
                 `;
 
                 let historyHtml = '';
                 let i = 1;
                 while (lead[`call${i}`]) {
                     const c = lead[`call${i}`];
-                    const loggedDateStr = new Date(c.loggedAt).toLocaleString();
+                    const loggedDateStr = c.loggedAt ? new Date(c.loggedAt).toLocaleString() : 'Recent';
+                    const isConnected = c.call_connected === 'Yes' || c.call_connected === 'Connected';
+                    
+                    const connectionBadge = isConnected 
+                        ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-phone text-emerald-600 mr-1"></i> Connected</span>`
+                        : `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-phone-slash text-rose-600 mr-1"></i> ${c.call_connected || 'Not Connected'}</span>`;
+
                     historyHtml += `
-                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1">
-                            <div class="flex justify-between font-extrabold text-emerald-700">
-                                <span>Call ${i}: ${c.title || c.call_connected || 'Call Log'}</span>
-                                <span class="text-slate-400 font-normal">${loggedDateStr}</span>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-black">Call #${i}</span>
+                                    <span class="text-xs font-bold text-slate-700">${c.title || 'Call Interaction'}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    ${connectionBadge}
+                                    <span class="text-[10px] text-slate-400 font-medium">${loggedDateStr}</span>
+                                </div>
                             </div>
-                            <p><b>Remark:</b> ${c.remark || 'N/A'}</p>
-                            ${c.visitScheduled === 'Yes' ? `<p class="text-teal-700 font-bold">Scheduled Visit: ${formatDateDMY(c.visitDate)} at ${c.visitTime} (${c.visitBuilding || 'Tower'})</p>` : ''}
-                            ${c.visitorComing ? `<p><b>Visitor Coming:</b> ${c.visitorComing}${c.rescheduleReason ? '— Reason: ' + c.rescheduleReason : ''}</p>` : ''}
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Remark</span><span class="text-slate-800 font-semibold italic mt-0.5 block">${c.remark || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Required</span><span class="text-slate-800 font-bold mt-0.5 block">${c.followUpRequired || 'No'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Option</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.followUpOption || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Follow-Up Schedule</span><span class="text-blue-700 font-bold mt-0.5 block">${formatDateDMY(c.followUpDate)} ${c.followUpTime ? '@ ' + c.followUpTime : ''}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visit Scheduled</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitScheduled || 'No'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visit Date & Time</span><span class="text-teal-700 font-bold mt-0.5 block">${formatDateDMY(c.visitDate)} ${c.visitTime ? '@ ' + c.visitTime : ''}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Building / Project</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitBuilding || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Location / Address</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.visitLocation || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Site Visit Notes</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.visitNote || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visitor Coming</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitorComing || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Reason</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.rescheduleReason || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Visit Interest Customer</span><span class="text-slate-800 font-bold mt-0.5 block">${c.visitInterestCustomer || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Reschedule Visit Choice</span><span class="text-slate-800 font-semibold mt-0.5 block">${c.rescheduleVisitChoice || 'N/A'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="text-slate-800 font-bold mt-0.5 block">${c.leadStatus || 'Active'}</span></div>
+                                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider block">Close Reason</span><span class="text-rose-600 font-semibold mt-0.5 block">${c.closeReason || 'N/A'}</span></div>
+                            </div>
                         </div>
                     `;
                     i++;
                 }
-                document.getElementById('modalCallHistory').innerHTML = historyHtml || '<p class="text-xs text-slate-400 italic">No prior calls recorded yet.</p>';
+                document.getElementById('modalCallHistory').innerHTML = historyHtml || '<p class="text-xs text-slate-400 italic text-center py-6">No prior calls recorded yet.</p>';
 
                 document.getElementById('leadModal').classList.remove('hidden');
             } catch (err) {
