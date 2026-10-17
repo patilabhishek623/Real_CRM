@@ -347,7 +347,9 @@ app.get('/api/interested-visits', async (req, res) => {
 
         for (const member of members) {
             const MemberTaskModel = getMemberTaskModel(member.username);
-            const tasks = await MemberTaskModel.find();
+            
+            // Fetch only tasks/customers where status is 'Completed'
+            const tasks = await MemberTaskModel.find({ status: 'Completed' });
 
             tasks.forEach(t => {
                 const taskObj = t.toObject ? t.toObject() : t;
