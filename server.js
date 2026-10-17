@@ -67,6 +67,7 @@ const callSubSchema = new mongoose.Schema({
     rescheduleVisitChoice: { type: String, default: '' },
     leadStatus: { type: String, default: '' },
     closeReason: { type: String, default: '' },
+    callDuration: { type: String, default: '0 mins 0 secs' }, // Added call duration field
     loggedAt: { type: Date, default: Date.now }
 });
 
@@ -404,7 +405,7 @@ app.get('/api/lead-details/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Update Task Status & Dynamically Append Call Logs (Including Requirements) ---
+// --- API: Update Task Status & Dynamically Append Call Logs (Including Requirements & Call Duration) ---
 app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     const { username, taskId } = req.params;
     const { 
@@ -432,7 +433,8 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
         visitInterestCustomer,
         rescheduleVisitChoice,
         leadStatus,
-        closeReason
+        closeReason,
+        callDuration // Retrieved from frontend payload
     } = req.body; 
 
     try {
@@ -462,6 +464,7 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
             rescheduleVisitChoice: rescheduleVisitChoice || '',
             leadStatus: leadStatus || '',
             closeReason: closeReason || '',
+            callDuration: callDuration || '0 mins 0 secs', // Saved in DB
             loggedAt: new Date()
         };
 
