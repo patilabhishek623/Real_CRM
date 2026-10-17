@@ -305,26 +305,27 @@ app.get('/api/followups/:username', async (req, res) => {
         let followups = [];
 
         tasks.forEach(t => {
-            let latestFollowUp = null;
             let i = 1;
             while (t[`call${i}`]) {
                 const call = t[`call${i}`];
-                if (call.followUpRequired) {
-                    latestFollowUp = call;
+                if (call.followUpRequired === 'Yes' && call.followUpDate) {
+                    followups.push({
+                        taskId: t._id,
+                        callId: `call${i}`,
+                        name: t.name || 'Untitled Lead',
+                        contactNumber: t.contactNumber || '',
+                        property: t.description || '',
+                        callNumber: `Call ${i}`,
+                        callConnected: call.call_connected || '',
+                        leadStatus: call.leadStatus || '',
+                        followUpDate: call.followUpDate,
+                        followUpTime: call.followUpTime || '10:00',
+                        followUpOption: call.followUpOption || '',
+                        remark: call.remark || '',
+                        history: t
+                    });
                 }
                 i++;
-            }
-
-            if (latestFollowUp && latestFollowUp.followUpRequired === 'Yes' && latestFollowUp.followUpDate) {
-                followups.push({
-                    taskId: t._id,
-                    name: t.name || 'Untitled Lead',
-                    contactNumber: t.contactNumber || '',
-                    followUpDate: latestFollowUp.followUpDate,
-                    followUpTime: latestFollowUp.followUpTime || '',
-                    followUpOption: latestFollowUp.followUpOption || '',
-                    remark: latestFollowUp.remark || ''
-                });
             }
         });
 
@@ -519,7 +520,7 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Save Negotiation Details (Stored in the same document as negotation1, negotation2...) ---
+// --- API: Save Negotiation Details (Stored sequentially as negotation1, negotation2...) ---
 app.post('/api/save-negotiation/:username/:taskId', async (req, res) => {
     const { username, taskId } = req.params;
     const { buildingName, flatSize, finalPrice, floor, parking } = req.body;
@@ -557,42 +558,32 @@ app.post('/api/save-negotiation/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Get Follow-ups for a specific member ---
-app.get('/api/followups/:username', async (req, res) => {
+// --- API: Save Single Token Details ---
+app.post('/api/save-token/:username/:taskId', async (req, res) => {
+    const { username, taskId } = req.params;
+    const { tokenReceived, tokenAmount } = req.body;
+
     try {
-        const MemberTaskModel = getMemberTaskModel(req.params.username.trim());
-        const tasks = await MemberTaskModel.find();
-        let followups = [];
+        const MemberTaskModel = getMemberTaskModel(username);
+        const task = await MemberTaskModel.findById(taskId);
+        if (!task) return res.status(404).json({ success: false, message: 'Task not found.' });
 
-        tasks.forEach(t => {
-            let i = 1;
-            while (t[`call${i}`]) {
-                const call = t[`call${i}`];
-                if (call.followUpRequired === 'Yes' && call.followUpDate) {
-                    followups.push({
-                        taskId: t._id,
-                        callId: `call${i}`,
-                        name: t.name || 'Untitled Lead',
-                        contactNumber: t.contactNumber || '',
-                        property: t.description || '',
-                        callNumber: `Call ${i}`,
-                        callConnected: call.call_connected || '',
-                        leadStatus: call.leadStatus || '',
-                        followUpDate: call.followUpDate,
-                        followUpTime: call.followUpTime || '10:00',
-                        followUpOption: call.followUpOption || '',
-                        remark: call.remark || '',
-                        history: t
-                    });
-                }
-                i++;
-            }
-        });
+        const tokenData = {
+            tokenReceived: tokenReceived || '',
+            tokenAmount: tokenAmount || '',
+            savedAt: new Date()
+        };
 
-        res.json({ success: true, followups });
+        const updatedTask = await MemberTaskModel.findByIdAndUpdate(
+            taskId,
+            { token: tokenData },
+            { new: true }
+        );
+
+        res.json({ success: true, message: 'Token details saved successfully!', lead: updatedTask });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, message: 'Error fetching follow-ups' });
+        res.status(500).json({ success: false, message: 'Error saving token details.' });
     }
 });
 
