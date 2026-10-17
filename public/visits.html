@@ -215,7 +215,7 @@
             <!-- Lead Summary Grid -->
             <div id="modalLeadSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200/85 text-xs shadow-inner"></div>
 
-            <!-- Interaction Form Wizard (Conditionally Hidden if Client is Already Interested) -->
+            <!-- Interaction Form Wizard -->
             <div id="interactionFormContainer" class="bg-blue-50/40 p-4 sm:p-5 rounded-2xl border border-blue-200/70 space-y-4">
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-blue-900 flex items-center gap-2">
                     <i class="fa-solid fa-headset text-emerald-600 text-sm"></i> Log New Call Interaction
@@ -253,8 +253,12 @@
                         </select>
                     </div>
 
-                    <!-- FULL SITE VISIT DETAILS -->
-                    <div id="siteVisitDetailsSection" class="space-y-3 p-3 bg-white rounded-xl border border-slate-200 hidden fade-in">
+                    <!-- FULL SITE VISIT DETAILS WITH CLEAR SECTION LABEL -->
+                    <div id="siteVisitDetailsSection" class="space-y-3 p-3.5 bg-white rounded-xl border border-slate-200 hidden fade-in shadow-xs">
+                        <div class="flex items-center gap-1.5 font-extrabold text-emerald-950 text-[11px] uppercase tracking-wider border-b border-emerald-100 pb-2 mb-1">
+                            <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Visit Schedule Details
+                        </div>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Date</label>
@@ -267,7 +271,7 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Building Name / Project</label>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Building / Project</label>
                                 <input type="text" id="visitBuilding" placeholder="e.g. Prestige Heights" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
                             </div>
                             <div>
@@ -276,7 +280,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Proposed Details / Notes</label>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Notes</label>
                             <textarea id="visitNote" rows="2" placeholder="Enter notes..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none"></textarea>
                         </div>
                     </div>
@@ -289,7 +293,7 @@
                 </form>
             </div>
 
-            <!-- Call Logs Timeline with All Database Fields -->
+            <!-- Call Logs Timeline -->
             <div class="space-y-3">
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2"><i class="fa-solid fa-timeline text-emerald-600 text-sm"></i> Full Call History & Database Fields</h3>
                 <div id="modalCallHistory" class="space-y-4"></div>
@@ -506,7 +510,6 @@
             }
         }
 
-        // --- ENHANCED CALL HISTORY RENDERING SHOWING ALL DATABASE FIELDS ---
         function renderCallHistory() {
             if (!currentLeadData) return;
             let historyHtml = '';
@@ -533,7 +536,6 @@
 
                 historyHtml += `
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3.5">
-                        <!-- Card Header -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 rounded-xl text-xs font-extrabold tracking-wide shadow-xs">CALL #${i}</span>
@@ -543,7 +545,6 @@
                             <span class="text-[10px] text-slate-400 font-bold bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/60"><i class="fa-regular fa-calendar text-blue-600 mr-1"></i> ${loggedDateStr}</span>
                         </div>
 
-                        <!-- Grid 1: Call Core Details & Remarks -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Call Title</span><span class="text-slate-900 font-bold block truncate">${escapeHtml(c.title || 'Call Log')}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Lead Temperature</span><div class="mt-0.5">${tempBadge}</div></div>
@@ -551,7 +552,6 @@
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 sm:col-span-2 lg:col-span-4"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Remark / Conversation Notes</span><span class="text-slate-800 font-medium italic block">${escapeHtml(c.remark || 'N/A')}</span></div>
                         </div>
 
-                        <!-- Grid 2: Client Requirements (Budget, Flat Size, Floor, Notes) -->
                         <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100 space-y-2 text-xs">
                             <div class="flex items-center gap-1.5 font-extrabold text-blue-900 text-[11px] uppercase tracking-wider border-b border-blue-200/60 pb-1.5">
                                 <i class="fa-solid fa-list-check text-blue-600"></i> Client Requirements Gathered
@@ -564,9 +564,7 @@
                             ${c.requirementNote ? `<div class="bg-white p-2 rounded-lg border border-blue-100 text-[10px] text-slate-700"><strong>Req Note:</strong> ${escapeHtml(c.requirementNote)}</div>` : ''}
                         </div>
 
-                        <!-- Grid 3: Follow-Up & Visit Schedule Details -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                            <!-- Follow-Up Box -->
                             <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80 space-y-1">
                                 <div class="flex items-center gap-1.5 font-extrabold text-amber-950 text-[10px] uppercase tracking-wider border-b border-amber-200 pb-1">
                                     <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Follow-Up Details
@@ -576,7 +574,6 @@
                                 <div class="flex justify-between text-[11px]"><span class="text-slate-500">Scheduled:</span><span class="font-bold text-amber-900">${formatDateDMY(c.followUpDate)} ${escapeHtml(c.followUpTime ? '@ ' + c.followUpTime : '')}</span></div>
                             </div>
 
-                            <!-- Visit Box -->
                             <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200/80 space-y-1">
                                 <div class="flex items-center gap-1.5 font-extrabold text-emerald-950 text-[10px] uppercase tracking-wider border-b border-emerald-200 pb-1">
                                     <i class="fa-solid fa-calendar-check text-emerald-600"></i> Visit & Tour Feedback
@@ -587,7 +584,6 @@
                             </div>
                         </div>
 
-                        <!-- Grid 4: Project, Location, Reschedule & Close Reasons -->
                         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Building / Project</span><span class="font-bold text-slate-800">${escapeHtml(c.visitBuilding || 'N/A')}</span></div>
