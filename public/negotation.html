@@ -99,7 +99,7 @@
                         <i class="fa-solid fa-handshake"></i> Active Deal Pipeline
                     </div>
                     <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Negotiation Stage</h1>
-                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Customers currently in negotiation with building, pricing, and flat specifications.</p>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Customers currently in negotiation with building, pricing, and token specifications.</p>
                 </div>
                 <div id="negotiationCountBadge" class="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 bg-amber-500/20 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 backdrop-blur-md">
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
@@ -129,6 +129,82 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Add Negotiation / Token Details Modal -->
+    <div id="addDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-8 shadow-2xl space-y-5 border border-slate-100">
+            <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+                <div>
+                    <span class="text-[9px] font-extrabold uppercase tracking-widest text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">Deal Pipeline</span>
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">Add Negotiation / Token Details</h3>
+                </div>
+                <button onclick="closeDetailModal()" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+
+            <form id="detailForm" onsubmit="submitDetailForm(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1.5">Need to negotiate?</label>
+                    <select id="needNegotiateSelect" onchange="toggleNegotiationFields()" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">Select option...</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <!-- Negotiation Fields Group -->
+                <div id="negotiationFieldsGroup" class="space-y-3.5 hidden bg-amber-50/40 p-3.5 rounded-2xl border border-amber-200/60">
+                    <p class="font-bold text-amber-900 text-[11px] uppercase tracking-wide border-b border-amber-200 pb-1"><i class="fa-solid fa-handshake mr-1"></i> Negotiation Details</p>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Building Name</label>
+                        <input type="text" id="negBuilding" placeholder="e.g. Prestige Heights" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1">Flat Size</label>
+                            <input type="text" id="negFlatSize" placeholder="e.g. 2 BHK" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1">Final Price</label>
+                            <input type="text" id="negFinalPrice" placeholder="e.g. ₹1.45 Cr" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1">Floor</label>
+                            <input type="text" id="negFloor" placeholder="e.g. 12th Floor" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1">Parking</label>
+                            <input type="text" id="negParking" placeholder="e.g. 1 Covered" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Token Fields Group -->
+                <div id="tokenFieldsGroup" class="space-y-3.5 hidden bg-emerald-50/40 p-3.5 rounded-2xl border border-emerald-200/60">
+                    <p class="font-bold text-emerald-900 text-[11px] uppercase tracking-wide border-b border-emerald-200 pb-1"><i class="fa-solid fa-receipt mr-1"></i> Token Details</p>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1.5">Token received?</label>
+                        <select id="tokenReceivedSelect" onchange="toggleTokenAmountField()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="">Select option...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div id="tokenAmountContainer" class="hidden">
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Token Amount</label>
+                        <input type="text" id="tokenAmount" placeholder="e.g. ₹50,000" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <div class="pt-3">
+                    <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Submit Details
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Mobile Sticky Bottom Navigation Bar -->
@@ -166,6 +242,8 @@
             document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i> No User Logged In`;
         }
 
+        let activeModalTaskId = '';
+
         function escapeHtml(str) {
             if (!str) return '';
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -183,13 +261,12 @@
                     return;
                 }
 
-                // Filter tasks that have at least one negotiation record (negotation1, negotation2...)
                 const negotiationTasks = data.tasks.filter(t => {
                     let k = 1;
                     while (t[`negotation${k}`]) {
                         return true;
                     }
-                    return false;
+                    return t.token ? true : false;
                 });
 
                 const countBadge = document.getElementById('negotiationCountBadge');
@@ -207,7 +284,9 @@
                 container.classList.remove('hidden');
 
                 container.innerHTML = negotiationTasks.map(task => {
-                    let negsHtml = '';
+                    let detailsHtml = '';
+                    
+                    // Render Negotiations
                     let k = 1;
                     while (task[`negotation${k}`]) {
                         const n = task[`negotation${k}`];
@@ -215,7 +294,7 @@
                             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                         }) : 'Recent';
 
-                        negsHtml += `
+                        detailsHtml += `
                             <div class="bg-amber-50/50 rounded-xl border border-amber-200/80 p-3.5 space-y-2 text-xs">
                                 <div class="flex justify-between items-center border-b border-amber-200/60 pb-1.5">
                                     <span class="bg-amber-700 text-white px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Negotiation #${k}</span>
@@ -233,10 +312,31 @@
                         k++;
                     }
 
+                    // Render Single Token if present
+                    if (task.token) {
+                        const tok = task.token;
+                        const dateStr = tok.savedAt ? new Date(tok.savedAt).toLocaleString('en-IN', {
+                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        }) : 'Recent';
+
+                        detailsHtml += `
+                            <div class="bg-emerald-50/50 rounded-xl border border-emerald-200/80 p-3.5 space-y-2 text-xs">
+                                <div class="flex justify-between items-center border-b border-emerald-200/60 pb-1.5">
+                                    <span class="bg-emerald-700 text-white px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Token Record</span>
+                                    <span class="text-[10px] text-slate-500 font-medium"><i class="fa-regular fa-calendar text-emerald-600 mr-1"></i>${dateStr}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Token Received</span><strong class="text-slate-900">${escapeHtml(tok.tokenReceived || 'No')}</strong></div>
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Token Amount</span><strong class="text-emerald-700">${escapeHtml(tok.tokenAmount || 'N/A')}</strong></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
                     return `
                         <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3 relative overflow-hidden">
                             <div class="absolute top-0 left-0 bottom-0 w-1 bg-amber-500"></div>
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-3 pl-1">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3 pl-1 flex-wrap gap-2">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 border border-amber-200 flex items-center justify-center font-bold text-xs flex-shrink-0">
                                         ${(task.name || 'U').charAt(0).toUpperCase()}
@@ -248,10 +348,15 @@
                                         </a>
                                     </div>
                                 </div>
-                                <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide border border-amber-300">In Negotiation</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide border border-amber-300">In Negotiation</span>
+                                    <button onclick="openDetailModal('${escapeHtml(task._id)}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition shadow-xs flex items-center gap-1.5">
+                                        <i class="fa-solid fa-plus"></i> Add Details
+                                    </button>
+                                </div>
                             </div>
                             <div class="space-y-2.5 pt-1">
-                                ${negsHtml}
+                                ${detailsHtml}
                             </div>
                         </div>
                     `;
@@ -261,6 +366,105 @@
                 console.error('Error fetching negotiations:', err);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('emptyState').classList.remove('hidden');
+            }
+        }
+
+        function openDetailModal(taskId) {
+            activeModalTaskId = taskId;
+            document.getElementById('detailForm').reset();
+            document.getElementById('negotiationFieldsGroup').classList.add('hidden');
+            document.getElementById('tokenFieldsGroup').classList.add('hidden');
+            document.getElementById('tokenAmountContainer').classList.add('hidden');
+            document.getElementById('addDetailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('addDetailModal').classList.add('hidden');
+        }
+
+        function toggleNegotiationFields() {
+            const val = document.getElementById('needNegotiateSelect').value;
+            const negGroup = document.getElementById('negotiationFieldsGroup');
+            const tokenGroup = document.getElementById('tokenFieldsGroup');
+
+            if (val === 'Yes') {
+                negGroup.classList.remove('hidden');
+                tokenGroup.classList.add('hidden');
+                document.getElementById('negBuilding').required = true;
+                document.getElementById('negFlatSize').required = true;
+                document.getElementById('negFinalPrice').required = true;
+                document.getElementById('negFloor').required = true;
+                document.getElementById('negParking').required = true;
+                document.getElementById('tokenReceivedSelect').required = false;
+            } else if (val === 'No') {
+                negGroup.classList.add('hidden');
+                tokenGroup.classList.remove('hidden');
+                document.getElementById('negBuilding').required = false;
+                document.getElementById('negFlatSize').required = false;
+                document.getElementById('negFinalPrice').required = false;
+                document.getElementById('negFloor').required = false;
+                document.getElementById('negParking').required = false;
+                document.getElementById('tokenReceivedSelect').required = true;
+            } else {
+                negGroup.classList.add('hidden');
+                tokenGroup.classList.add('hidden');
+            }
+        }
+
+        function toggleTokenAmountField() {
+            const val = document.getElementById('tokenReceivedSelect').value;
+            const amtCont = document.getElementById('tokenAmountContainer');
+            if (val === 'Yes') {
+                amtCont.classList.remove('hidden');
+                document.getElementById('tokenAmount').required = true;
+            } else {
+                amtCont.classList.add('hidden');
+                document.getElementById('tokenAmount').required = false;
+            }
+        }
+
+        async function submitDetailForm(e) {
+            e.preventDefault();
+            if (!activeModalTaskId) return;
+
+            const needNeg = document.getElementById('needNegotiateSelect').value;
+            let endpoint = '';
+            let payload = {};
+
+            if (needNeg === 'Yes') {
+                endpoint = `/api/save-negotiation/${encodeURIComponent(currentUsername)}/${encodeURIComponent(activeModalTaskId)}`;
+                payload = {
+                    buildingName: document.getElementById('negBuilding').value,
+                    flatSize: document.getElementById('negFlatSize').value,
+                    finalPrice: document.getElementById('negFinalPrice').value,
+                    floor: document.getElementById('negFloor').value,
+                    parking: document.getElementById('negParking').value
+                };
+            } else {
+                endpoint = `/api/save-token/${encodeURIComponent(currentUsername)}/${encodeURIComponent(activeModalTaskId)}`;
+                payload = {
+                    tokenReceived: document.getElementById('tokenReceivedSelect').value,
+                    tokenAmount: document.getElementById('tokenAmount').value || '0'
+                };
+            }
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Details saved successfully!');
+                    closeDetailModal();
+                    fetchNegotiations();
+                } else {
+                    alert(data.message || 'Failed to save details.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error connecting to server.');
             }
         }
 
