@@ -339,20 +339,15 @@ app.get('/api/all-visits', async (req, res) => {
     }
 });
 
-// --- API: Get Interested Visits (Direct DB Scanner for visitInterestCustomer: "Yes") ---
+// --- API: Get Interested Visits (Reliable User-Based Database Scanner) ---
 app.get('/api/interested-visits', async (req, res) => {
     try {
-        const collections = await mongoose.connection.db.listCollections().toArray();
-        const taskCollections = collections.filter(c => c.name.startsWith('tasks_'));
-
+        const members = await User.find({ role: 'teammember' }, 'username');
         let interestedVisits = [];
 
-        for (const colInfo of taskCollections) {
-            const collectionName = colInfo.name;
-            const memberUsername = collectionName.replace('tasks_', '');
-            
-            const DynamicTaskModel = mongoose.models[collectionName] || mongoose.model(collectionName, new mongoose.Schema({}, { strict: false }), collectionName);
-            const tasks = await DynamicTaskModel.find();
+        for (const member of members) {
+            const MemberTaskModel = getMemberTaskModel(member.username);
+            const tasks = await MemberTaskModel.find();
 
             tasks.forEach(t => {
                 const taskObj = t.toObject ? t.toObject() : t;
@@ -365,7 +360,7 @@ app.get('/api/interested-visits', async (req, res) => {
                 let i = 1;
                 while (taskObj[`call${i}`]) {
                     const call = taskObj[`call${i}`];
-                    if (call.visitInterestCustomer && call.visitInterestCustomer.trim().toLowerCase() === 'yes') {
+                    if (call.visitInterestCustomer && String(call.visitInterestCustomer).trim().toLowerCase() === 'yes') {
                         isInterested = true;
                     }
                     if (call.visitDate) {
@@ -379,7 +374,7 @@ app.get('/api/interested-visits', async (req, res) => {
 
                 if (isInterested) {
                     interestedVisits.push({
-                        memberUsername: memberUsername,
+                        memberUsername: member.username,
                         taskId: taskObj._id,
                         name: taskObj.name || 'Untitled Lead',
                         contactNumber: taskObj.contactNumber || '',
