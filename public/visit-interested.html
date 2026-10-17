@@ -74,7 +74,7 @@
     <!-- Main Workspace -->
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
-        <!-- Left Sidebar Navigation Menu (Desktop Only) -->
+        <!-- Left Sidebar Navigation Menu -->
         <aside class="hidden md:block md:col-span-1 space-y-4">
             <div class="corporate-card rounded-2xl p-4 space-y-2 sticky top-28 border border-slate-200">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Member Menu</p>
@@ -214,20 +214,22 @@
 
     <!-- JavaScript Controller -->
     <script>
+        console.log("-> SCRIPT STARTING");
+
         window.addEventListener('DOMContentLoaded', () => {
-            console.log("-> DOM fully loaded. Initializing script...");
+            console.log("-> DOMContentLoaded event fired successfully.");
 
             try {
                 const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
                 const badgeEl = document.getElementById('activeUserBadge');
                 if (badgeEl && currentUsername) {
-                    badgeEl.innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-2"></i> User: <b>${currentUsername}</b>`;
+                    badgeEl.innerHTML = '<i class="fa-solid fa-user-shield text-emerald-600 mr-2"></i> User: <b>' + currentUsername + '</b>';
                 }
             } catch (e) {
                 console.error("Error setting user badge:", e);
             }
 
-            // Trigger Fetch
+            // Directly call fetch function
             fetchInterestedVisits();
         });
 
@@ -237,7 +239,7 @@
             if (!dateStr) return 'TBD';
             const clean = dateStr.split('T')[0];
             const parts = clean.split('-');
-            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
             return clean;
         }
 
@@ -247,25 +249,26 @@
         }
 
         async function fetchInterestedVisits() {
-            console.log("-> fetchInterestedVisits() called.");
+            console.log("-> fetchInterestedVisits() executing...");
             try {
                 const response = await fetch('/api/interested-visits');
-                console.log("-> API Response status:", response.status);
+                console.log("-> API Response Status:", response.status);
                 const data = await response.json();
+                console.log("-> API Response Data:", data);
                 
                 const tbody = document.getElementById('interestedTableBody');
                 const mobileContainer = document.getElementById('mobileCardContainer');
                 const countBadge = document.getElementById('interestedCountBadge');
 
                 if (!data.success || !data.visits || data.visits.length === 0) {
-                    if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No interested customer visits found.</p></td></tr>`;
-                    if (mobileContainer) mobileContainer.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No interested visits found.</p></div>`;
-                    if (countBadge) countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span>0 Interested Leads</span>`;
+                    if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center py-16 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No interested customer visits found.</p></td></tr>';
+                    if (mobileContainer) mobileContainer.innerHTML = '<div class="text-center py-12 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No interested visits found.</p></div>';
+                    if (countBadge) countBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span>0 Interested Leads</span>';
                     return;
                 }
 
                 const visits = data.visits;
-                if (countBadge) countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span>${visits.length} Interested Lead${visits.length > 1 ? 's' : ''}</span>`;
+                if (countBadge) countBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span>' + visits.length + ' Interested Lead' + (visits.length > 1 ? 's' : '') + '</span>';
                 
                 if (tbody) {
                     tbody.innerHTML = visits.map(v => `
@@ -350,7 +353,7 @@
 
         async function openLeadModal(username, taskId) {
             try {
-                const res = await fetch(`/api/lead-details/${encodeURIComponent(username)}/${encodeURIComponent(taskId)}`);
+                const res = await fetch('/api/lead-details/' + encodeURIComponent(username) + '/' + encodeURIComponent(taskId));
                 const data = await res.json();
                 if (!data.success) { alert('Failed to load lead details'); return; }
 
@@ -374,8 +377,8 @@
             
             let calls = [];
             let i = 1;
-            while (currentLeadData[`call${i}`]) {
-                calls.push({ callNum: i, data: currentLeadData[`call${i}`] });
+            while (currentLeadData['call' + i]) {
+                calls.push({ callNum: i, data: currentLeadData['call' + i] });
                 i++;
             }
 
