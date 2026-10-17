@@ -104,6 +104,7 @@ app.get('/pre-visit.html', (req, res) => { res.sendFile(path.join(__dirname, 'pu
 app.get('/post-visit.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'post-visit.html')); });
 app.get('/visit-interested.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'visit-interested.html')); });
 app.get('/lead-response.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'lead-response.html')); });
+app.get('/negotation.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'negotation.html')); });
 
 // --- API: Login Route ---
 app.post('/api/login', async (req, res) => {
