@@ -404,13 +404,19 @@ app.get('/api/lead-details/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Update Task Status & Dynamically Append Call Logs ---
+// --- API: Update Task Status & Dynamically Append Call Logs (Including Requirements) ---
 app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     const { username, taskId } = req.params;
     const { 
         title,
         call_connected, 
         remark, 
+        leadTemperature,
+        tempSubOption,
+        requirementBudget,
+        requirementFlatSize,
+        requirementFloor,
+        requirementNote,
         followUpRequired,
         followUpOption,
         followUpDate,
@@ -434,6 +440,12 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
             title: title || 'Call Log',
             call_connected: call_connected || 'Completed',
             remark: remark || '',
+            leadTemperature: leadTemperature || '',
+            tempSubOption: tempSubOption || '',
+            requirementBudget: requirementBudget || '',
+            requirementFlatSize: requirementFlatSize || '',
+            requirementFloor: requirementFloor || '',
+            requirementNote: requirementNote || '',
             followUpRequired: followUpRequired || '',
             followUpOption: followUpRequired === 'Yes' ? (followUpOption || '') : '',
             followUpDate: followUpRequired === 'Yes' ? (followUpDate || '') : '',
@@ -497,7 +509,7 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Get Follow-ups for a specific member (Extracts every call where followUpRequired === 'Yes') ---
+// --- API: Get Follow-ups for a specific member ---
 app.get('/api/followups/:username', async (req, res) => {
     try {
         const MemberTaskModel = getMemberTaskModel(req.params.username.trim());
@@ -506,15 +518,12 @@ app.get('/api/followups/:username', async (req, res) => {
 
         tasks.forEach(t => {
             let i = 1;
-            // Loop through all call records (call1, call2, call3, ...)
             while (t[`call${i}`]) {
                 const call = t[`call${i}`];
-                
-                // If this specific call has follow-up required 'Yes' and a date, add it as a follow-up item
                 if (call.followUpRequired === 'Yes' && call.followUpDate) {
                     followups.push({
                         taskId: t._id,
-                        callId: `call${i}`, // Identifies which call generated this follow-up
+                        callId: `call${i}`,
                         name: t.name || 'Untitled Lead',
                         contactNumber: t.contactNumber || '',
                         property: t.description || '',
