@@ -1,202 +1,321 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50/90">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Post-Visit Calls - Real_Crm</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .corporate-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+        }
+        .fade-in { animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="min-h-full text-slate-800 flex flex-col selection:bg-emerald-600 selection:text-white relative pb-36 md:pb-8">
+
+    <!-- Ambient Background Accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
 
     <!-- Top Navigation Bar -->
-    <header class="bg-white/85 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-phone-arrow-down-left text-lg"></i>
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-tr from-teal-600 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-teal-600/20 border border-teal-400/20 flex-shrink-0">
+                    <i class="fa-solid fa-phone-arrow-down-left text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
-                    <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400">Post-Visit Feedback</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <span class="text-base sm:text-xl font-black tracking-tight text-slate-900">Real_<span class="text-emerald-600">Crm</span></span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-teal-50 text-teal-700 rounded-md border border-teal-200">Post-Visit</span>
+                    </div>
+                    <span id="activeUserBadge" class="text-[10px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <span id="activeUserBadge" class="hidden sm:inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-200/60"></span>
-                <a href="/" onclick="localStorage.clear()" class="px-4 py-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-semibold text-xs sm:text-sm rounded-xl transition">Logout</a>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
             </div>
         </div>
     </header>
 
     <!-- Main Workspace -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
-        <!-- Left Sidebar Navigation Menu -->
-        <aside class="md:col-span-1 space-y-2">
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm space-y-1.5 sticky top-24">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">Member Menu</p>
-                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Dashboard</a>
-                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Assigned Tasks</a>
-                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-sm transition">Follow Ups</a>
+        <!-- Left Sidebar Navigation Menu (Desktop Only) -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="corporate-card rounded-2xl p-4 space-y-2 sticky top-28 border border-slate-200">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Member Menu</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200">
+                    <i class="fa-solid fa-house w-5 text-slate-400 text-base"></i> Dashboard
+                </a>
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Assigned Tasks
+                </a>
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-calendar-days w-5 text-slate-400 group-hover:text-emerald-600 transition text-base"></i> Follow Ups
+                </a>
                 <div>
-                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-sm transition">Visits</a>
+                    <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20 transition border border-emerald-600">
+                        <i class="fa-solid fa-map-location-dot w-5 text-emerald-100 text-base"></i> Visits
+                    </a>
                     <div class="pl-4 mt-2 space-y-1 border-l-2 border-emerald-100 ml-4">
-                        <a href="pre-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs">Pre-Visit Call</a>
-                        <a href="visits.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs">Schedule Total Visit</a>
-                        <a href="post-visit.html" class="flex items-center gap-2.5 px-3 py-2 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg">Post-Visit Call</a>
+                        <a href="visits.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs transition">Schedule Total Visit</a>
+                        <a href="pre-visit.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs transition">Pre-Visit Call</a>
+                        <a href="post-visit.html" class="flex items-center gap-2.5 px-3 py-2 bg-teal-50 text-teal-700 font-bold text-xs rounded-lg">Post-Visit Call</a>
+                        <a href="visit-interested.html" class="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-emerald-600 font-semibold text-xs transition">Intreseted_client</a>
                     </div>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="md:col-span-3 space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-100">
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Post-Visit Feedback Follow-ups</h1>
-                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Showing past visits requiring customer interest feedback and rescheduling management.</p>
+        <main class="md:col-span-3 space-y-4 sm:space-y-6">
+            
+            <!-- Corporate Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 rounded-2xl p-4 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-slate-800">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 space-y-1.5">
+                    <div class="inline-flex items-center gap-1.5 bg-teal-500/20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-teal-300 border border-teal-500/30">
+                        <i class="fa-solid fa-phone-arrow-down-left"></i> Post-Visit Feedback
                     </div>
-                    <div id="postVisitCountBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-teal-50 text-teal-700 font-bold rounded-xl text-xs border border-teal-200/60">
-                        <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-                        <span>0 Pending Feedback</span>
-                    </div>
+                    <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Post-Visit Feedback Follow-ups</h1>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Showing past visits requiring customer interest feedback and rescheduling management.</p>
                 </div>
+                <div id="postVisitCountBadge" class="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 bg-teal-500/20 text-teal-300 font-bold rounded-xl text-xs border border-teal-500/30 backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                    <span>0 Pending Feedback</span>
+                </div>
+            </div>
 
-                <div class="overflow-x-auto mt-6">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                                <th class="py-3.5 px-4">Lead Name</th>
-                                <th class="py-3.5 px-4">Contact Number</th>
-                                <th class="py-3.5 px-4">Visit Date & Time</th>
-                                <th class="py-3.5 px-4">Feedback Status</th>
-                                <th class="py-3.5 px-4">Action</th>
+            <!-- Content Card Container -->
+            <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
+                
+                <!-- Desktop Table View -->
+                <div class="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="min-w-full divide-y divide-slate-200 bg-white">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Lead Name</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Contact Number</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Visit Date & Time</th>
+                                <th class="px-4.5 py-3 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider">Feedback Status</th>
+                                <th class="px-4.5 py-3 text-center text-[11px] font-bold text-slate-600 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="postVisitTableBody" class="divide-y divide-slate-100 text-sm">
-                            <tr><td colspan="5" class="text-center py-12 text-slate-400">Loading post-visit data...</td></tr>
+                        <tbody id="postVisitTableBody" class="divide-y divide-slate-200 text-xs">
+                            <tr><td colspan="5" class="text-center py-16 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl text-teal-600 mb-2"></i><p>Loading post-visit data...</p></td></tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card Feed View -->
+                <div id="mobileCardContainer" class="block md:hidden space-y-3">
+                    <!-- Mobile Cards Injected Dynamically -->
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Mobile Sticky Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 z-50 shadow-2xl">
+        <div class="grid grid-cols-4 px-2 py-2.5 border-b border-slate-100 text-center">
+            <a href="teammember.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-house text-base"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="assignedmembertask.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-list-check text-base"></i>
+                <span>Tasks</span>
+            </a>
+            <a href="followups.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-calendar-days text-base"></i>
+                <span>Follow-ups</span>
+            </a>
+            <a href="visits.html" class="flex flex-col items-center text-emerald-600 font-extrabold text-[10px] gap-1 transition">
+                <i class="fa-solid fa-map-location-dot text-base scale-110"></i>
+                <span>Visits</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-2 px-3 py-2 overflow-x-auto bg-slate-50/90 whitespace-nowrap text-xs font-semibold no-scrollbar">
+            <a href="visits.html" class="px-3 py-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 rounded-xl flex items-center gap-1.5 flex-shrink-0 transition">
+                <i class="fa-solid fa-calendar-check text-slate-400 text-[10px]"></i> Schedule Total Visit
+            </a>
+            <a href="pre-visit.html" class="px-3 py-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 rounded-xl flex items-center gap-1.5 flex-shrink-0 transition">
+                <i class="fa-solid fa-phone-arrow-up-right text-slate-400 text-[10px]"></i> Pre-Visit Call
+            </a>
+            <a href="post-visit.html" class="px-3 py-1.5 bg-teal-600 text-white rounded-xl shadow-xs font-bold flex items-center gap-1.5 flex-shrink-0">
+                <i class="fa-solid fa-phone-arrow-down-left text-[10px]"></i> Post-Visit Call
+            </a>
+            <a href="visit-interested.html" class="px-3 py-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 rounded-xl flex items-center gap-1.5 flex-shrink-0 transition">
+                <i class="fa-solid fa-star text-amber-500 text-[10px]"></i> Intreseted_client
+            </a>
+        </div>
+    </nav>
+
     <!-- Lead Detail & Post-Visit Modal Overlay -->
-    <div id="leadModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+    <div id="leadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-4xl w-full p-5 sm:p-8 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto border border-slate-100">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-start border-b border-slate-100 pb-4">
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 bg-teal-50 px-2.5 py-1 rounded-lg">Customer Profile & History</span>
-                    <h2 id="modalLeadName" class="text-xl font-extrabold text-slate-900 mt-1">Lead Details</h2>
+                    <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200/60">Customer Profile & Call History</span>
+                    <h2 id="modalLeadName" class="text-lg sm:text-2xl font-extrabold text-slate-900 mt-2">Lead Details</h2>
                 </div>
-                <button onclick="closeModal()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal()" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition shadow-xs flex-shrink-0"><i class="fa-solid fa-xmark text-sm sm:text-base"></i></button>
             </div>
 
-            <div id="modalLeadSummary" class="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs"></div>
+            <!-- Lead Summary Grid -->
+            <div id="modalLeadSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200/85 text-xs shadow-inner"></div>
 
-            <div>
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-3"><i class="fa-solid fa-timeline text-teal-600 mr-1.5"></i> Full Call History & Detailed Logs</h3>
-                <div id="modalCallHistory" class="space-y-3"></div>
-            </div>
-
-            <!-- Post-Visit Feedback Form -->
-            <div class="bg-teal-50/60 p-5 rounded-2xl border border-teal-200 space-y-4">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-teal-900"><i class="fa-solid fa-comment-dots mr-1.5"></i> Log Post-Visit Feedback</h3>
+            <!-- Post-Visit Feedback Form Wizard -->
+            <div class="bg-teal-50/40 p-4 sm:p-5 rounded-2xl border border-teal-200/70 space-y-4">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-teal-900 flex items-center gap-2">
+                    <i class="fa-solid fa-headset text-teal-600 text-sm"></i> Log Post-Visit Feedback
+                </h3>
                 
-                <!-- Question 1: Is customer interested? -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Is the customer interested?</label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-300 rounded-xl cursor-pointer text-xs font-bold hover:border-teal-500 shadow-2xs">
-                            <input type="radio" name="visitInterestCustomer" value="Yes" onchange="toggleInterestFlow('Yes')" class="text-teal-600"> Yes, Interested
-                        </label>
-                        <label class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-300 rounded-xl cursor-pointer text-xs font-bold hover:border-rose-500 shadow-2xs">
-                            <input type="radio" name="visitInterestCustomer" value="No" onchange="toggleInterestFlow('No')" class="text-rose-600"> No, Not Interested / Reschedule
-                        </label>
+                <div class="space-y-3.5">
+                    <!-- Question 1: Is customer interested? -->
+                    <div class="space-y-1.5 p-3.5 bg-teal-50/80 rounded-xl border border-teal-200">
+                        <label class="block text-[11px] font-extrabold text-teal-900 uppercase tracking-wider">Is the customer interested?</label>
+                        <select id="visitInterestCustomerSelect" onchange="toggleInterestFlow(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <option value="" disabled selected>Select client interest...</option>
+                            <option value="Yes">Yes, Interested</option>
+                            <option value="No">No, Not Interested / Reschedule</option>
+                        </select>
                     </div>
-                </div>
 
-                <!-- If NO: Reschedule the same site visit? -->
-                <div id="rescheduleChoiceContainer" class="space-y-3 hidden border-t border-teal-200/60 pt-3">
-                    <label class="block text-xs font-bold text-slate-700">Would you like to reschedule the same site visit?</label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-300 rounded-xl cursor-pointer text-xs font-bold hover:border-emerald-500">
-                            <input type="radio" name="rescheduleVisitChoice" value="Yes" onchange="toggleRescheduleDetails('Yes')" class="text-emerald-600"> Yes, Reschedule Same Visit
-                        </label>
-                        <label class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-300 rounded-xl cursor-pointer text-xs font-bold hover:border-slate-400">
-                            <input type="radio" name="rescheduleVisitChoice" value="No" onchange="toggleRescheduleDetails('No')" class="text-slate-600"> No, New Site Visit / Close
-                        </label>
+                    <!-- If NO: Reschedule the same site visit? -->
+                    <div id="rescheduleChoiceContainer" class="space-y-1.5 hidden fade-in">
+                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Would you like to reschedule the same site visit?</label>
+                        <select id="rescheduleVisitChoiceSelect" onchange="toggleRescheduleDetails(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <option value="" disabled selected>Select reschedule preference...</option>
+                            <option value="Yes">Yes, Reschedule Same Visit</option>
+                            <option value="No">No, New Site Visit / Close</option>
+                        </select>
                     </div>
-                </div>
 
-                <!-- If Reschedule YES: Visit Date & Time -->
-                <div id="rescheduleDateTimeContainer" class="grid grid-cols-2 gap-3 hidden">
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Site Visit Date</label>
-                        <input type="date" id="reschedVisitDate" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Site Visit Time</label>
-                        <input type="time" id="reschedVisitTime" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs">
-                    </div>
-                </div>
-
-                <!-- If Reschedule NO: Building Name, Address & Other Info -->
-                <div id="buildingInfoContainer" class="space-y-3 hidden">
-                    <div class="grid grid-cols-2 gap-3">
+                    <!-- If Reschedule YES: Visit Date & Time -->
+                    <div id="rescheduleDateTimeContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 hidden fade-in">
                         <div>
-                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Site Visit Date</label>
-                            <input type="date" id="newVisitDate" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Date</label>
+                            <input type="date" id="reschedVisitDate" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Site Visit Time</label>
-                            <input type="time" id="newVisitTime" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Time</label>
+                            <input type="time" id="reschedVisitTime" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Building Name / Project</label>
-                        <input type="text" id="visitBuilding" placeholder="e.g. Sapphire Heights Tower B" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Location / Address</label>
-                        <input type="text" id="visitLocation" placeholder="e.g. Andheri West, Main Street" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Site Visit Proposed Details / Notes</label>
-                        <textarea id="visitNote" rows="2" placeholder="Specific flat configuration or project notes..." class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs"></textarea>
-                    </div>
-                </div>
 
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-700 mb-1">Post-Visit Remarks / Feedback Notes</label>
-                    <textarea id="postVisitRemark" rows="2" placeholder="Enter comprehensive feedback remarks..." class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs"></textarea>
-                </div>
+                    <!-- If Reschedule NO: Building Name, Address & Other Info -->
+                    <div id="buildingInfoContainer" class="space-y-3 p-3.5 bg-white rounded-xl border border-slate-200 hidden fade-in shadow-xs">
+                        <div class="flex items-center gap-1.5 font-extrabold text-teal-950 text-[11px] uppercase tracking-wider border-b border-teal-100 pb-2 mb-1">
+                            <i class="fa-solid fa-map-location-dot text-teal-600"></i> Visit Schedule Details
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Date</label>
+                                <input type="date" id="newVisitDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Time</label>
+                                <input type="time" id="newVisitTime" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Building Name / Project</label>
+                                <input type="text" id="visitBuilding" placeholder="e.g. Sapphire Heights Tower B" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Location / Address</label>
+                                <input type="text" id="visitLocation" placeholder="e.g. Andheri West, Main Street" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Site Visit Proposed Details / Notes</label>
+                            <textarea id="visitNote" rows="2" placeholder="Specific flat configuration or project notes..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none"></textarea>
+                        </div>
+                    </div>
 
-                <div class="flex justify-end pt-2">
-                    <button onclick="submitPostVisitFeedback()" class="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Save Post-Visit Feedback
-                    </button>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Post-Visit Remarks / Feedback Notes</label>
+                        <textarea id="postVisitRemark" rows="2" placeholder="Enter comprehensive feedback remarks..." class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="submitPostVisitFeedback()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Post-Visit Feedback
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Call Logs Timeline (Descending Order) -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-timeline text-teal-600 text-sm"></i> Full Call History & Detailed Logs
+                </h3>
+                <div id="modalCallHistory" class="space-y-3"></div>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript Controller -->
     <script>
-        const currentUsername = localStorage.getItem('crm_username');
-        if (currentUsername) document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-600 mr-1.5"></i> User: <b>${currentUsername}</b>`;
+        const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
+        if (currentUsername) {
+            document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-teal-600 mr-2"></i> User: <b>${currentUsername}</b>`;
+        }
 
         let selectedLeadUsername = '';
         let selectedLeadId = '';
+        let currentLeadData = null;
 
         function formatDateDMY(dateStr) {
             if (!dateStr) return 'TBD';
-            const parts = dateStr.split('-');
+            const clean = dateStr.split('T')[0];
+            const parts = clean.split('-');
             if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            return dateStr;
+            return clean;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
         async function fetchPostVisits() {
@@ -211,7 +330,7 @@
                 let filteredVisits = [];
                 for (let v of pastVisits) {
                     try {
-                        const detailRes = await fetch(`/api/lead-details/${v.memberUsername}/${v.taskId}`);
+                        const detailRes = await fetch(`/api/lead-details/${encodeURIComponent(v.memberUsername)}/${encodeURIComponent(v.taskId)}`);
                         const detailData = await detailRes.json();
                         if (detailData.success && detailData.lead) {
                             let isInterested = false;
@@ -228,7 +347,6 @@
                                 }
                                 j++;
                             }
-                            // Filter out interested clients from post-visit feedback page
                             if (!isInterested) {
                                 v.feedbackDone = hasFeedback;
                                 filteredVisits.push(v);
@@ -251,81 +369,154 @@
 
         function renderTable(visits) {
             const tbody = document.getElementById('postVisitTableBody');
+            const mobileContainer = document.getElementById('mobileCardContainer');
             const countBadge = document.getElementById('postVisitCountBadge');
 
             if (visits.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-16 text-slate-400"><p class="text-sm font-semibold text-slate-700">No past visits found requiring post-visit feedback.</p></td></tr>`;
-                countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-500"></span> <span>0 Pending Feedback</span>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-16 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No past visits found requiring post-visit feedback.</p></td></tr>`;
+                mobileContainer.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs"><p class="font-semibold text-slate-700">No past visits found.</p></div>`;
+                countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-400"></span> <span>0 Pending Feedback</span>`;
                 return;
             }
 
-            countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span> <span>${visits.length} Past Visit${visits.length > 1 ? 's' : ''}</span>`;
-            tbody.innerHTML = '';
-
-            visits.forEach(v => {
+            countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span> <span>${visits.length} Past Visit${visits.length > 1 ? 's' : ''}</span>`;
+            
+            tbody.innerHTML = visits.map(v => {
                 const statusBadge = v.feedbackDone 
-                    ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Feedback Done</span>`
-                    : `<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-bold"><i class="fa-solid fa-clock text-amber-500 animate-pulse"></i> Feedback Pending</span>`;
+                    ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-[10px] font-extrabold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Feedback Done</span>`
+                    : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-[10px] font-extrabold"><i class="fa-solid fa-clock text-amber-500 animate-pulse"></i> Feedback Pending</span>`;
 
-                const row = document.createElement('tr');
-                row.className = "hover:bg-slate-50 transition-colors group";
-                row.innerHTML = `
-                    <td class="py-4 px-4 whitespace-nowrap">
-                        <button onclick="openLeadModal('${v.memberUsername}', '${v.taskId}')" class="font-bold text-teal-700 hover:underline flex items-center gap-1.5 text-left">
-                            <i class="fa-solid fa-circle-user text-xs"></i> ${v.name}
-                        </button>
-                    </td>
-                    <td class="py-4 px-4 whitespace-nowrap text-slate-600">${v.contactNumber || 'N/A'}</td>
-                    <td class="py-4 px-4 whitespace-nowrap font-medium text-slate-900"><span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-lg text-xs font-semibold">${formatDateDMY(v.visitDate)}</span> ${v.visitTime || ''}</td>
-                    <td class="py-4 px-4 whitespace-nowrap">${statusBadge}</td>
-                    <td class="py-4 px-4 whitespace-nowrap">
-                        <button onclick="openLeadModal('${v.memberUsername}', '${v.taskId}')" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-xs transition">Log Feedback</button>
-                    </td>
+                return `
+                    <tr class="hover:bg-slate-50/80 transition text-xs">
+                        <td class="px-4.5 py-3.5 font-bold text-slate-900 whitespace-nowrap">
+                            <button onclick="openLeadModal('${escapeHtml(v.memberUsername)}', '${escapeHtml(v.taskId)}')" class="text-teal-700 hover:underline flex items-center gap-1.5 text-left font-bold">
+                                <i class="fa-solid fa-circle-user text-xs"></i> ${escapeHtml(v.name)}
+                            </button>
+                        </td>
+                        <td class="px-4.5 py-3.5 text-slate-600 whitespace-nowrap">
+                            <a href="tel:${escapeHtml(v.contactNumber)}" class="text-blue-600 hover:underline flex items-center gap-1 font-medium">
+                                <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(v.contactNumber || 'N/A')}
+                            </a>
+                        </td>
+                        <td class="px-4.5 py-3.5 text-slate-700 whitespace-nowrap">
+                            <span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-md text-[11px] font-bold">${formatDateDMY(v.visitDate)}</span>
+                            <span class="text-[10px] text-slate-500 ml-1">${escapeHtml(v.visitTime || '')}</span>
+                        </td>
+                        <td class="px-4.5 py-3.5 whitespace-nowrap">${statusBadge}</td>
+                        <td class="px-4.5 py-3.5 text-center whitespace-nowrap">
+                            <button onclick="openLeadModal('${escapeHtml(v.memberUsername)}', '${escapeHtml(v.taskId)}')" class="px-3.5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-xs transition inline-flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen-to-square"></i> Log Feedback
+                            </button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(row);
-            });
+            }).join('');
+
+            mobileContainer.innerHTML = visits.map(v => {
+                const statusBadge = v.feedbackDone 
+                    ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[9px] font-extrabold">Feedback Done</span>`
+                    : `<span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[9px] font-extrabold">Pending</span>`;
+
+                return `
+                    <div class="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 bottom-0 w-1 bg-teal-500"></div>
+                        <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
+                            <div class="pl-1">
+                                <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Lead Name</span>
+                                <h3 class="font-black text-slate-900 text-sm tracking-tight mt-0.5">${escapeHtml(v.name)}</h3>
+                            </div>
+                            ${statusBadge}
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 bg-slate-50/80 p-3 rounded-xl border border-slate-100 text-xs">
+                            <div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Contact Number</span>
+                                <a href="tel:${escapeHtml(v.contactNumber)}" class="text-xs font-bold text-blue-600 flex items-center gap-1 mt-0.5 hover:underline">
+                                    <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(v.contactNumber || 'N/A')}
+                                </a>
+                            </div>
+                            <div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider text-slate-400 block">Visit Date</span>
+                                <div class="text-xs font-bold text-slate-800 mt-0.5">
+                                    <span class="text-blue-700">${formatDateDMY(v.visitDate)}</span>
+                                    <span class="text-[10px] text-slate-500">${escapeHtml(v.visitTime || '')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-1">
+                            <button onclick="openLeadModal('${escapeHtml(v.memberUsername)}', '${escapeHtml(v.taskId)}')" class="w-full text-center py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-pen-to-square"></i> Log Feedback & Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         async function openLeadModal(username, taskId) {
             selectedLeadUsername = username;
             selectedLeadId = taskId;
             try {
-                const res = await fetch(`/api/lead-details/${username}/${taskId}`);
+                const res = await fetch(`/api/lead-details/${encodeURIComponent(username)}/${encodeURIComponent(taskId)}`);
                 const data = await res.json();
                 if (!data.success) { alert('Failed to load lead details'); return; }
 
-                const lead = data.lead;
-                document.getElementById('modalLeadName').textContent = lead.name;
+                currentLeadData = data.lead;
+                document.getElementById('modalLeadName').textContent = currentLeadData.name || 'Untitled Lead';
                 document.getElementById('modalLeadSummary').innerHTML = `
-                    <div><b>Contact:</b><br>${lead.contactNumber || 'N/A'}</div>
-                    <div><b>Assigned Member:</b><br>${username}</div>
-                    <div><b>Status:</b><br>${lead.status || 'Pending'}</div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Contact Number</span><span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">${escapeHtml(currentLeadData.contactNumber || 'N/A')}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Member</span><span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">${escapeHtml(username)}</span></div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-teal-600 text-xs sm:text-sm mt-0.5 block">${escapeHtml(currentLeadData.status || 'Active Pipeline')}</span></div>
                 `;
 
-                let historyHtml = '';
-                let i = 1;
-                while (lead[`call${i}`]) {
-                    const c = lead[`call${i}`];
-                    const loggedDateStr = new Date(c.loggedAt).toLocaleString();
-                    historyHtml += `
-                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1">
-                            <div class="flex justify-between font-extrabold text-teal-800">
-                                <span>Call ${i}: ${c.title || c.call_connected || 'Call Log'}</span>
-                                <span class="text-slate-400 font-normal">${loggedDateStr}</span>
-                            </div>
-                            <p><b>Remark:</b> ${c.remark || 'N/A'}</p>
-                            ${c.visitInterestCustomer ? `<p><b>Customer Interest:</b> ${c.visitInterestCustomer}</p>` : ''}
-                            ${c.visitScheduled === 'Yes' ? `<p class="text-teal-700 font-bold">Visit Scheduled: ${formatDateDMY(c.visitDate)} at ${c.visitTime} (${c.visitBuilding || 'Tower'})</p>` : ''}
-                        </div>
-                    `;
-                    i++;
-                }
-                document.getElementById('modalCallHistory').innerHTML = historyHtml || '<p class="text-xs text-slate-400 italic">No prior calls recorded yet.</p>';
-
+                renderCallHistory();
                 document.getElementById('leadModal').classList.remove('hidden');
             } catch (err) {
                 alert('Error connecting to server.');
             }
+        }
+
+        // --- RENDER CALL HISTORY IN DESCENDING ORDER (Call 10, 9, 8...) ---
+        function renderCallHistory() {
+            if (!currentLeadData) return;
+            
+            let calls = [];
+            let i = 1;
+            while (currentLeadData[`call${i}`]) {
+                calls.push({ callNum: i, data: currentLeadData[`call${i}`] });
+                i++;
+            }
+
+            if (calls.length === 0) {
+                document.getElementById('modalCallHistory').innerHTML = '<p class="text-xs text-slate-400 italic text-center py-6">No prior calls recorded yet.</p>';
+                return;
+            }
+
+            calls.reverse();
+
+            let historyHtml = '';
+            calls.forEach(({ callNum, data: c }) => {
+                const loggedDateStr = c.loggedAt ? new Date(c.loggedAt).toLocaleString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                }) : 'Recent';
+
+                historyHtml += `
+                    <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 sm:p-3.5 space-y-2 text-xs">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <span class="bg-slate-900 text-white px-2.5 py-0.5 rounded-lg text-[11px] font-black tracking-wide">CALL #${callNum}</span>
+                            <span class="text-[10px] text-slate-400 font-medium"><i class="fa-regular fa-calendar text-teal-600 mr-1"></i>${loggedDateStr}</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                            <div><b>Title / Type:</b> ${escapeHtml(c.title || c.call_connected || 'Call Log')}</div>
+                            <div><b>Customer Interest:</b> <span class="font-bold text-teal-700">${escapeHtml(c.visitInterestCustomer || 'N/A')}</span></div>
+                        </div>
+                        ${c.remark ? `<div class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100"><b>Remark:</b> ${escapeHtml(c.remark)}</div>` : ''}
+                        ${c.visitScheduled === 'Yes' ? `<div class="text-[11px] text-teal-900 bg-teal-50/60 p-2 rounded-lg border border-teal-100"><b>Visit Scheduled:</b> ${formatDateDMY(c.visitDate)} at ${escapeHtml(c.visitTime \vert{}\vert{} '')} (${escapeHtml(c.visitBuilding || 'Tower')})</div>` : ''}
+                    </div>
+                `;
+            });
+            document.getElementById('modalCallHistory').innerHTML = historyHtml;
         }
 
         function closeModal() {
@@ -333,32 +524,36 @@
         }
 
         function toggleInterestFlow(val) {
+            const rescheduleContainer = document.getElementById('rescheduleChoiceContainer');
+            const reschedDateContainer = document.getElementById('rescheduleDateTimeContainer');
+            const buildingContainer = document.getElementById('buildingInfoContainer');
+
             if (val === 'No') {
-                document.getElementById('rescheduleChoiceContainer').classList.remove('hidden');
-                document.getElementById('rescheduleDateTimeContainer').classList.add('hidden');
-                document.getElementById('buildingInfoContainer').classList.add('hidden');
+                rescheduleContainer.classList.remove('hidden');
             } else {
-                document.getElementById('rescheduleChoiceContainer').classList.add('hidden');
-                document.getElementById('rescheduleDateTimeContainer').classList.add('hidden');
-                document.getElementById('buildingInfoContainer').classList.add('hidden');
+                rescheduleContainer.classList.add('hidden');
+                reschedDateContainer.classList.add('hidden');
+                buildingContainer.classList.add('hidden');
             }
         }
 
         function toggleRescheduleDetails(val) {
+            const reschedDateContainer = document.getElementById('rescheduleDateTimeContainer');
+            const buildingContainer = document.getElementById('buildingInfoContainer');
+
             if (val === 'Yes') {
-                document.getElementById('rescheduleDateTimeContainer').classList.remove('hidden');
-                document.getElementById('buildingInfoContainer').classList.add('hidden');
+                reschedDateContainer.classList.remove('hidden');
+                buildingContainer.classList.add('hidden');
             } else {
-                document.getElementById('rescheduleDateTimeContainer').classList.add('hidden');
-                document.getElementById('buildingInfoContainer').classList.remove('hidden');
+                reschedDateContainer.classList.add('hidden');
+                buildingContainer.classList.remove('hidden');
             }
         }
 
         async function submitPostVisitFeedback() {
-            const interestRadio = document.querySelector('input[name="visitInterestCustomer"]:checked');
-            if (!interestRadio) { alert('Please select if the customer is interested.'); return; }
+            const visitInterestCustomer = document.getElementById('visitInterestCustomerSelect').value;
+            if (!visitInterestCustomer) { alert('Please select if the customer is interested.'); return; }
 
-            const visitInterestCustomer = interestRadio.value;
             const remark = document.getElementById('postVisitRemark').value;
             let rescheduleVisitChoice = '';
             let visitDate = '';
@@ -369,9 +564,8 @@
             let visitScheduled = 'No';
 
             if (visitInterestCustomer === 'No') {
-                const reschedRadio = document.querySelector('input[name="rescheduleVisitChoice"]:checked');
-                if (!reschedRadio) { alert('Please choose whether to reschedule the site visit.'); return; }
-                rescheduleVisitChoice = reschedRadio.value;
+                rescheduleVisitChoice = document.getElementById('rescheduleVisitChoiceSelect').value;
+                if (!rescheduleVisitChoice) { alert('Please choose whether to reschedule the site visit.'); return; }
 
                 if (rescheduleVisitChoice === 'Yes') {
                     visitDate = document.getElementById('reschedVisitDate').value;
