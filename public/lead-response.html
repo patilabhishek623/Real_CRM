@@ -445,8 +445,37 @@
 
                 const detailsHtml = `
                     <div class="space-y-3 bg-slate-50/90 p-3 sm:p-4 rounded-2xl border border-slate-200 my-2 text-xs">
-                        <!-- General Call Information -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        
+                        <!-- CLIENT REQUIREMENT SECTION (PROMINENTLY PLACED AT THE TOP) -->
+                        <div class="bg-blue-50/90 p-3.5 sm:p-4 rounded-xl border-2 border-blue-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-blue-200 pb-2">
+                                <div class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-inner">
+                                    <i class="fa-solid fa-list-check"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-blue-950 uppercase tracking-wide">Client Requirement</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Budget</span>
+                                    <span class="text-blue-700 font-bold block truncate text-sm">${data.requirementBudget || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Flat Size</span>
+                                    <span class="text-slate-800 font-bold block truncate text-sm">${data.requirementFlatSize || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Preferred Floor</span>
+                                    <span class="text-slate-800 font-bold block truncate text-sm">${data.requirementFloor || 'N/A'}</span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Requirement Notes</span>
+                                <span class="text-slate-800 font-semibold block break-words">${data.requirementNote || 'N/A'}</span>
+                            </div>
+                        </div>
+
+                        <!-- General Call Information & Status -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
                             <div class="overflow-hidden">
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Title</span>
                                 <span class="text-slate-800 font-bold block truncate">${data.title || 'N/A'}</span>
@@ -467,38 +496,6 @@
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
                                 <span class="text-slate-800 font-semibold block truncate">${data.tempSubOption || 'N/A'}</span>
                             </div>
-                        </div>
-
-                        <!-- Client Requirement Section with Title Heading -->
-                        <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200/80 space-y-2">
-                            <div class="flex items-center space-x-2 border-b border-blue-200/70 pb-2">
-                                <div class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-inner">
-                                    <i class="fa-solid fa-list-check"></i>
-                                </div>
-                                <span class="text-[11px] font-extrabold text-blue-950 uppercase tracking-wide">Client Requirement</span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                                <div class="overflow-hidden">
-                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Budget</span>
-                                    <span class="text-slate-800 font-semibold text-blue-600 block truncate">${data.requirementBudget || 'N/A'}</span>
-                                </div>
-                                <div class="overflow-hidden">
-                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Flat Size</span>
-                                    <span class="text-slate-800 font-semibold block truncate">${data.requirementFlatSize || 'N/A'}</span>
-                                </div>
-                                <div class="overflow-hidden">
-                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Preferred Floor</span>
-                                    <span class="text-slate-800 font-semibold block truncate">${data.requirementFloor || 'N/A'}</span>
-                                </div>
-                            </div>
-                            <div class="overflow-hidden pt-1">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Requirement Notes</span>
-                                <span class="text-slate-800 font-semibold block break-words">${data.requirementNote || 'N/A'}</span>
-                            </div>
-                        </div>
-
-                        <!-- Follow-up, Visit & Status Details -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1 border-t border-slate-200/60">
                             <div class="overflow-hidden">
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Required</span>
                                 <span class="text-slate-800 font-bold block truncate">${data.followUpRequired || 'N/A'}</span>
