@@ -118,6 +118,11 @@
         let allTasks = [];
         let pendingTasks = [];
 
+        // Call Timer Tracking Variables
+        let callStartTime = null;
+        let callDurationSeconds = 0;
+        let isCallActive = false;
+
         // Workflow State Object
         let currentWorkflow = {
             taskId: '',
@@ -138,8 +143,41 @@
             visitTime: '',
             visitBuilding: '',
             visitLocation: '',
-            visitNote: ''
+            visitNote: '',
+            callDuration: '0 mins 0 secs'
         };
+
+        // Track when user returns from phone dialer to browser tab
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && isCallActive && callStartTime) {
+                const elapsedMs = Date.now() - callStartTime;
+                callDurationSeconds = Math.floor(elapsedMs / 1000);
+                isCallActive = false;
+
+                const mins = Math.floor(callDurationSeconds / 60);
+                const secs = callDurationSeconds % 60;
+                currentWorkflow.callDuration = `${mins} mins ${secs} secs`;
+
+                // Update UI Frontend Badge dynamically
+                const badge = document.getElementById('callDurationBadge');
+                const durationText = document.getElementById('durationText');
+                if (badge && durationText) {
+                    durationText.textContent = currentWorkflow.callDuration;
+                    badge.classList.remove('hidden');
+                    badge.classList.add('flex');
+                }
+            }
+        });
+
+        function startCall(phoneNumber) {
+            if (!phoneNumber) {
+                alert('No phone number available.');
+                return;
+            }
+            callStartTime = Date.now();
+            isCallActive = true;
+            window.location.href = `tel:${phoneNumber}`;
+        }
 
         // Disposition Sub-options Mapping
         const dispositionSubOptions = {
@@ -185,7 +223,6 @@
             ]
         };
 
-        // Temperature-Specific Sub Options Mapping
         const temperatureSubOptionsMap = {
             "HOT": [
                 "Wants site visit",
@@ -236,7 +273,6 @@
                     allTasks = data.tasks;
                     pendingTasks = allTasks.filter(t => !t.status || t.status === 'Pending' || t.status === 'Initialized');
                     
-                    // Update sidebar counts
                     const followupsCount = allTasks.filter(t => t.followUpRequired === 'Yes').length;
                     const visitsCount = allTasks.filter(t => t.visitScheduled === 'Yes').length;
                     
@@ -277,6 +313,7 @@
             currentWorkflow.visitBuilding = task.visitBuilding || '';
             currentWorkflow.visitLocation = task.visitLocation || '';
             currentWorkflow.visitNote = task.visitNote || '';
+            currentWorkflow.callDuration = task.callDuration || '0 mins 0 secs';
         }
 
         // --- STEP 1: Basic Lead Details + Call Disposition Category & Remark ---
@@ -299,7 +336,7 @@
                         <span class="font-bold text-amber-900 block flex items-center gap-1.5"><i class="fa-solid fa-history text-amber-600"></i> Previous Call Logged:</span>
                         <p class="text-amber-800"><b>Disposition:</b> ${task.call_connected} &gt; ${task.remark}</p>
                         ${task.leadTemperature ? `<p class="text-amber-800"><b>Temperature:</b> ${task.leadTemperature} (${task.tempSubOption})</p>` : ''}
-                        ${task.requirementBudget ? `<p class="text-amber-800"><b>Budget / Size:</b> ${task.requirementBudget} \vert{}${task.requirementFlatSize}</p>` : ''}
+                        ${task.callDuration ? `<p class="text-amber-800"><b>Duration:</b> ${task.callDuration}</p>` : ''}
                     </div>
                 `;
             }
@@ -315,6 +352,7 @@
                         </div>
                     </div>
 
+                    <!-- Contact & Call Duration Section -->
                     <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-inner">
                         <div>
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Contact Number</p>
@@ -322,7 +360,16 @@
                                 <i class="fa-solid fa-phone text-sm"></i> ${task.contactNumber || 'No Phone Number'}
                             </p>
                         </div>
-                        ${task.contactNumber ? `<a href="tel:${task.contactNumber}" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 transition flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-phone-volume text-sm"></i> Call Now</a>` : ''}
+
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                            <!-- Frontend Tracked Call Duration Badge -->
+                            <div id="callDurationBadge" class="${currentWorkflow.callDuration && currentWorkflow.callDuration !== '0 mins 0 secs' ? 'flex' : 'hidden'} items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-900 shadow-2xs">
+                                <i class="fa-solid fa-stopwatch text-emerald-600 text-sm"></i>
+                                <span>Duration: <b id="durationText" class="text-emerald-800">${currentWorkflow.callDuration}</b></span>
+                            </div>
+
+                            ${task.contactNumber ? `<button onclick="startCall('${task.contactNumber}')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 transition flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-phone-volume text-sm"></i> Call Now</button>` : ''}
+                        </div>
                     </div>
 
                     ${historyBanner}
@@ -439,7 +486,6 @@
                         </label>
                     </div>
 
-                    <!-- Dynamic Temperature Sub-options Dropdown Container -->
                     <div id="tempSubOptionContainer" class="space-y-2 ${currentWorkflow.leadTemp ? '' : 'hidden'}">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700" id="tempSubLabel">Select Specific Intent Sub-option</label>
                         <select id="tempSubSelect" class="w-full px-4 py-3.5 bg-slate-50/80 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs sm:text-sm font-medium cursor-pointer shadow-2xs">
@@ -447,7 +493,6 @@
                         </select>
                     </div>
 
-                    <!-- Structured Requirement Details Section -->
                     <div class="bg-slate-50/80 p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-inner">
                         <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
                             <i class="fa-solid fa-sliders text-emerald-600"></i> Requirement Gathered Details
@@ -576,7 +621,6 @@
                             </label>
                         </div>
 
-                        <!-- Follow-Up Date & Time Inputs Positioned Directly Below FollowUpRequired Yes Selection -->
                         <div id="followUpDropdownContainer" class="space-y-4 pt-3 ${currentWorkflow.followUpRequired === 'Yes' ? '' : 'hidden'}">
                             <div class="space-y-2">
                                 <label class="block text-xs font-bold uppercase tracking-wider text-emerald-800">Select Follow-Up Timeline Option</label>
@@ -613,7 +657,6 @@
                             </label>
                         </div>
 
-                        <!-- Detailed Date, Time, Building Name, Location, and Visit Proposal Notes -->
                         <div id="visitDateTimeInputs" class="space-y-4 pt-3 ${currentWorkflow.visitScheduled === 'Yes' ? '' : 'hidden'}">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -752,13 +795,14 @@
                         visitTime: currentWorkflow.visitTime,
                         visitBuilding: currentWorkflow.visitBuilding,
                         visitLocation: currentWorkflow.visitLocation,
-                        visitNote: currentWorkflow.visitNote
+                        visitNote: currentWorkflow.visitNote,
+                        callDuration: currentWorkflow.callDuration
                     })
                 });
                 const data = await res.json();
                 if (data.success) {
                     pendingTasks = pendingTasks.filter(t => t._id !== currentWorkflow.taskId);
-                    currentWorkflow = { taskId: '', mainCategory: '', subRemark: '', leadTemp: '', tempSubOption: '', requirementBudget: '', requirementFlatSize: '', requirementFloor: '', requirementNote: '', followUpRequired: '', followUpOption: '', followUpDate: '', followUpTime: '', visitScheduled: '', visitDate: '', visitTime: '', visitBuilding: '', visitLocation: '', visitNote: '' };
+                    currentWorkflow = { taskId: '', mainCategory: '', subRemark: '', leadTemp: '', tempSubOption: '', requirementBudget: '', requirementFlatSize: '', requirementFloor: '', requirementNote: '', followUpRequired: '', followUpOption: '', followUpDate: '', followUpTime: '', visitScheduled: '', visitDate: '', visitTime: '', visitBuilding: '', visitLocation: '', visitNote: '', callDuration: '0 mins 0 secs' };
                     if (pendingTasks.length > 0) {
                         loadTaskIntoWorkflow(pendingTasks[0]);
                     }
