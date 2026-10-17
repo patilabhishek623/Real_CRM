@@ -169,7 +169,6 @@ app.post('/api/assign-task', async (req, res) => {
     }
 });
 
-
 app.get('/api/interested-visits', async (req, res) => {
     console.log('-> API /api/interested-visits called');
     try {
@@ -399,9 +398,6 @@ app.get('/api/all-visits', async (req, res) => {
     }
 });
 
-// --- API: Get Interested Visits (Reliable User-Based Database Scanner) ---
-
-
 // --- API: Get Single Lead Details ---
 app.get('/api/lead-details/:username/:taskId', async (req, res) => {
     try {
@@ -519,6 +515,44 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Error saving call outcome.' });
+    }
+});
+
+// --- API: Save Negotiation Details (Stored in the same document as negotation1, negotation2...) ---
+app.post('/api/save-negotiation/:username/:taskId', async (req, res) => {
+    const { username, taskId } = req.params;
+    const { buildingName, flatSize, finalPrice, floor, parking } = req.body;
+
+    try {
+        const MemberTaskModel = getMemberTaskModel(username);
+        const task = await MemberTaskModel.findById(taskId);
+        if (!task) return res.status(404).json({ success: false, message: 'Task not found.' });
+
+        let index = 1;
+        while (task[`negotation${index}`] !== null && task[`negotation${index}`] !== undefined) {
+            index++;
+        }
+        const negFieldKey = `negotation${index}`;
+
+        const negData = {
+            buildingName: buildingName || '',
+            flatSize: flatSize || '',
+            finalPrice: finalPrice || '',
+            floor: floor || '',
+            parking: parking || '',
+            savedAt: new Date()
+        };
+
+        const updatedTask = await MemberTaskModel.findByIdAndUpdate(
+            taskId,
+            { [negFieldKey]: negData },
+            { new: true }
+        );
+
+        res.json({ success: true, message: `Successfully saved under ${negFieldKey}!`, lead: updatedTask });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Error saving negotiation details.' });
     }
 });
 
