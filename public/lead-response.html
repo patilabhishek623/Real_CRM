@@ -446,7 +446,7 @@
                 const detailsHtml = `
                     <div class="space-y-3 bg-slate-50/90 p-3 sm:p-4 rounded-2xl border border-slate-200 my-2 text-xs">
                         
-                        <!-- CLIENT REQUIREMENT SECTION (PROMINENTLY PLACED AT THE TOP) -->
+                        <!-- 1. CLIENT REQUIREMENT SECTION -->
                         <div class="bg-blue-50/90 p-3.5 sm:p-4 rounded-xl border-2 border-blue-200 shadow-sm space-y-3">
                             <div class="flex items-center space-x-2 border-b border-blue-200 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-inner">
@@ -474,8 +474,8 @@
                             </div>
                         </div>
 
-                        <!-- General Call Information & Status -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
+                        <!-- General Call Info -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
                             <div class="overflow-hidden">
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Title</span>
                                 <span class="text-slate-800 font-bold block truncate">${data.title || 'N/A'}</span>
@@ -496,47 +496,72 @@
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
                                 <span class="text-slate-800 font-semibold block truncate">${data.tempSubOption || 'N/A'}</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Required</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.followUpRequired || 'N/A'}</span>
+                        </div>
+
+                        <!-- 2. FOLLOW-UP SECTION -->
+                        <div class="bg-amber-50/70 p-3.5 rounded-xl border border-amber-200/80 space-y-2.5">
+                            <div class="flex items-center space-x-2 border-b border-amber-200/70 pb-2">
+                                <div class="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px] shadow-inner">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                </div>
+                                <span class="text-[11px] font-extrabold text-amber-950 uppercase tracking-wide">Follow-Up Details</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Option</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.followUpOption || 'N/A'}</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Required</span>
+                                    <span class="text-slate-800 font-bold block truncate">${data.followUpRequired || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Option</span>
+                                    <span class="text-slate-800 font-semibold block truncate">${data.followUpOption || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Date & Time</span>
+                                    <span class="text-slate-800 font-semibold block truncate">${data.followUpDate || 'N/A'} ${data.followUpTime ? '@ ' + data.followUpTime : ''}</span>
+                                </div>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Date & Time</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.followUpDate || 'N/A'} ${data.followUpTime ? '@ ' + data.followUpTime : ''}</span>
+                        </div>
+
+                        <!-- 3. VISIT SCHEDULE & STATUS SECTION -->
+                        <div class="bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-200/80 space-y-2.5">
+                            <div class="flex items-center space-x-2 border-b border-emerald-200/70 pb-2">
+                                <div class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] shadow-inner">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </div>
+                                <span class="text-[11px] font-extrabold text-emerald-950 uppercase tracking-wide">Visit Schedule & Lead Status</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Scheduled</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.visitScheduled || 'N/A'}</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Scheduled</span>
+                                    <span class="text-slate-800 font-bold block truncate">${data.visitScheduled || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Date & Time</span>
+                                    <span class="text-slate-800 font-semibold block truncate">${data.visitDate || 'N/A'} ${data.visitTime ? '@ ' + data.visitTime : ''}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Building Name / Project</span>
+                                    <span class="text-slate-800 font-semibold block truncate">${data.visitBuilding || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Location / Address</span>
+                                    <span class="text-slate-800 font-semibold block truncate">${data.visitLocation || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Status</span>
+                                    <span class="text-slate-800 font-bold block truncate">${data.leadStatus || 'N/A'}</span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Close Reason</span>
+                                    <span class="text-slate-800 font-semibold text-rose-600 block break-words">${data.closeReason || 'N/A'}</span>
+                                </div>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Date & Time</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.visitDate || 'N/A'} ${data.visitTime ? '@ ' + data.visitTime : ''}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Building Name / Project</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.visitBuilding || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Location / Address</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.visitLocation || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
+                            <div class="overflow-hidden pt-1">
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Site Visit Notes</span>
                                 <span class="text-slate-800 font-semibold block break-words">${data.visitNote || 'N/A'}</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Status</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.leadStatus || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Close Reason</span>
-                                <span class="text-slate-800 font-semibold text-rose-600 block break-words">${data.closeReason || 'N/A'}</span>
-                            </div>
                         </div>
+
                     </div>
                 `;
 
