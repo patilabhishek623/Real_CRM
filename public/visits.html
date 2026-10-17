@@ -296,7 +296,7 @@
             <!-- Call Logs Timeline -->
             <div class="space-y-3">
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2"><i class="fa-solid fa-timeline text-emerald-600 text-sm"></i> Full Call History & Database Fields</h3>
-                <div id="modalCallHistory" class="space-y-4"></div>
+                <div id="modalCallHistory" class="space-y-3"></div>
             </div>
         </div>
     </div>
@@ -510,7 +510,7 @@
             }
         }
 
-        // --- RENDER CALL HISTORY IN DESCENDING ORDER (Call 10, 9, 8...) ---
+        // --- REFINED & COMPACT PROFESSIONAL CALL HISTORY CARDS (DESCENDING ORDER) ---
         function renderCallHistory() {
             if (!currentLeadData) return;
             
@@ -537,80 +537,87 @@
 
                 const isConnected = c.call_connected === 'Yes' || c.call_connected === 'Connected' || String(c.call_connected).includes('Connected');
                 const connBadge = isConnected 
-                    ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase"><i class="fa-solid fa-phone mr-1"></i> Connected</span>`
-                    : `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase"><i class="fa-solid fa-phone-slash mr-1"></i> ${escapeHtml(c.call_connected || 'Not Connected')}</span>`;
+                    ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[9px] font-extrabold uppercase"><i class="fa-solid fa-phone mr-1"></i> Connected</span>`
+                    : `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-[9px] font-extrabold uppercase"><i class="fa-solid fa-phone-slash mr-1"></i> ${escapeHtml(c.call_connected || 'Not Connected')}</span>`;
 
-                let tempBadge = `<span class="text-slate-500 font-semibold">N/A</span>`;
+                let tempBadge = `<span class="text-slate-400 font-medium">N/A</span>`;
                 if (c.leadTemperature === 'HOT') {
-                    tempBadge = `<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[9px] font-extrabold">🔥 HOT</span>`;
+                    tempBadge = `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-[9px] font-extrabold">🔥 HOT</span>`;
                 } else if (c.leadTemperature === 'WARM') {
-                    tempBadge = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[9px] font-extrabold">☀ WARM</span>`;
+                    tempBadge = `<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded text-[9px] font-extrabold">☀ WARM</span>`;
                 } else if (c.leadTemperature === 'COLD') {
-                    tempBadge = `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[9px] font-extrabold">❄️ COLD</span>`;
+                    tempBadge = `<span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[9px] font-extrabold">❄️ COLD</span>`;
                 }
 
                 historyHtml += `
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3.5">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 sm:p-3.5 space-y-2.5 text-xs">
+                        
+                        <!-- Header Bar -->
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 rounded-xl text-xs font-extrabold tracking-wide shadow-xs">CALL #${callNum}</span>
+                                <span class="bg-slate-900 text-white px-2.5 py-0.5 rounded-lg text-[11px] font-black tracking-wide">CALL #${callNum}</span>
                                 ${connBadge}
-                                <span class="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-md text-[10px] font-bold"><i class="fa-solid fa-stopwatch text-emerald-600 mr-1"></i> ${escapeHtml(c.callDuration || '0 mins 0 secs')}</span>
+                                <span class="text-slate-500 font-semibold text-[10px] bg-slate-100 px-2 py-0.5 rounded"><i class="fa-solid fa-stopwatch text-emerald-600 mr-1"></i>${escapeHtml(c.callDuration || '0m 0s')}</span>
                             </div>
-                            <span class="text-[10px] text-slate-400 font-bold bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/60"><i class="fa-regular fa-calendar text-blue-600 mr-1"></i> ${loggedDateStr}</span>
+                            <span class="text-[10px] text-slate-400 font-medium"><i class="fa-regular fa-calendar text-blue-600 mr-1"></i>${loggedDateStr}</span>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Call Title</span><span class="text-slate-900 font-bold block truncate">${escapeHtml(c.title || 'Call Log')}</span></div>
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Lead Temperature</span><div class="mt-0.5">${tempBadge}</div></div>
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 sm:col-span-2"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Intent / Sub-Option</span><span class="text-slate-800 font-semibold block truncate bg-white px-2 py-1 rounded border border-slate-200">${escapeHtml(c.tempSubOption || 'N/A')}</span></div>
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 sm:col-span-2 lg:col-span-4"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Remark / Conversation Notes</span><span class="text-slate-800 font-medium italic block">${escapeHtml(c.remark || 'N/A')}</span></div>
+                        <!-- Compact Grid 1: Basic Info -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50/70 p-2 rounded-lg border border-slate-100">
+                            <div>
+                                <span class="text-[8px] font-bold text-slate-400 uppercase block">Title</span>
+                                <span class="font-bold text-slate-800 truncate block">${escapeHtml(c.title || 'Call Log')}</span>
+                            </div>
+                            <div>
+                                <span class="text-[8px] font-bold text-slate-400 uppercase block">Temperature</span>
+                                <div class="mt-0.5">${tempBadge}</div>
+                            </div>
+                            <div class="col-span-2">
+                                <span class="text-[8px] font-bold text-slate-400 uppercase block">Intent / Sub-Option</span>
+                                <span class="font-semibold text-slate-700 truncate block">${escapeHtml(c.tempSubOption || 'N/A')}</span>
+                            </div>
+                            ${c.remark ? `<div class="col-span-2 sm:col-span-4 border-t border-slate-200/60 pt-1 mt-0.5"><span class="text-[8px] font-bold text-slate-400 uppercase block">Remark</span><span class="text-slate-700 italic">${escapeHtml(c.remark)}</span></div>` : ''}
                         </div>
 
-                        <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100 space-y-2 text-xs">
-                            <div class="flex items-center gap-1.5 font-extrabold text-blue-900 text-[11px] uppercase tracking-wider border-b border-blue-200/60 pb-1.5">
-                                <i class="fa-solid fa-list-check text-blue-600"></i> Client Requirements Gathered
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                <div class="bg-white p-2 rounded-lg border border-blue-100 shadow-2xs"><span class="text-[8px] font-bold text-slate-400 uppercase block">Budget</span><span class="text-blue-700 font-extrabold text-xs">${escapeHtml(c.requirementBudget || 'N/A')}</span></div>
-                                <div class="bg-white p-2 rounded-lg border border-blue-100 shadow-2xs"><span class="text-[8px] font-bold text-slate-400 uppercase block">Flat Size</span><span class="text-slate-800 font-extrabold text-xs">${escapeHtml(c.requirementFlatSize || 'N/A')}</span></div>
-                                <div class="bg-white p-2 rounded-lg border border-blue-100 shadow-2xs"><span class="text-[8px] font-bold text-slate-400 uppercase block">Preferred Floor</span><span class="text-slate-800 font-extrabold text-xs">${escapeHtml(c.requirementFloor || 'N/A')}</span></div>
-                            </div>
-                            ${c.requirementNote ? `<div class="bg-white p-2 rounded-lg border border-blue-100 text-[10px] text-slate-700"><strong>Req Note:</strong> ${escapeHtml(c.requirementNote)}</div>` : ''}
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                            <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80 space-y-1">
-                                <div class="flex items-center gap-1.5 font-extrabold text-amber-950 text-[10px] uppercase tracking-wider border-b border-amber-200 pb-1">
-                                    <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Follow-Up Details
+                        <!-- Compact Grid 2: Requirements & Follow-ups (2-column layout) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <!-- Requirements Box -->
+                            <div class="bg-blue-50/40 p-2 rounded-lg border border-blue-100 space-y-1">
+                                <span class="text-[9px] font-extrabold text-blue-900 uppercase block border-b border-blue-100 pb-0.5"><i class="fa-solid fa-list-check text-blue-600 mr-1"></i>Requirements</span>
+                                <div class="grid grid-cols-3 gap-1 text-[10px]">
+                                    <div><span class="text-slate-400 text-[8px] block">Budget</span><strong class="text-blue-700">${escapeHtml(c.requirementBudget || 'N/A')}</strong></div>
+                                    <div><span class="text-slate-400 text-[8px] block">Size</span><strong class="text-slate-800">${escapeHtml(c.requirementFlatSize || 'N/A')}</strong></div>
+                                    <div><span class="text-slate-400 text-[8px] block">Floor</span><strong class="text-slate-800">${escapeHtml(c.requirementFloor || 'N/A')}</strong></div>
                                 </div>
-                                <div class="flex justify-between text-[11px] pt-1"><span class="text-slate-500">Required:</span><span class="font-bold text-slate-900">${escapeHtml(c.followUpRequired || 'No')}</span></div>
-                                <div class="flex justify-between text-[11px]"><span class="text-slate-500">Timeline Option:</span><span class="font-semibold text-slate-800 truncate max-w-[140px]">${escapeHtml(c.followUpOption || 'N/A')}</span></div>
-                                <div class="flex justify-between text-[11px]"><span class="text-slate-500">Scheduled:</span><span class="font-bold text-amber-900">${formatDateDMY(c.followUpDate)} ${escapeHtml(c.followUpTime ? '@ ' + c.followUpTime : '')}</span></div>
+                                ${c.requirementNote ? `<div class="text-[9px] text-slate-600 truncate"><strong>Note:</strong> ${escapeHtml(c.requirementNote)}</div>` : ''}
                             </div>
 
-                            <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200/80 space-y-1">
-                                <div class="flex items-center gap-1.5 font-extrabold text-emerald-950 text-[10px] uppercase tracking-wider border-b border-emerald-200 pb-1">
-                                    <i class="fa-solid fa-calendar-check text-emerald-600"></i> Visit & Tour Feedback
+                            <!-- Follow-up Box -->
+                            <div class="bg-amber-50/40 p-2 rounded-lg border border-amber-100 space-y-1">
+                                <span class="text-[9px] font-extrabold text-amber-950 uppercase block border-b border-amber-100 pb-0.5"><i class="fa-solid fa-clock-rotate-left text-amber-600 mr-1"></i>Follow-Up & Feedback</span>
+                                <div class="flex justify-between text-[10px]">
+                                    <span class="text-slate-500">Follow-Up:</span>
+                                    <strong>${escapeHtml(c.followUpRequired || 'No')} ${c.followUpDate ? '(' + formatDateDMY(c.followUpDate) + ')' : ''}</strong>
                                 </div>
-                                <div class="flex justify-between text-[11px] pt-1"><span class="text-slate-500">Visit Scheduled:</span><span class="font-bold text-slate-900">${escapeHtml(c.visitScheduled || 'No')}</span></div>
-                                <div class="flex justify-between text-[11px]"><span class="text-slate-500">Customer Interested:</span><span class="font-bold text-emerald-700">${escapeHtml(c.visitInterestCustomer || 'N/A')}</span></div>
-                                <div class="flex justify-between text-[11px]"><span class="text-slate-500">Schedule:</span><span class="font-bold text-emerald-900">${formatDateDMY(c.visitDate)} ${escapeHtml(c.visitTime ? '@ ' + c.visitTime : '')}</span></div>
+                                <div class="flex justify-between text-[10px]">
+                                    <span class="text-slate-500">Visit Scheduled:</span>
+                                    <strong class="text-emerald-700">${escapeHtml(c.visitScheduled || 'No')}</strong>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Visit Schedule Details Group Box with Styled Header Label -->
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
-                            <div class="flex items-center gap-1.5 font-extrabold text-slate-900 text-[11px] uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2">
+                        <!-- Compact Visit Schedule Details Group Box -->
+                        <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-200/80 space-y-1">
+                            <div class="flex items-center gap-1 font-extrabold text-slate-900 text-[10px] uppercase tracking-wider border-b border-slate-200/60 pb-1">
                                 <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Visit Schedule Details
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Building / Project</span><span class="font-bold text-slate-800">${escapeHtml(c.visitBuilding || 'N/A')}</span></div>
-                                <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Location / Address</span><span class="font-semibold text-slate-700">${escapeHtml(c.visitLocation || 'N/A')}</span></div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10px]">
+                                <div><span class="text-[8px] font-bold text-slate-400 uppercase block">Building / Project</span><span class="font-bold text-slate-800">${escapeHtml(c.visitBuilding || 'N/A')}</span></div>
+                                <div><span class="text-[8px] font-bold text-slate-400 uppercase block">Location / Address</span><span class="font-semibold text-slate-700">${escapeHtml(c.visitLocation || 'N/A')}</span></div>
                             </div>
-                            ${c.visitNote ? `<div><span class="text-[9px] font-bold text-slate-400 uppercase block">Visit Notes</span><span class="text-slate-700 italic">${escapeHtml(c.visitNote)}</span></div>` : ''}
-                            ${c.rescheduleVisitChoice ? `<div class="pt-1.5 border-t border-slate-200"><span class="text-[9px] font-bold text-slate-400 uppercase block">Reschedule Choice</span><span class="font-semibold text-slate-800">${escapeHtml(c.rescheduleVisitChoice)}${escapeHtml(c.rescheduleReason ? '(' + c.rescheduleReason + ')' : '')}</span></div>` : ''}
-                            ${c.leadStatus === 'Closed Lead' ? `<div class="pt-1.5 border-t border-rose-200 text-rose-700"><span class="text-[9px] font-bold uppercase block">Lead Closed</span><span>Reason: ${escapeHtml(c.closeReason || 'N/A')}</span></div>` : ''}
+                            ${c.visitNote ? `<div class="text-[10px] text-slate-700 pt-0.5"><strong>Visit Notes:</strong> <span class="italic">${escapeHtml(c.visitNote)}</span></div>` : ''}
+                            ${c.rescheduleVisitChoice ? `<div class="text-[10px] pt-1 border-t border-slate-200/60"><strong>Reschedule Choice:</strong> ${escapeHtml(c.rescheduleVisitChoice)}</div>` : ''}
+                            ${c.leadStatus === 'Closed Lead' ? `<div class="text-[10px] text-rose-700 pt-1 border-t border-rose-200"><strong>Lead Closed:</strong> ${escapeHtml(c.closeReason || 'N/A')}</div>` : ''}
                         </div>
                     </div>
                 `;
