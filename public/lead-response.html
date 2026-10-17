@@ -433,7 +433,7 @@
             }
 
             calls.reverse().forEach(({ callNum, data }) => {
-                const isConnected = data.call_connected === 'Yes' || data.call_connected === 'Connected';
+                const isConnected = data.call_connected === 'Yes' || data.call_connected === 'Connected' || data.call_connected.includes('Connected');
                 
                 const connectedBadge = isConnected 
                     ? `<span class="inline-flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wide uppercase flex-shrink-0"><i class="fa-solid fa-phone-volume mr-1 text-emerald-600"></i> Connected</span>`
@@ -452,6 +452,30 @@
                         <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Remark</span>
                             <span class="text-slate-800 font-semibold italic block break-words">${data.remark || 'N/A'}</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Temperature</span>
+                            <span class="text-slate-800 font-bold block truncate">${data.leadTemperature || 'N/A'}</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.tempSubOption || 'N/A'}</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Budget</span>
+                            <span class="text-slate-800 font-semibold text-blue-600 block truncate">${data.requirementBudget || 'N/A'}</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Flat Size</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.requirementFlatSize || 'N/A'}</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Preferred Floor</span>
+                            <span class="text-slate-800 font-semibold block truncate">${data.requirementFloor || 'N/A'}</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Requirement Notes</span>
+                            <span class="text-slate-800 font-semibold block break-words">${data.requirementNote || 'N/A'}</span>
                         </div>
                         <div class="overflow-hidden">
                             <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Required</span>
@@ -482,7 +506,7 @@
                             <span class="text-slate-800 font-semibold block truncate">${data.visitLocation || 'N/A'}</span>
                         </div>
                         <div class="overflow-hidden">
-                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Site Visit Proposed Details / Notes</span>
+                            <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Site Visit Notes</span>
                             <span class="text-slate-800 font-semibold block break-words">${data.visitNote || 'N/A'}</span>
                         </div>
                         <div class="overflow-hidden">
@@ -649,6 +673,7 @@
                 remark: remarksText || connectedStatus,
                 leadStatus: '',
                 closeReason: '',
+                leadTemperature: document.getElementById('leadTemperature').value,
                 requirementBudget: document.getElementById('requirementBudget').value,
                 requirementFlatSize: document.getElementById('requirementFlatSize').value,
                 requirementFloor: document.getElementById('requirementFloor').value,
@@ -668,7 +693,6 @@
                     const followUpReq = document.getElementById('followUpRequired').value;
                     const visitReq = document.getElementById('visitScheduled').value;
 
-                    callPayload.leadTemperature = document.getElementById('leadTemperature').value;
                     callPayload.followUpRequired = followUpReq;
                     callPayload.visitScheduled = followUpReq === 'Yes' ? 'No' : visitReq;
 
