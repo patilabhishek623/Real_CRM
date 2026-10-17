@@ -168,6 +168,8 @@ app.post('/api/assign-task', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error assigning task.' });
     }
 });
+
+
 app.get('/api/interested-visits', async (req, res) => {
     console.log('-> API /api/interested-visits called');
     try {
@@ -398,60 +400,7 @@ app.get('/api/all-visits', async (req, res) => {
 });
 
 // --- API: Get Interested Visits (Reliable User-Based Database Scanner) ---
-app.get('/api/interested-visits', async (req, res) => {
-    try {
-        const members = await User.find({ role: 'teammember' }, 'username');
-        let interestedVisits = [];
 
-        for (const member of members) {
-            const MemberTaskModel = getMemberTaskModel(member.username);
-            
-            // Fetch only tasks/customers where status is 'Completed'
-            const tasks = await MemberTaskModel.find({ status: 'Completed' });
-
-            tasks.forEach(t => {
-                const taskObj = t.toObject ? t.toObject() : t;
-                let isInterested = false;
-                let latestVisitDate = '';
-                let latestVisitTime = '';
-                let latestBuilding = '';
-                let latestLocation = '';
-
-                let i = 1;
-                while (taskObj[`call${i}`]) {
-                    const call = taskObj[`call${i}`];
-                    if (call.visitInterestCustomer && String(call.visitInterestCustomer).trim().toLowerCase() === 'yes') {
-                        isInterested = true;
-                    }
-                    if (call.visitDate) {
-                        latestVisitDate = call.visitDate;
-                        latestVisitTime = call.visitTime || '';
-                        latestBuilding = call.visitBuilding || '';
-                        latestLocation = call.visitLocation || '';
-                    }
-                    i++;
-                }
-
-                if (isInterested) {
-                    interestedVisits.push({
-                        memberUsername: member.username,
-                        taskId: taskObj._id,
-                        name: taskObj.name || 'Untitled Lead',
-                        contactNumber: taskObj.contactNumber || '',
-                        visitDate: latestVisitDate,
-                        visitTime: latestVisitTime,
-                        visitBuilding: latestBuilding,
-                        visitLocation: latestLocation
-                    });
-                }
-            });
-        }
-        res.json({ success: true, visits: interestedVisits });
-    } catch (err) {
-        console.error('Error fetching interested visits:', err);
-        res.status(500).json({ success: false, message: 'Error fetching interested visits' });
-    }
-});
 
 // --- API: Get Single Lead Details ---
 app.get('/api/lead-details/:username/:taskId', async (req, res) => {
