@@ -199,27 +199,84 @@
         </div>
     </nav>
 
-    <!-- Lead Detail & Interaction Modal Overlay -->
+    <!-- Lead Detail & Tabbed Modal Overlay -->
     <div id="leadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-4xl w-full p-5 sm:p-8 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto border border-slate-100">
+        <div class="bg-white rounded-3xl max-w-4xl w-full p-5 sm:p-8 shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto border border-slate-100">
             
             <!-- Modal Header -->
             <div class="flex justify-between items-start border-b border-slate-100 pb-4">
                 <div>
-                    <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60">Customer Profile & Call History</span>
+                    <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60">Customer Profile</span>
                     <h2 id="modalLeadName" class="text-lg sm:text-2xl font-extrabold text-slate-900 mt-2">Lead Details</h2>
                 </div>
                 <button onclick="closeModal()" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition shadow-xs flex-shrink-0"><i class="fa-solid fa-xmark text-sm sm:text-base"></i></button>
             </div>
 
-            <!-- Lead Summary Grid (Only Contact Number, Assigned Member, Lead Status) -->
+            <!-- Lead Summary Grid -->
             <div id="modalLeadSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200/85 text-xs shadow-inner"></div>
 
-            <!-- Call Logs Timeline (Showing n-1 call details) -->
-            <div class="space-y-3">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2"><i class="fa-solid fa-timeline text-amber-600 text-sm"></i> Call History (n-1 Record View)</h3>
+            <!-- Modal Tabs Navigation -->
+            <div class="flex border-b border-slate-200 gap-4">
+                <button onclick="switchTab('callHistory')" id="tabBtnCallHistory" class="pb-2.5 text-xs font-extrabold text-amber-600 border-b-2 border-amber-600 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-timeline"></i> Call History
+                </button>
+                <button onclick="switchTab('finalDetails')" id="tabBtnFinalDetails" class="pb-2.5 text-xs font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-contract"></i> Final Details
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Call History -->
+            <div id="tabContentCallHistory" class="space-y-3">
                 <div id="modalCallHistory" class="space-y-3"></div>
             </div>
+
+            <!-- Tab Content 2: Final Details (Negotiation) -->
+            <div id="tabContentFinalDetails" class="space-y-4 hidden">
+                <form id="negotiationForm" onsubmit="submitNegotiation(event)" class="bg-amber-50/40 p-4 sm:p-5 rounded-2xl border border-amber-200/70 space-y-4">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-amber-950 flex items-center gap-2">
+                        <i class="fa-solid fa-handshake text-amber-600 text-sm"></i> Add Negotiation Details
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Building Name</label>
+                            <input type="text" id="negBuilding" required placeholder="e.g. Prestige Heights" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Flat Size</label>
+                            <input type="text" id="negFlatSize" required placeholder="e.g. 2 BHK (950 sq.ft)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Final Price</label>
+                            <input type="text" id="negFinalPrice" required placeholder="e.g. ₹1.45 Cr" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Floor</label>
+                            <input type="text" id="negFloor" required placeholder="e.g. 12th Floor" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Parking</label>
+                            <input type="text" id="negParking" required placeholder="e.g. 1 Covered Car Park" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Negotiation Record
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Existing Negotiations List -->
+                <div class="space-y-3 pt-2">
+                    <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2"><i class="fa-solid fa-list text-amber-600 text-sm"></i> Saved Negotiations</h4>
+                    <div id="modalNegotiationsList" class="space-y-3"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -271,7 +328,6 @@
                     return;
                 }
 
-                // Filter visits strictly for the currently logged-in user
                 const userVisits = data.visits.filter(v => 
                     currentUsername && v.memberUsername && v.memberUsername.toLowerCase() === currentUsername.toLowerCase()
                 );
@@ -406,21 +462,41 @@
                 currentLeadData = data.lead;
                 document.getElementById('modalLeadName').textContent = currentLeadData.name || 'Untitled Lead';
                 
-                // Summary Grid: Contact Number, Assigned Member, Lead Status
                 document.getElementById('modalLeadSummary').innerHTML = `
                     <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Contact Number</span><span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">${escapeHtml(currentLeadData.contactNumber || 'N/A')}</span></div>
                     <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Member</span><span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">${escapeHtml(username)}</span></div>
                     <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-amber-600 text-xs sm:text-sm mt-0.5 block">Interested Client</span></div>
                 `;
 
+                switchTab('callHistory');
                 renderCallHistory();
+                renderNegotiations();
                 document.getElementById('leadModal').classList.remove('hidden');
             } catch (err) {
                 alert('Error connecting to server.');
             }
         }
 
-        // --- RENDER ONLY (n-1) CALL DETAIL ---
+        function switchTab(tabName) {
+            const btnCallHistory = document.getElementById('tabBtnCallHistory');
+            const btnFinalDetails = document.getElementById('tabBtnFinalDetails');
+            const contentCallHistory = document.getElementById('tabContentCallHistory');
+            const contentFinalDetails = document.getElementById('tabContentFinalDetails');
+
+            if (tabName === 'callHistory') {
+                btnCallHistory.className = "pb-2.5 text-xs font-extrabold text-amber-600 border-b-2 border-amber-600 transition flex items-center gap-1.5";
+                btnFinalDetails.className = "pb-2.5 text-xs font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition flex items-center gap-1.5";
+                contentCallHistory.classList.remove('hidden');
+                contentFinalDetails.classList.add('hidden');
+            } else {
+                btnFinalDetails.className = "pb-2.5 text-xs font-extrabold text-amber-600 border-b-2 border-amber-600 transition flex items-center gap-1.5";
+                btnCallHistory.className = "pb-2.5 text-xs font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition flex items-center gap-1.5";
+                contentFinalDetails.classList.remove('hidden');
+                contentCallHistory.classList.add('hidden');
+            }
+        }
+
+        // --- RENDER (n-1) CALL DETAIL ---
         function renderCallHistory() {
             if (!currentLeadData) return;
             
@@ -436,7 +512,6 @@
                 return;
             }
 
-            // Determine (n - 1) call. If n=1, show call 1 (index 0). If n=5, index is 3 (call 4).
             const n = calls.length;
             const targetIndex = n > 1 ? n - 2 : 0;
             const targetCall = calls[targetIndex];
@@ -511,20 +586,84 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="bg-slate-50/80 p-2 rounded-lg border border-slate-200/80 space-y-1">
-                        <div class="flex items-center gap-1 font-extrabold text-slate-900 text-[10px] uppercase tracking-wider border-b border-slate-200/60 pb-1">
-                            <i class="fa-solid fa-map-location-dot text-amber-600"></i> Visit Schedule Details
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10px]">
-                            <div><span class="text-[8px] font-bold text-slate-400 uppercase block">Building / Project</span><span class="font-bold text-slate-800">${escapeHtml(c.visitBuilding || 'N/A')}</span></div>
-                            <div><span class="text-[8px] font-bold text-slate-400 uppercase block">Location / Address</span><span class="font-semibold text-slate-700">${escapeHtml(c.visitLocation || 'N/A')}</span></div>
-                        </div>
-                        ${c.visitNote ? `<div class="text-[10px] text-slate-700 pt-0.5"><strong>Visit Notes:</strong> <span class="italic">${escapeHtml(c.visitNote)}</span></div>` : ''}
-                    </div>
                 </div>
             `;
             document.getElementById('modalCallHistory').innerHTML = historyHtml;
+        }
+
+        // --- RENDER NEGOTIATIONS ---
+        function renderNegotiations() {
+            if (!currentLeadData) return;
+            
+            let negs = [];
+            let i = 1;
+            while (currentLeadData[`negotation${i}`]) {
+                negs.push({ negNum: i, data: currentLeadData[`negotation${i}`] });
+                i++;
+            }
+
+            document.getElementById('negotiationForm').reset();
+
+            if (negs.length === 0) {
+                document.getElementById('modalNegotiationsList').innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">No negotiation records saved yet.</p>';
+                return;
+            }
+
+            let html = '';
+            negs.forEach(({ negNum, data: n }) => {
+                const dateStr = n.savedAt ? new Date(n.savedAt).toLocaleString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                }) : 'Recent';
+
+                html += `
+                    <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 space-y-2 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-1.5">
+                            <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-[10px] font-extrabold">NEGOTIATION #${negNum}</span>
+                            <span class="text-[10px] text-slate-400 font-medium"><i class="fa-regular fa-calendar text-amber-600 mr-1"></i>${dateStr}</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-xs">
+                            <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Building Name</span><strong class="text-slate-800">${escapeHtml(n.buildingName)}</strong></div>
+                            <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Flat Size</span><strong class="text-slate-800">${escapeHtml(n.flatSize)}</strong></div>
+                            <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Final Price</span><strong class="text-emerald-700">${escapeHtml(n.finalPrice)}</strong></div>
+                            <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Floor</span><strong class="text-slate-800">${escapeHtml(n.floor)}</strong></div>
+                            <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Parking</span><strong class="text-slate-800">${escapeHtml(n.parking)}</strong></div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('modalNegotiationsList').innerHTML = html;
+        }
+
+        async function submitNegotiation(e) {
+            e.preventDefault();
+            if (!activeModalUsername || !activeModalTaskId) return;
+
+            const payload = {
+                buildingName: document.getElementById('negBuilding').value,
+                flatSize: document.getElementById('negFlatSize').value,
+                finalPrice: document.getElementById('negFinalPrice').value,
+                floor: document.getElementById('negFloor').value,
+                parking: document.getElementById('negParking').value
+            };
+
+            try {
+                const res = await fetch(`/api/save-negotiation/${encodeURIComponent(activeModalUsername)}/${encodeURIComponent(activeModalTaskId)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Negotiation record saved successfully!');
+                    currentLeadData = data.lead;
+                    renderNegotiations();
+                } else {
+                    alert(data.message || 'Failed to save negotiation.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error connecting to server.');
+            }
         }
 
         function closeModal() {
