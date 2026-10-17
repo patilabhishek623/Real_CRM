@@ -488,7 +488,7 @@
                             </div>
                         </div>
 
-                        <!-- 1. GENERAL CALL INFO (Compact Grid) -->
+                        <!-- 1. GENERAL CALL INFO (Compact Grid with Call Duration) -->
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-slate-50/90 p-2.5 rounded-lg border border-slate-200/60 text-[11px]">
                             <div>
                                 <span class="text-slate-400 uppercase text-[8px] font-extrabold tracking-wider block mb-0.5">Title</span>
@@ -502,7 +502,19 @@
                                 <span class="text-slate-400 uppercase text-[8px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
                                 <span class="text-slate-800 font-semibold block truncate bg-white px-2 py-0.5 rounded border border-slate-200/80">${data.tempSubOption || 'N/A'}</span>
                             </div>
-                            <div class="col-span-2 sm:col-span-4">
+                            
+                            <!-- Call Duration Badge Added Here -->
+                            <div class="col-span-2 sm:col-span-2 bg-emerald-50/80 p-2 rounded border border-emerald-200/70 flex items-center gap-2 shadow-2xs">
+                                <div class="w-6 h-6 rounded bg-emerald-600 text-white flex items-center justify-center text-[10px] flex-shrink-0">
+                                    <i class="fa-solid fa-stopwatch"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="text-emerald-800 uppercase text-[8px] font-extrabold tracking-wider block">Call Duration</span>
+                                    <span class="text-emerald-950 font-bold block text-xs truncate">${data.callDuration || '0 mins 0 secs'}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-span-2 sm:col-span-2">
                                 <span class="text-slate-400 uppercase text-[8px] font-extrabold tracking-wider block mb-0.5">Remark</span>
                                 <span class="text-slate-800 font-medium italic block break-words">${data.remark || 'N/A'}</span>
                             </div>
@@ -740,7 +752,8 @@
                 requirementBudget: document.getElementById('requirementBudget').value,
                 requirementFlatSize: document.getElementById('requirementFlatSize').value,
                 requirementFloor: document.getElementById('requirementFloor').value,
-                requirementNote: document.getElementById('requirementNote').value
+                requirementNote: document.getElementById('requirementNote').value,
+                callDuration: '0 mins 0 secs'
             };
 
             if (connectedStatus === 'Yes') {
