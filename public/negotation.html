@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50/90">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Negotiation Stage - Real_Crm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .corporate-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+        }
+    </style>
+</head>
+<body class="min-h-full text-slate-800 flex flex-col selection:bg-amber-600 selection:text-white relative pb-36 md:pb-8">
+
+    <!-- Ambient Background Accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-tr from-amber-600 to-amber-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-amber-600/20 border border-amber-400/20 flex-shrink-0">
+                    <i class="fa-solid fa-handshake text-base sm:text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <span class="text-base sm:text-xl font-black tracking-tight text-slate-900">Real_<span class="text-amber-600">Crm</span></span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-50 text-amber-700 rounded-md border border-amber-200">Negotiation</span>
+                    </div>
+                    <span id="activeUserBadge" class="text-[10px] sm:text-xs text-slate-500 font-medium">Synchronizing...</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="/" onclick="localStorage.clear()" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-200 shadow-2xs cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 relative z-10">
+        
+        <!-- Left Sidebar Navigation Menu (Desktop Only) -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="corporate-card rounded-2xl p-4 space-y-2 sticky top-28 border border-slate-200">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">Member Menu</p>
+                <a href="teammember.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200">
+                    <i class="fa-solid fa-house w-5 text-slate-400 text-base"></i> Dashboard
+                </a>
+                <a href="assignedmembertask.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-list-check w-5 text-slate-400 group-hover:text-amber-600 transition text-base"></i> Assigned Tasks
+                </a>
+                <a href="followups.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-calendar-days w-5 text-slate-400 group-hover:text-amber-600 transition text-base"></i> Follow Ups
+                </a>
+                <a href="visits.html" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl text-sm transition border border-transparent hover:border-slate-200 group">
+                    <i class="fa-solid fa-map-location-dot w-5 text-slate-400 group-hover:text-amber-600 transition text-base"></i> Visits
+                </a>
+                <a href="negotation.html" class="flex items-center gap-3.5 px-4 py-3 bg-amber-600 text-white font-bold rounded-xl text-sm shadow-md shadow-amber-600/20 transition border border-amber-600">
+                    <i class="fa-solid fa-handshake w-5 text-amber-100 text-base"></i> Negotiation Stage
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="md:col-span-3 space-y-4 sm:space-y-6">
+            
+            <!-- Corporate Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950 rounded-2xl p-4 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-slate-800">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 space-y-1.5">
+                    <div class="inline-flex items-center gap-1.5 bg-amber-500/20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-amber-300 border border-amber-500/30">
+                        <i class="fa-solid fa-handshake"></i> Active Deal Pipeline
+                    </div>
+                    <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Negotiation Stage</h1>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Customers currently in negotiation with building, pricing, and flat specifications.</p>
+                </div>
+                <div id="negotiationCountBadge" class="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 bg-amber-500/20 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span>0 Active Deals</span>
+                </div>
+            </div>
+
+            <!-- Content Card Container -->
+            <div class="corporate-card rounded-2xl p-4 sm:p-6 space-y-4">
+                
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-16 text-slate-400 text-xs">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500 mb-3"></i>
+                    <p>Loading negotiation records...</p>
+                </div>
+
+                <!-- Negotiations Feed -->
+                <div id="negotiationsContainer" class="space-y-4 hidden">
+                    <!-- Injected via JavaScript -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-16 text-slate-400 text-xs">
+                    <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                    <p class="font-semibold text-sm text-slate-600">No customers in negotiation</p>
+                    <p class="text-slate-400 mt-0.5">You have no active negotiation records saved yet.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Sticky Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 z-50 shadow-2xl">
+        <div class="grid grid-cols-5 px-2 py-2.5 text-center">
+            <a href="teammember.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-house text-base"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="assignedmembertask.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-list-check text-base"></i>
+                <span>Tasks</span>
+            </a>
+            <a href="followups.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-calendar-days text-base"></i>
+                <span>Follow-ups</span>
+            </a>
+            <a href="visits.html" class="flex flex-col items-center text-slate-400 hover:text-slate-700 font-medium text-[10px] gap-1 transition">
+                <i class="fa-solid fa-map-location-dot text-base"></i>
+                <span>Visits</span>
+            </a>
+            <a href="negotation.html" class="flex flex-col items-center text-amber-600 font-extrabold text-[10px] gap-1 transition">
+                <i class="fa-solid fa-handshake text-base scale-110"></i>
+                <span>Negotiation</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- JavaScript Controller -->
+    <script>
+        const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username') || '';
+        if (currentUsername) {
+            document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-amber-600 mr-2"></i> User: <b>${currentUsername}</b>`;
+        } else {
+            document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i> No User Logged In`;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        async function fetchNegotiations() {
+            try {
+                const res = await fetch(`/api/member-tasks/${encodeURIComponent(currentUsername)}`);
+                const data = await res.json();
+                
+                document.getElementById('loadingState').classList.add('hidden');
+
+                if (!data.success || !data.tasks) {
+                    document.getElementById('emptyState').classList.remove('hidden');
+                    return;
+                }
+
+                // Filter tasks that have at least one negotiation record (negotation1, negotation2...)
+                const negotiationTasks = data.tasks.filter(t => {
+                    let k = 1;
+                    while (t[`negotation${k}`]) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                const countBadge = document.getElementById('negotiationCountBadge');
+                const container = document.getElementById('negotiationsContainer');
+                const emptyState = document.getElementById('emptyState');
+
+                if (negotiationTasks.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> <span>0 Active Deals</span>`;
+                    return;
+                }
+
+                countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> <span>${negotiationTasks.length} Active Deal${negotiationTasks.length > 1 ? 's' : ''}</span>`;
+                emptyState.classList.add('hidden');
+                container.classList.remove('hidden');
+
+                container.innerHTML = negotiationTasks.map(task => {
+                    let negsHtml = '';
+                    let k = 1;
+                    while (task[`negotation${k}`]) {
+                        const n = task[`negotation${k}`];
+                        const dateStr = n.savedAt ? new Date(n.savedAt).toLocaleString('en-IN', {
+                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        }) : 'Recent';
+
+                        negsHtml += `
+                            <div class="bg-amber-50/50 rounded-xl border border-amber-200/80 p-3.5 space-y-2 text-xs">
+                                <div class="flex justify-between items-center border-b border-amber-200/60 pb-1.5">
+                                    <span class="bg-amber-700 text-white px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Negotiation #${k}</span>
+                                    <span class="text-[10px] text-slate-500 font-medium"><i class="fa-regular fa-calendar text-amber-600 mr-1"></i>${dateStr}</span>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-1">
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Building Name</span><strong class="text-slate-900">${escapeHtml(n.buildingName || 'N/A')}</strong></div>
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Flat Size</span><strong class="text-slate-900">${escapeHtml(n.flatSize || 'N/A')}</strong></div>
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Final Price</span><strong class="text-emerald-700">${escapeHtml(n.finalPrice || 'N/A')}</strong></div>
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Floor</span><strong class="text-slate-900">${escapeHtml(n.floor || 'N/A')}</strong></div>
+                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Parking</span><strong class="text-slate-900">${escapeHtml(n.parking || 'N/A')}</strong></div>
+                                </div>
+                            </div>
+                        `;
+                        k++;
+                    }
+
+                    return `
+                        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3 relative overflow-hidden">
+                            <div class="absolute top-0 left-0 bottom-0 w-1 bg-amber-500"></div>
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3 pl-1">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 border border-amber-200 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                        ${(task.name || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <h3 class="font-extrabold text-slate-900 text-sm tracking-tight">${escapeHtml(task.name)}</h3>
+                                        <a href="tel:${escapeHtml(task.contactNumber)}" class="text-xs text-blue-600 font-bold hover:underline flex items-center gap-1 mt-0.5">
+                                            <i class="fa-solid fa-phone text-[10px]"></i> ${escapeHtml(task.contactNumber || 'N/A')}
+                                        </a>
+                                    </div>
+                                </div>
+                                <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide border border-amber-300">In Negotiation</span>
+                            </div>
+                            <div class="space-y-2.5 pt-1">
+                                ${negsHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error fetching negotiations:', err);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+            }
+        }
+
+        fetchNegotiations();
+    </script>
+</body>
+</html>
