@@ -446,8 +446,32 @@
                 const detailsHtml = `
                     <div class="space-y-3 bg-slate-50/90 p-3 sm:p-4 rounded-2xl border border-slate-200 my-2 text-xs">
                         
-                        <!-- 1. CLIENT REQUIREMENT SECTION -->
-                        <div class="bg-blue-50/90 p-3.5 sm:p-4 rounded-xl border-2 border-blue-200 shadow-sm space-y-3">
+                        <!-- 1. GENERAL CALL INFO (Title, Call Connected, Remark, Lead Temperature, Intent / Sub-Option) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="overflow-hidden">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Title</span>
+                                <span class="text-slate-800 font-bold block truncate">${data.title || 'N/A'}</span>
+                            </div>
+                            <div class="overflow-hidden">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Call Connected</span>
+                                <span class="text-slate-800 font-bold block truncate">${data.call_connected || 'N/A'}</span>
+                            </div>
+                            <div class="overflow-hidden">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Remark</span>
+                                <span class="text-slate-800 font-semibold italic block break-words">${data.remark || 'N/A'}</span>
+                            </div>
+                            <div class="overflow-hidden">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Temperature</span>
+                                <span class="text-slate-800 font-bold block truncate">${data.leadTemperature || 'N/A'}</span>
+                            </div>
+                            <div class="overflow-hidden">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
+                                <span class="text-slate-800 font-semibold block truncate">${data.tempSubOption || 'N/A'}</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. CLIENT REQUIREMENT SECTION -->
+                        <div class="bg-blue-50/90 p-3.5 sm:p-4 rounded-xl border border-blue-200 shadow-sm space-y-3">
                             <div class="flex items-center space-x-2 border-b border-blue-200 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-inner">
                                     <i class="fa-solid fa-list-check"></i>
@@ -474,31 +498,7 @@
                             </div>
                         </div>
 
-                        <!-- General Call Info -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Title</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.title || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Call Connected</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.call_connected || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Remark</span>
-                                <span class="text-slate-800 font-semibold italic block break-words">${data.remark || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Temperature</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.leadTemperature || 'N/A'}</span>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.tempSubOption || 'N/A'}</span>
-                            </div>
-                        </div>
-
-                        <!-- 2. FOLLOW-UP SECTION -->
+                        <!-- 3. FOLLOW-UP SECTION -->
                         <div class="bg-amber-50/70 p-3.5 rounded-xl border border-amber-200/80 space-y-2.5">
                             <div class="flex items-center space-x-2 border-b border-amber-200/70 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px] shadow-inner">
@@ -522,7 +522,7 @@
                             </div>
                         </div>
 
-                        <!-- 3. VISIT SCHEDULE & STATUS SECTION -->
+                        <!-- 4. VISIT SCHEDULE & LEAD STATUS SECTION -->
                         <div class="bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-200/80 space-y-2.5">
                             <div class="flex items-center space-x-2 border-b border-emerald-200/70 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] shadow-inner">
