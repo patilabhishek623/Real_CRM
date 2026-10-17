@@ -332,7 +332,7 @@
 
             <!-- TAB 2: CUSTOMER HISTORY -->
             <div id="sectionCustomerHistory" class="space-y-4 hidden fade-in">
-                <div class="space-y-3 max-h-[420px] sm:max-h-[480px] overflow-y-auto pr-1" id="historyTimelineContainer">
+                <div class="space-y-4 max-h-[460px] sm:max-h-[520px] overflow-y-auto pr-2 pl-2" id="historyTimelineContainer">
                     <p class="text-xs text-slate-400 text-center py-8">Loading customer history...</p>
                 </div>
             </div>
@@ -432,7 +432,14 @@
             }
 
             if (calls.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">No call history logged yet for this lead.</p>`;
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-slate-50/80 rounded-2xl border border-dashed border-slate-300">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-lg shadow-inner">
+                            <i class="fa-solid fa-timeline"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-700">No Interaction History Yet</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Call logs and updates will appear here once submitted.</p>
+                    </div>`;
                 return;
             }
 
@@ -440,145 +447,157 @@
                 const isConnected = data.call_connected === 'Yes' || data.call_connected === 'Connected' || data.call_connected.includes('Connected');
                 
                 const connectedBadge = isConnected 
-                    ? `<span class="inline-flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wide uppercase flex-shrink-0"><i class="fa-solid fa-phone-volume mr-1 text-emerald-600"></i> Connected</span>`
-                    : `<span class="inline-flex items-center bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wide uppercase flex-shrink-0"><i class="fa-solid fa-phone-slash mr-1 text-rose-600"></i> ${data.call_connected || 'Call Not Connected'}</span>`;
+                    ? `<span class="inline-flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>Connected</span>`
+                    : `<span class="inline-flex items-center bg-rose-50 text-rose-700 border border-rose-200/80 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>${data.call_connected || 'Not Connected'}</span>`;
 
-                const detailsHtml = `
-                    <div class="space-y-3 bg-slate-50/90 p-3 sm:p-4 rounded-2xl border border-slate-200 my-2 text-xs">
+                let tempBadge = `<span class="text-slate-500 font-semibold">N/A</span>`;
+                if (data.leadTemperature === 'HOT') {
+                    tempBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">🔥 Hot</span>`;
+                } else if (data.leadTemperature === 'WARM') {
+                    tempBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-700 border border-amber-200 shadow-2xs">☀ Warm</span>`;
+                } else if (data.leadTemperature === 'COLD') {
+                    tempBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-100 text-blue-700 border border-blue-200 shadow-2xs">❄️ Cold</span>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "relative pl-6 pb-6 border-l-2 border-blue-200/70 last:border-l-0 last:pb-0";
+                card.innerHTML = `
+                    <!-- Timeline Dot Indicator -->
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-md flex items-center justify-center"></div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-200 p-4 sm:p-5 space-y-4">
                         
-                        <!-- 1. GENERAL CALL INFO (Title, Call Connected, Remark, Lead Temperature, Intent / Sub-Option) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Title</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.title || 'N/A'}</span>
+                        <!-- Header Bar -->
+                        <div class="flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 pb-3 border-b border-slate-100">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-1.5 rounded-xl shadow-xs flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-headset text-xs"></i>
+                                    <span>${callNum}</span>
+                                </span>
+                                ${connectedBadge}
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Call Connected</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.call_connected || 'N/A'}</span>
+                            <div class="flex items-center space-x-2 text-[11px] font-medium text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/60">
+                                <i class="fa-regular fa-calendar text-blue-600"></i>
+                                <span>${data.loggedAt ? new Date(data.loggedAt).toLocaleString() : 'N/A'}</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Remark</span>
+                        </div>
+
+                        <!-- 1. GENERAL CALL INFO -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/60 text-xs shadow-2xs">
+                            <div>
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-1">Title</span>
+                                <span class="text-slate-900 font-bold block truncate">${data.title || 'N/A'}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-1">Call Connected</span>
+                                <span class="text-slate-900 font-bold block truncate">${data.call_connected || 'N/A'}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-1">Remark</span>
                                 <span class="text-slate-800 font-semibold italic block break-words">${data.remark || 'N/A'}</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Temperature</span>
-                                <span class="text-slate-800 font-bold block truncate">${data.leadTemperature || 'N/A'}</span>
+                            <div>
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-1">Lead Temperature</span>
+                                <div>${tempBadge}</div>
                             </div>
-                            <div class="overflow-hidden">
-                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Intent / Sub-Option</span>
-                                <span class="text-slate-800 font-semibold block truncate">${data.tempSubOption || 'N/A'}</span>
+                            <div class="sm:col-span-2">
+                                <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-1">Intent / Sub-Option</span>
+                                <span class="text-slate-800 font-semibold block truncate bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs">${data.tempSubOption || 'N/A'}</span>
                             </div>
                         </div>
 
                         <!-- 2. CLIENT REQUIREMENT SECTION -->
-                        <div class="bg-blue-50/90 p-3.5 sm:p-4 rounded-xl border border-blue-200 shadow-sm space-y-3">
-                            <div class="flex items-center space-x-2 border-b border-blue-200 pb-2">
+                        <div class="bg-gradient-to-br from-blue-50/80 to-indigo-50/40 p-4 rounded-xl border border-blue-200/80 shadow-2xs space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-blue-200/60 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-inner">
                                     <i class="fa-solid fa-list-check"></i>
                                 </div>
                                 <span class="text-xs font-extrabold text-blue-950 uppercase tracking-wide">Client Requirement</span>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                <div class="bg-white/90 p-2.5 rounded-lg border border-blue-100 shadow-2xs">
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Budget</span>
-                                    <span class="text-blue-700 font-bold block truncate text-sm">${data.requirementBudget || 'N/A'}</span>
+                                    <span class="text-blue-700 font-extrabold block truncate text-xs sm:text-sm">${data.requirementBudget || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                <div class="bg-white/90 p-2.5 rounded-lg border border-blue-100 shadow-2xs">
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Flat Size</span>
-                                    <span class="text-slate-800 font-bold block truncate text-sm">${data.requirementFlatSize || 'N/A'}</span>
+                                    <span class="text-slate-800 font-extrabold block truncate text-xs sm:text-sm">${data.requirementFlatSize || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                                <div class="bg-white/90 p-2.5 rounded-lg border border-blue-100 shadow-xs">
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Preferred Floor</span>
-                                    <span class="text-slate-800 font-bold block truncate text-sm">${data.requirementFloor || 'N/A'}</span>
+                                    <span class="text-slate-800 font-extrabold block truncate text-xs sm:text-sm">${data.requirementFloor || 'N/A'}</span>
                                 </div>
                             </div>
-                            <div class="overflow-hidden bg-white/80 p-2.5 rounded-lg border border-blue-100 shadow-xs">
+                            <div class="bg-white/90 p-2.5 rounded-lg border border-blue-100 shadow-2xs">
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Requirement Notes</span>
-                                <span class="text-slate-800 font-semibold block break-words">${data.requirementNote || 'N/A'}</span>
+                                <span class="text-slate-800 font-medium text-xs block break-words">${data.requirementNote || 'N/A'}</span>
                             </div>
                         </div>
 
                         <!-- 3. FOLLOW-UP SECTION -->
-                        <div class="bg-amber-50/70 p-3.5 rounded-xl border border-amber-200/80 space-y-2.5">
+                        <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200/80 shadow-2xs space-y-2.5 text-xs">
                             <div class="flex items-center space-x-2 border-b border-amber-200/70 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px] shadow-inner">
                                     <i class="fa-solid fa-clock-rotate-left"></i>
                                 </div>
-                                <span class="text-[11px] font-extrabold text-amber-950 uppercase tracking-wide">Follow-Up Details</span>
+                                <span class="text-xs font-extrabold text-amber-950 uppercase tracking-wide">Follow-Up Details</span>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Required</span>
-                                    <span class="text-slate-800 font-bold block truncate">${data.followUpRequired || 'N/A'}</span>
+                                    <span class="text-slate-900 font-bold block truncate">${data.followUpRequired || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Option</span>
                                     <span class="text-slate-800 font-semibold block truncate">${data.followUpOption || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Follow-Up Date & Time</span>
-                                    <span class="text-slate-800 font-semibold block truncate">${data.followUpDate || 'N/A'} ${data.followUpTime ? '@ ' + data.followUpTime : ''}</span>
+                                    <span class="text-amber-900 font-bold block truncate">${data.followUpDate || 'N/A'} ${data.followUpTime ? '@ ' + data.followUpTime : ''}</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- 4. VISIT SCHEDULE & LEAD STATUS SECTION -->
-                        <div class="bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-200/80 space-y-2.5">
+                        <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200/80 shadow-2xs space-y-2.5 text-xs">
                             <div class="flex items-center space-x-2 border-b border-emerald-200/70 pb-2">
                                 <div class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] shadow-inner">
                                     <i class="fa-solid fa-calendar-check"></i>
                                 </div>
-                                <span class="text-[11px] font-extrabold text-emerald-950 uppercase tracking-wide">Visit Schedule & Lead Status</span>
+                                <span class="text-xs font-extrabold text-emerald-950 uppercase tracking-wide">Visit Schedule & Lead Status</span>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Scheduled</span>
-                                    <span class="text-slate-800 font-bold block truncate">${data.visitScheduled || 'N/A'}</span>
+                                    <span class="text-slate-900 font-bold block truncate">${data.visitScheduled || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Visit Date & Time</span>
-                                    <span class="text-slate-800 font-semibold block truncate">${data.visitDate || 'N/A'} ${data.visitTime ? '@ ' + data.visitTime : ''}</span>
+                                    <span class="text-emerald-900 font-bold block truncate">${data.visitDate || 'N/A'} ${data.visitTime ? '@ ' + data.visitTime : ''}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Building Name / Project</span>
                                     <span class="text-slate-800 font-semibold block truncate">${data.visitBuilding || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Location / Address</span>
                                     <span class="text-slate-800 font-semibold block truncate">${data.visitLocation || 'N/A'}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Lead Status</span>
-                                    <span class="text-slate-800 font-bold block truncate">${data.leadStatus || 'N/A'}</span>
+                                    <span class="text-slate-900 font-extrabold block truncate">${data.leadStatus || 'Active'}</span>
                                 </div>
-                                <div class="overflow-hidden">
+                                <div>
                                     <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Close Reason</span>
-                                    <span class="text-slate-800 font-semibold text-rose-600 block break-words">${data.closeReason || 'N/A'}</span>
+                                    <span class="text-rose-600 font-semibold block break-words">${data.closeReason || 'N/A'}</span>
                                 </div>
                             </div>
-                            <div class="overflow-hidden pt-1">
+                            <div class="pt-1 border-t border-emerald-200/60 mt-2">
                                 <span class="text-slate-400 uppercase text-[9px] font-extrabold tracking-wider block mb-0.5">Site Visit Notes</span>
-                                <span class="text-slate-800 font-semibold block break-words">${data.visitNote || 'N/A'}</span>
+                                <span class="text-slate-800 font-medium block break-words">${data.visitNote || 'N/A'}</span>
                             </div>
                         </div>
 
-                    </div>
-                `;
-
-                const dateStr = data.loggedAt ? new Date(data.loggedAt).toLocaleString() : '';
-
-                const card = document.createElement('div');
-                card.className = "bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition space-y-3";
-                card.innerHTML = `
-                    <div class="flex flex-col xs:flex-row xs:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                        <span class="text-xs font-extrabold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg flex items-center space-x-1 w-fit"><i class="fa-solid fa-headset text-blue-600 mr-1.5"></i> ${callNum}</span>
-                        <div class="flex items-center justify-between xs:justify-end space-x-2 sm:space-x-3">
-                            ${connectedBadge}
-                            <span class="text-[10px] sm:text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar mr-1"></i> ${dateStr}</span>
-                        </div>
-                    </div>
-                    <div>
-                        ${detailsHtml}
                     </div>
                 `;
                 container.appendChild(card);
