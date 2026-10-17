@@ -411,7 +411,7 @@ app.get('/api/lead-details/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Update Task Status & Dynamically Append Call Logs (Including Requirements & Call Duration) ---
+// --- API: Update Task Status & Dynamically Append Call Logs ---
 app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     const { username, taskId } = req.params;
     const { 
@@ -557,6 +557,5 @@ app.get('/api/followups/:username', async (req, res) => {
     }
 });
 
-// Use dynamic port assigned by Render/Environment with fallback to 3000 for local testing
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => { console.log(`Server running at port ${PORT}`); });
