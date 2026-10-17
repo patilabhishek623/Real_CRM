@@ -67,7 +67,7 @@ const callSubSchema = new mongoose.Schema({
     rescheduleVisitChoice: { type: String, default: '' },
     leadStatus: { type: String, default: '' },
     closeReason: { type: String, default: '' },
-    callDuration: { type: String, default: '0 mins 0 secs' }, // Added call duration field
+    callDuration: { type: String, default: '0 mins 0 secs' },
     loggedAt: { type: Date, default: Date.now }
 });
 
@@ -339,17 +339,23 @@ app.get('/api/all-visits', async (req, res) => {
     }
 });
 
-// --- API: Get Interested Visits ---
+// --- API: Get Interested Visits (Direct DB Scanner for visitInterestCustomer: "Yes") ---
 app.get('/api/interested-visits', async (req, res) => {
     try {
-        const members = await User.find({ role: 'teammember' }, 'username');
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        const taskCollections = collections.filter(c => c.name.startsWith('tasks_'));
+
         let interestedVisits = [];
 
-        for (const member of members) {
-            const MemberTaskModel = getMemberTaskModel(member.username);
-            const tasks = await MemberTaskModel.find();
+        for (const colInfo of taskCollections) {
+            const collectionName = colInfo.name;
+            const memberUsername = collectionName.replace('tasks_', '');
+            
+            const DynamicTaskModel = mongoose.models[collectionName] || mongoose.model(collectionName, new mongoose.Schema({}, { strict: false }), collectionName);
+            const tasks = await DynamicTaskModel.find();
 
             tasks.forEach(t => {
+                const taskObj = t.toObject ? t.toObject() : t;
                 let isInterested = false;
                 let latestVisitDate = '';
                 let latestVisitTime = '';
@@ -357,9 +363,9 @@ app.get('/api/interested-visits', async (req, res) => {
                 let latestLocation = '';
 
                 let i = 1;
-                while (t[`call${i}`]) {
-                    const call = t[`call${i}`];
-                    if (call.visitInterestCustomer === 'Yes') {
+                while (taskObj[`call${i}`]) {
+                    const call = taskObj[`call${i}`];
+                    if (call.visitInterestCustomer && call.visitInterestCustomer.trim().toLowerCase() === 'yes') {
                         isInterested = true;
                     }
                     if (call.visitDate) {
@@ -373,10 +379,10 @@ app.get('/api/interested-visits', async (req, res) => {
 
                 if (isInterested) {
                     interestedVisits.push({
-                        memberUsername: member.username,
-                        taskId: t._id,
-                        name: t.name || 'Untitled Lead',
-                        contactNumber: t.contactNumber || '',
+                        memberUsername: memberUsername,
+                        taskId: taskObj._id,
+                        name: taskObj.name || 'Untitled Lead',
+                        contactNumber: taskObj.contactNumber || '',
                         visitDate: latestVisitDate,
                         visitTime: latestVisitTime,
                         visitBuilding: latestBuilding,
@@ -387,7 +393,7 @@ app.get('/api/interested-visits', async (req, res) => {
         }
         res.json({ success: true, visits: interestedVisits });
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching interested visits:', err);
         res.status(500).json({ success: false, message: 'Error fetching interested visits' });
     }
 });
@@ -434,7 +440,7 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
         rescheduleVisitChoice,
         leadStatus,
         closeReason,
-        callDuration // Retrieved from frontend payload
+        callDuration 
     } = req.body; 
 
     try {
@@ -464,7 +470,7 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
             rescheduleVisitChoice: rescheduleVisitChoice || '',
             leadStatus: leadStatus || '',
             closeReason: closeReason || '',
-            callDuration: callDuration || '0 mins 0 secs', // Saved in DB
+            callDuration: callDuration || '0 mins 0 secs',
             loggedAt: new Date()
         };
 
