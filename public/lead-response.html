@@ -21,17 +21,17 @@
 </head>
 <body class="bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-200 min-h-screen text-slate-800 flex items-center justify-center p-3 sm:p-6 relative">
 
-    <!-- Top Right Executive Back Button (Optimized for Mobile Touch) -->
+    <!-- Top Right Executive Back Button -->
     <a href="followups.html" class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/95 backdrop-blur-md hover:bg-white text-slate-700 hover:text-blue-600 border border-slate-200/80 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl shadow-sm hover:shadow-md transition text-xs font-bold flex items-center space-x-1.5 group z-10">
         <i class="fa-solid fa-arrow-left text-[10px] transition-transform group-hover:-translate-x-0.5"></i>
         <span class="hidden xs:inline">Return to Follow-Ups</span>
         <span class="xs:hidden">Back</span>
     </a>
 
-    <!-- UNIFIED MASTER CONTAINER WITH COMMON BORDER -->
+    <!-- UNIFIED MASTER CONTAINER -->
     <div class="max-w-6xl w-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/95 shadow-2xl shadow-slate-200/70 p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start mt-14 sm:mt-0">
         
-        <!-- ================= LEFT SIDE PANEL: BRANDING & SUMMARY ================= -->
+        <!-- LEFT SIDE PANEL: BRANDING & SUMMARY -->
         <div class="lg:col-span-4 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white rounded-2xl p-5 sm:p-6 shadow-xl space-y-5 relative overflow-hidden border border-slate-800">
             <div class="absolute -right-12 -top-12 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -left-12 -bottom-12 w-44 h-44 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <!-- ================= RIGHT SIDE PANEL: WIZARD & HISTORY ================= -->
+        <!-- RIGHT SIDE PANEL: WIZARD & HISTORY -->
         <div class="lg:col-span-8 space-y-5">
             
             <!-- Navigation Tabs -->
@@ -96,7 +96,7 @@
                 </button>
             </div>
 
-            <!-- ================= TAB 1: CALL INPUT WIZARD ================= -->
+            <!-- TAB 1: CALL INPUT WIZARD -->
             <div id="sectionCallInput" class="space-y-4 fade-in">
                 <!-- Step 1: Was the call connected? -->
                 <div class="p-3.5 sm:p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2">
@@ -151,25 +151,30 @@
                     <input type="hidden" id="leadTemperature" value="">
                 </div>
 
-                <!-- FULL REQUIREMENT CAPTURE SECTION -->
-                <div id="stepRequirements" class="p-3.5 sm:p-4 bg-blue-50/50 rounded-2xl border border-blue-200 space-y-3 hidden fade-in">
-                    <label class="block text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">4. Client Property Requirements</label>
+                <!-- CLIENT REQUIREMENT SECTION -->
+                <div id="stepRequirements" class="p-4 sm:p-5 bg-blue-50/70 rounded-2xl border border-blue-200 space-y-4 hidden fade-in shadow-sm">
+                    <div class="flex items-center space-x-2 border-b border-blue-200/70 pb-2.5">
+                        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs shadow-inner">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <h3 class="text-xs sm:text-sm font-extrabold text-blue-950 uppercase tracking-wide">Client Requirement</h3>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Budget</label>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Budget</label>
                             <input type="text" id="requirementBudget" placeholder="e.g. 1.5 Cr" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Flat Size</label>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Flat Size</label>
                             <input type="text" id="requirementFlatSize" placeholder="e.g. 3 BHK" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Preferred Floor</label>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Preferred Floor</label>
                             <input type="text" id="requirementFloor" placeholder="e.g. 12th Floor" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Requirement Notes</label>
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Requirement Notes</label>
                         <textarea id="requirementNote" rows="2" placeholder="Specific notes on configuration, facing, etc..." class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"></textarea>
                     </div>
                 </div>
@@ -325,7 +330,7 @@
                 </div>
             </div>
 
-            <!-- ================= TAB 2: CUSTOMER HISTORY ================= -->
+            <!-- TAB 2: CUSTOMER HISTORY -->
             <div id="sectionCustomerHistory" class="space-y-4 hidden fade-in">
                 <div class="space-y-3 max-h-[420px] sm:max-h-[480px] overflow-y-auto pr-1" id="historyTimelineContainer">
                     <p class="text-xs text-slate-400 text-center py-8">Loading customer history...</p>
@@ -376,7 +381,6 @@
             document.getElementById('panelLeadContact').textContent = contact;
             document.getElementById('leadDescription').textContent = description;
 
-            // Bind telephone link for direct dialing when clicking Call Now
             const callBtn = document.getElementById('callNowBtn');
             if (contact && contact !== 'N/A') {
                 callBtn.setAttribute('href', `tel:${contact}`);
@@ -579,6 +583,7 @@
             } else {
                 reasonSec.classList.add('hidden');
                 document.getElementById('stepConnectedTemp').classList.remove('hidden');
+                document.getElementById('stepRequirements').classList.remove('hidden');
             }
         }
 
@@ -756,7 +761,6 @@
             }
         }
 
-        // Initialize Lead Data on load
         fetchLeadData();
     </script>
 </body>
