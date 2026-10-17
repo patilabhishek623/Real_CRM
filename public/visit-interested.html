@@ -109,10 +109,10 @@
                 <div class="absolute -right-12 -top-12 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="relative z-10 space-y-1.5">
                     <div class="inline-flex items-center gap-1.5 bg-amber-500/20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-amber-300 border border-amber-500/30">
-                        <i class="fa-solid fa-star"></i> Qualified Lead Pipeline
+                        <i class="fa-solid fa-star"></i> Personal Qualified Lead Pipeline
                     </div>
                     <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Interested Clients</h1>
-                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Overview of all clients who confirmed visit interest across team members.</p>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Overview of your personal clients who confirmed visit interest.</p>
                 </div>
                 <div id="visitCountBadge" class="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 bg-amber-500/20 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 backdrop-blur-md">
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
@@ -126,7 +126,7 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="text-center py-16 text-slate-400 text-xs">
                     <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500 mb-3"></i>
-                    <p>Synchronizing interested client schedules from database collection...</p>
+                    <p>Synchronizing your interested client records...</p>
                 </div>
 
                 <!-- Desktop Table View -->
@@ -157,7 +157,7 @@
                 <div id="emptyState" class="hidden text-center py-16 text-slate-400 text-xs">
                     <i class="fa-regular fa-folder-open text-4xl mb-2 text-slate-300"></i>
                     <p class="font-semibold text-sm text-slate-600">No interested clients found</p>
-                    <p class="text-slate-400 mt-0.5">There are no clients currently marked as interested.</p>
+                    <p class="text-slate-400 mt-0.5">You have no clients currently marked as interested.</p>
                 </div>
             </div>
         </main>
@@ -302,9 +302,11 @@
 
     <!-- JavaScript Controller -->
     <script>
-        const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username');
+        const currentUsername = localStorage.getItem('crm_username') || localStorage.getItem('username') || sessionStorage.getItem('username') || '';
         if (currentUsername) {
             document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-user-shield text-amber-600 mr-2"></i> User: <b>${currentUsername}</b>`;
+        } else {
+            document.getElementById('activeUserBadge').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i> No User Logged In`;
         }
 
         let activeModalUsername = '';
@@ -346,8 +348,13 @@
                     return;
                 }
 
+                // Filter visits strictly for the currently logged-in user (e.g. abhi)
+                const userVisits = data.visits.filter(v => 
+                    currentUsername && v.memberUsername && v.memberUsername.toLowerCase() === currentUsername.toLowerCase()
+                );
+
                 const interestedVisits = [];
-                for (let v of data.visits) {
+                for (let v of userVisits) {
                     try {
                         const detailRes = await fetch(`/api/lead-details/${encodeURIComponent(v.memberUsername)}/${encodeURIComponent(v.taskId)}`);
                         const detailData = await detailRes.json();
