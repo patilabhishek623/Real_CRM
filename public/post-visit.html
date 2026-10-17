@@ -143,7 +143,7 @@
 
                 <!-- Mobile Card Feed View -->
                 <div id="mobileCardContainer" class="block md:hidden space-y-3">
-                    <!-- Mobile Cards Injected Dynamically -->
+                    <div class="text-center py-12 text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin text-2xl text-teal-600 mb-2"></i><p>Loading post-visit data...</p></div>
                 </div>
             </div>
         </main>
@@ -220,7 +220,7 @@
 
                     <!-- If NO: Reschedule the same site visit? -->
                     <div id="rescheduleChoiceContainer" class="space-y-1.5 hidden fade-in">
-                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Would you like to reschedule the same site visit?</label>
+                        <label class="block text-[11px] font-extrabold text-teal-900 uppercase tracking-wider">Would you like to reschedule the same site visit?</label>
                         <select id="rescheduleVisitChoiceSelect" onchange="toggleRescheduleDetails(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             <option value="" disabled selected>Select reschedule preference...</option>
                             <option value="Yes">Yes, Reschedule Same Visit</option>
@@ -318,6 +318,7 @@
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
+        // --- OPTIMIZED PARALLEL FETCH FOR FAST PERFORMANCE ---
         async function fetchPostVisits() {
             try {
                 const response = await fetch('/api/all-visits');
@@ -327,8 +328,13 @@
 
                 let pastVisits = visits.filter(v => v.visitDate && v.visitDate < todayStr);
 
-                let filteredVisits = [];
-                for (let v of pastVisits) {
+                if (pastVisits.length === 0) {
+                    renderTable([]);
+                    return;
+                }
+
+                // Fetch all past visit lead details concurrently using Promise.all for instant loading
+                const filteredVisitsPromises = pastVisits.map(async (v) => {
                     try {
                         const detailRes = await fetch(`/api/lead-details/${encodeURIComponent(v.memberUsername)}/${encodeURIComponent(v.taskId)}`);
                         const detailData = await detailRes.json();
@@ -349,21 +355,24 @@
                             }
                             if (!isInterested) {
                                 v.feedbackDone = hasFeedback;
-                                filteredVisits.push(v);
+                                return v;
                             }
                         } else {
                             v.feedbackDone = false;
-                            filteredVisits.push(v);
+                            return v;
                         }
                     } catch (e) {
                         v.feedbackDone = false;
-                        filteredVisits.push(v);
+                        return v;
                     }
-                }
+                    return null;
+                });
 
-                renderTable(filteredVisits);
+                const results = await Promise.all(filteredVisitsPromises);
+                renderTable(results.filter(Boolean));
             } catch (err) {
                 console.error('Error loading post-visits:', err);
+                renderTable([]);
             }
         }
 
@@ -374,7 +383,7 @@
 
             if (visits.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="text-center py-16 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No past visits found requiring post-visit feedback.</p></td></tr>`;
-                mobileContainer.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs"><p class="font-semibold text-slate-700">No past visits found.</p></div>`;
+                mobileContainer.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs"><i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-300 block"></i><p class="font-semibold text-slate-700">No past visits found.</p></div>`;
                 countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-400"></span> <span>0 Pending Feedback</span>`;
                 return;
             }
