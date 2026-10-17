@@ -112,7 +112,7 @@
                         <i class="fa-solid fa-star text-amber-400"></i> Interested Pipeline
                     </div>
                     <h1 class="text-lg sm:text-3xl font-extrabold tracking-tight">Customer Interested Visits</h1>
-                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Leads who expressed positive interest during post-visit feedback calls retrieved directly from database records.</p>
+                    <p class="text-slate-300 text-[11px] sm:text-sm max-w-xl">Leads with completed status who expressed positive interest during post-visit feedback calls retrieved directly from database records.</p>
                 </div>
                 <div id="interestedCountBadge" class="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-500/20 text-emerald-300 font-bold rounded-xl text-xs border border-emerald-500/30 backdrop-blur-md">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -350,7 +350,6 @@
             }
         }
 
-        // --- RENDER CALL HISTORY IN DESCENDING ORDER (Call 10, 9, 8...) ---
         function renderCallHistory() {
             if (!currentLeadData) return;
             
