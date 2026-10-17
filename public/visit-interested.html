@@ -215,83 +215,6 @@
             <!-- Lead Summary Grid (Only Contact Number, Assigned Member, Lead Status) -->
             <div id="modalLeadSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200/85 text-xs shadow-inner"></div>
 
-            <!-- Interaction Form Wizard -->
-            <div id="interactionFormContainer" class="bg-blue-50/40 p-4 sm:p-5 rounded-2xl border border-blue-200/70 space-y-4">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-blue-900 flex items-center gap-2">
-                    <i class="fa-solid fa-headset text-amber-600 text-sm"></i> Log Call Interaction
-                </h3>
-                
-                <form id="callLogForm" onsubmit="submitCallLog(event)" class="space-y-3.5">
-                    
-                    <!-- Is the client interested? -->
-                    <div class="space-y-1.5 p-3.5 bg-amber-50/80 rounded-xl border border-amber-200">
-                        <label class="block text-[11px] font-extrabold text-amber-900 uppercase tracking-wider">Is the client interested?</label>
-                        <select id="clientInterestSelect" onchange="onClientInterestChange()" required class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="Yes" selected>Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-
-                    <!-- IF NOT INTERESTED: RESCHEDULE VISIT CHOICE -->
-                    <div id="rescheduleChoiceSection" class="space-y-1.5 hidden fade-in">
-                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Ask for Re-schedule Visit?</label>
-                        <select id="rescheduleVisitChoice" onchange="onRescheduleChoiceChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="" disabled selected>Select re-schedule preference...</option>
-                            <option value="Yes">Yes, Re-schedule Visit</option>
-                            <option value="No">No Re-schedule</option>
-                        </select>
-                    </div>
-
-                    <!-- VISIT SCHEDULED DROPDOWN -->
-                    <div id="visitScheduledSection" class="space-y-1.5 hidden fade-in">
-                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Visit Scheduled?</label>
-                        <select id="visitScheduled" onchange="onVisitScheduledChange()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="" disabled selected>Select visit option...</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-
-                    <!-- FULL SITE VISIT DETAILS WITH CLEAR SECTION LABEL -->
-                    <div id="siteVisitDetailsSection" class="space-y-3 p-3.5 bg-white rounded-xl border border-slate-200 hidden fade-in shadow-xs">
-                        <div class="flex items-center gap-1.5 font-extrabold text-amber-950 text-[11px] uppercase tracking-wider border-b border-amber-100 pb-2 mb-1">
-                            <i class="fa-solid fa-map-location-dot text-amber-600"></i> Visit Schedule Details
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Date</label>
-                                <input type="date" id="visitDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Time</label>
-                                <input type="time" id="visitTime" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Building / Project</label>
-                                <input type="text" id="visitBuilding" placeholder="e.g. Prestige Heights" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Location / Address</label>
-                                <input type="text" id="visitLocation" placeholder="e.g. Andheri West, Mumbai" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Visit Notes</label>
-                            <textarea id="visitNote" rows="2" placeholder="Enter notes..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="pt-2">
-                        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i> Save Call Interaction Log
-                        </button>
-                    </div>
-                </form>
-            </div>
-
             <!-- Call Logs Timeline (Showing n-1 call details) -->
             <div class="space-y-3">
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2"><i class="fa-solid fa-timeline text-amber-600 text-sm"></i> Call History (n-1 Record View)</h3>
@@ -490,14 +413,6 @@
                     <div class="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Lead Status</span><span class="font-bold text-amber-600 text-xs sm:text-sm mt-0.5 block">Interested Client</span></div>
                 `;
 
-                const interactionContainer = document.getElementById('interactionFormContainer');
-                interactionContainer.classList.remove('hidden');
-                document.getElementById('callLogForm').reset();
-                document.getElementById('clientInterestSelect').value = 'Yes';
-                document.getElementById('rescheduleChoiceSection').classList.add('hidden');
-                document.getElementById('visitScheduledSection').classList.add('hidden');
-                document.getElementById('siteVisitDetailsSection').classList.add('hidden');
-
                 renderCallHistory();
                 document.getElementById('leadModal').classList.remove('hidden');
             } catch (err) {
@@ -610,81 +525,6 @@
                 </div>
             `;
             document.getElementById('modalCallHistory').innerHTML = historyHtml;
-        }
-
-        function onClientInterestChange() {
-            const val = document.getElementById('clientInterestSelect').value;
-            const rescheduleSec = document.getElementById('rescheduleChoiceSection');
-            const visitSchedSec = document.getElementById('visitScheduledSection');
-            const siteVisitDetailsSec = document.getElementById('siteVisitDetailsSection');
-
-            if (val === 'Yes') {
-                rescheduleSec.classList.add('hidden');
-                visitSchedSec.classList.add('hidden');
-                siteVisitDetailsSec.classList.add('hidden');
-            } else if (val === 'No') {
-                rescheduleSec.classList.remove('hidden');
-            }
-        }
-
-        function onRescheduleChoiceChange() {
-            const val = document.getElementById('rescheduleVisitChoice').value;
-            const visitSchedSec = document.getElementById('visitScheduledSection');
-            if (val === 'Yes') {
-                visitSchedSec.classList.remove('hidden');
-            } else {
-                visitSchedSec.classList.add('hidden');
-                document.getElementById('siteVisitDetailsSection').classList.add('hidden');
-            }
-        }
-
-        function onVisitScheduledChange() {
-            const val = document.getElementById('visitScheduled').value;
-            const siteVisitDetailsSec = document.getElementById('siteVisitDetailsSection');
-            if (val === 'Yes') {
-                siteVisitDetailsSec.classList.remove('hidden');
-            } else {
-                siteVisitDetailsSec.classList.add('hidden');
-            }
-        }
-
-        async function submitCallLog(e) {
-            e.preventDefault();
-            if (!activeModalUsername || !activeModalTaskId) return;
-
-            const payload = {
-                title: "Call Log",
-                call_connected: "Yes",
-                remark: "",
-                visitInterestCustomer: document.getElementById('clientInterestSelect').value || 'Yes',
-                rescheduleVisitChoice: document.getElementById('rescheduleVisitChoice').value || '',
-                visitScheduled: document.getElementById('visitScheduled').value || 'No',
-                visitDate: document.getElementById('visitDate').value || '',
-                visitTime: document.getElementById('visitTime').value || '',
-                visitBuilding: document.getElementById('visitBuilding').value || '',
-                visitLocation: document.getElementById('visitLocation').value || '',
-                visitNote: document.getElementById('visitNote').value || '',
-                callDuration: '0 mins 0 secs'
-            };
-
-            try {
-                const res = await fetch(`/api/update-task-status/${encodeURIComponent(activeModalUsername)}/${encodeURIComponent(activeModalTaskId)}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (data.success) {
-                    alert('Call interaction saved successfully!');
-                    closeModal();
-                    fetchInterestedVisits();
-                } else {
-                    alert(data.message || 'Failed to save call log.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Error connecting to server.');
-            }
         }
 
         function closeModal() {
