@@ -40,6 +40,19 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
+// Attendance Schema & Model (Dedicated Collection)
+const attendanceSchema = new mongoose.Schema({
+    username: { type: String, required: true, index: true },
+    date: { type: String, required: true }, // Format: YYYY-MM-DD
+    punchIn: { type: Date, default: null },
+    punchOut: { type: Date, default: null },
+    isOnBreak: { type: Boolean, default: false },
+    breakStartTime: { type: Date, default: null },
+    totalBreakMs: { type: Number, default: 0 },
+    breaks: [{ start: Date, end: Date }]
+});
+const Attendance = mongoose.model('Attendance', attendanceSchema, 'attendance');
+
 // Reusable Sub-schema for individual call logs
 const callSubSchema = new mongoose.Schema({
     title: { type: String, default: '' },
@@ -119,6 +132,131 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// --- API: Attendance Routes ---
+app.get('/api/attendance/:username', async (req, res) => {
+    try {
+        const username = req.params.username.trim();
+        const todayStr = new Date().toISOString().split('T')[0];
+        
+        let todayRecord = await Attendance.findOne({ username, date: todayStr });
+        const history = await Attendance.find({ username }).sort({ date: -1 }).limit(30);
+
+        res.json({ success: true, today: todayRecord, history });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Error fetching attendance data' });
+    }
+});
+
+app.post('/api/attendance/punch-in', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        let record = await Attendance.findOne({ username, date: todayStr });
+        
+        if (record && record.punchIn) {
+            return res.json({ success: false, message: 'Already punched in for today.' });
+        }
+
+        if (!record) {
+            record = new Attendance({ username, date: todayStr, punchIn: new Date() });
+        } else {
+            record.punchIn = new Date();
+        }
+        await record.save();
+        res.json({ success: true, message: 'Punched in successfully', record });
+    } catch (err) {
+        console.error('Error punching in:', err);
+        res.status(500).json({ success: false, message: 'Error punching in' });
+    }
+});
+
+app.post('/api/attendance/punch-out', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        let record = await Attendance.findOne({ username, date: todayStr });
+        
+        if (!record || !record.punchIn) {
+            return res.json({ success: false, message: 'No active punch-in found for today.' });
+        }
+        if (record.punchOut) {
+            return res.json({ success: false, message: 'Already punched out for today.' });
+        }
+
+        if (record.isOnBreak) {
+            record.isOnBreak = false;
+            if (record.breakStartTime) {
+                const breakDuration = new Date() - new Date(record.breakStartTime);
+                record.totalBreakMs += breakDuration;
+                record.breaks.push({ start: record.breakStartTime, end: new Date() });
+                record.breakStartTime = null;
+            }
+        }
+
+        record.punchOut = new Date();
+        await record.save();
+        res.json({ success: true, message: 'Punched out successfully', record });
+    } catch (err) {
+        console.error('Error punching out:', err);
+        res.status(500).json({ success: false, message: 'Error punching out' });
+    }
+});
+
+app.post('/api/attendance/start-break', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        let record = await Attendance.findOne({ username, date: todayStr });
+        
+        if (!record || !record.punchIn || record.punchOut) {
+            return res.json({ success: false, message: 'Active punch-in required to start break.' });
+        }
+        if (record.isOnBreak) {
+            return res.json({ success: false, message: 'Already on break.' });
+        }
+
+        record.isOnBreak = true;
+        record.breakStartTime = new Date();
+        await record.save();
+        res.json({ success: true, message: 'Break started', record });
+    } catch (err) {
+        console.error('Error starting break:', err);
+        res.status(500).json({ success: false, message: 'Error starting break' });
+    }
+});
+
+app.post('/api/attendance/stop-break', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        let record = await Attendance.findOne({ username, date: todayStr });
+        
+        if (!record || !record.isOnBreak) {
+            return res.json({ success: false, message: 'Not currently on break.' });
+        }
+
+        const breakDuration = new Date() - new Date(record.breakStartTime);
+        record.totalBreakMs += breakDuration;
+        record.breaks.push({ start: record.breakStartTime, end: new Date() });
+        record.isOnBreak = false;
+        record.breakStartTime = null;
+
+        await record.save();
+        res.json({ success: true, message: 'Break ended', record });
+    } catch (err) {
+        console.error('Error stopping break:', err);
+        res.status(500).json({ success: false, message: 'Error stopping break' });
+    }
+});
+
 // --- API: Add Member & Provision Collection ---
 app.post('/api/add-member', async (req, res) => {
     const { username, password } = req.body;
@@ -172,18 +310,13 @@ app.post('/api/assign-task', async (req, res) => {
 });
 
 app.get('/api/interested-visits', async (req, res) => {
-    console.log('-> API /api/interested-visits called');
     try {
         const members = await User.find({ role: 'teammember' }, 'username');
-        console.log(`-> Found ${members.length} team members`);
-        
         let interestedVisits = [];
 
         for (const member of members) {
-            console.log(`-> Checking tasks for member: ${member.username}`);
             const MemberTaskModel = getMemberTaskModel(member.username);
             const tasks = await MemberTaskModel.find({ status: 'Completed' });
-            console.log(`-> Found ${tasks.length} completed tasks for ${member.username}`);
 
             tasks.forEach(t => {
                 const taskObj = t.toObject ? t.toObject() : t;
@@ -222,7 +355,6 @@ app.get('/api/interested-visits', async (req, res) => {
                 }
             });
         }
-        console.log('-> Sending interested visits response successfully.');
         res.json({ success: true, visits: interestedVisits });
     } catch (err) {
         console.error('Error fetching interested visits:', err);
@@ -521,7 +653,7 @@ app.post('/api/update-task-status/:username/:taskId', async (req, res) => {
     }
 });
 
-// --- API: Save Negotiation Details (Stored sequentially as negotation1, negotation2...) ---
+// --- API: Save Negotiation Details ---
 app.post('/api/save-negotiation/:username/:taskId', async (req, res) => {
     const { username, taskId } = req.params;
     const { buildingName, flatSize, finalPrice, floor, parking } = req.body;
