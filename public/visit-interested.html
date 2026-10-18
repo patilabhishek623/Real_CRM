@@ -347,7 +347,18 @@
                                 }
                                 j++;
                             }
-                            if (isInterested) {
+
+                            // Check if negotiation details have already been saved for this lead
+                            let hasNegotiation = false;
+                            let k = 1;
+                            while (detailData.lead[`negotation${k}`] || detailData.lead[`negotiation${k}`]) {
+                                hasNegotiation = true;
+                                break;
+                                k++;
+                            }
+
+                            // Only include if marked interested AND negotiation has NOT been added yet
+                            if (isInterested && !hasNegotiation) {
                                 interestedVisits.push(v);
                             }
                         }
@@ -610,8 +621,8 @@
             
             let negs = [];
             let i = 1;
-            while (currentLeadData[`negotation${i}`]) {
-                negs.push({ negNum: i, data: currentLeadData[`negotation${i}`] });
+            while (currentLeadData[`negotation${i}`] || currentLeadData[`negotiation${i}`]) {
+                negs.push({ negNum: i, data: currentLeadData[`negotation${i}`] || currentLeadData[`negotiation${i}`] });
                 i++;
             }
 
@@ -670,6 +681,8 @@
                     alert('Negotiation record saved successfully!');
                     currentLeadData = data.lead;
                     renderNegotiations();
+                    closeModal();
+                    fetchInterestedVisits(); // Refresh list so the lead automatically disappears from this page
                 } else {
                     alert(data.message || 'Failed to save negotiation.');
                 }
