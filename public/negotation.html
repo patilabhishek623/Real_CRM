@@ -261,12 +261,16 @@
                     return;
                 }
 
+                // Filter tasks that are in negotiation AND do NOT have a saved token record yet
                 const negotiationTasks = data.tasks.filter(t => {
+                    if (t.token) {
+                        return false; // Hide if token record exists
+                    }
                     let k = 1;
                     while (t[`negotation${k}`]) {
                         return true;
                     }
-                    return t.token ? true : false;
+                    return false;
                 });
 
                 const countBadge = document.getElementById('negotiationCountBadge');
@@ -275,6 +279,7 @@
 
                 if (negotiationTasks.length === 0) {
                     emptyState.classList.remove('hidden');
+                    container.classList.add('hidden');
                     countBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> <span>0 Active Deals</span>`;
                     return;
                 }
@@ -310,27 +315,6 @@
                             </div>
                         `;
                         k++;
-                    }
-
-                    // Render Single Token if present
-                    if (task.token) {
-                        const tok = task.token;
-                        const dateStr = tok.savedAt ? new Date(tok.savedAt).toLocaleString('en-IN', {
-                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                        }) : 'Recent';
-
-                        detailsHtml += `
-                            <div class="bg-emerald-50/50 rounded-xl border border-emerald-200/80 p-3.5 space-y-2 text-xs">
-                                <div class="flex justify-between items-center border-b border-emerald-200/60 pb-1.5">
-                                    <span class="bg-emerald-700 text-white px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Token Record</span>
-                                    <span class="text-[10px] text-slate-500 font-medium"><i class="fa-regular fa-calendar text-emerald-600 mr-1"></i>${dateStr}</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2.5 pt-1">
-                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Token Received</span><strong class="text-slate-900">${escapeHtml(tok.tokenReceived || 'No')}</strong></div>
-                                    <div><span class="text-[9px] font-bold text-slate-400 uppercase block">Token Amount</span><strong class="text-emerald-700">${escapeHtml(tok.tokenAmount || 'N/A')}</strong></div>
-                                </div>
-                            </div>
-                        `;
                     }
 
                     return `
@@ -458,7 +442,7 @@
                 if (data.success) {
                     alert('Details saved successfully!');
                     closeDetailModal();
-                    fetchNegotiations();
+                    fetchNegotiations(); // Refresh list so the lead automatically disappears from this page if a token was saved
                 } else {
                     alert(data.message || 'Failed to save details.');
                 }
