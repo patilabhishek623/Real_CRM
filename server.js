@@ -104,6 +104,15 @@ function getMemberTaskModel(username) {
     return mongoose.models[collectionName] || mongoose.model(collectionName, taskSchema, collectionName);
 }
 
+// --- Helper: Get Local YYYY-MM-DD Date String ---
+function getLocalDateString() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // --- Explicit HTML Routes (Serving from 'public' folder) ---
 app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
 app.get('/teamlead.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teamlead.html')); });
@@ -120,7 +129,6 @@ app.get('/visit-interested.html', (req, res) => { res.sendFile(path.join(__dirna
 app.get('/lead-response.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'lead-response.html')); });
 app.get('/negotation.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'negotation.html')); });
 app.get('/userdailylogin.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'userdailylogin.html')); });
-app.get('/teamattendance.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teamattendance.html')); });
 
 // --- API: Login Route ---
 app.post('/api/login', async (req, res) => {
@@ -135,10 +143,35 @@ app.post('/api/login', async (req, res) => {
 });
 
 // --- API: Attendance Routes ---
-// Fetch all attendance records (for Team Lead attendance dashboard)
 app.get('/api/attendance', async (req, res) => {
     try {
-        const records = await Attendance.find({}).sort({ date: -1, punchIn: -1 });
+        const rawRecords = await Attendance.find({}).sort({ punchIn: -1, date: -1 });
+
+        const records = rawRecords.map(rec => {
+            let status = 'Absent';
+            let checkInTime = 'N/A';
+
+            if (rec.punchIn) {
+                status = 'Present';
+                checkInTime = new Date(rec.punchIn).toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit', 
+                    hour12: true 
+                });
+            }
+
+            return {
+                _id: rec._id,
+                username: rec.username,
+                date: rec.date,
+                checkInTime: checkInTime,
+                status: status,
+                punchIn: rec.punchIn,
+                punchOut: rec.punchOut
+            };
+        });
+
         res.json({ success: true, records });
     } catch (err) {
         console.error('Error fetching all attendance records:', err);
@@ -149,7 +182,7 @@ app.get('/api/attendance', async (req, res) => {
 app.get('/api/attendance/:username', async (req, res) => {
     try {
         const username = req.params.username.trim();
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateString();
         
         let todayRecord = await Attendance.findOne({ username, date: todayStr });
         const history = await Attendance.find({ username }).sort({ date: -1 }).limit(30);
@@ -165,7 +198,7 @@ app.post('/api/attendance/punch-in', async (req, res) => {
         const { username } = req.body;
         if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
 
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateString();
         let record = await Attendance.findOne({ username, date: todayStr });
         
         if (record && record.punchIn) {
@@ -190,7 +223,7 @@ app.post('/api/attendance/punch-out', async (req, res) => {
         const { username } = req.body;
         if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
 
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateString();
         let record = await Attendance.findOne({ username, date: todayStr });
         
         if (!record || !record.punchIn) {
@@ -224,7 +257,7 @@ app.post('/api/attendance/start-break', async (req, res) => {
         const { username } = req.body;
         if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
 
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateString();
         let record = await Attendance.findOne({ username, date: todayStr });
         
         if (!record || !record.punchIn || record.punchOut) {
@@ -249,7 +282,7 @@ app.post('/api/attendance/stop-break', async (req, res) => {
         const { username } = req.body;
         if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
 
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateString();
         let record = await Attendance.findOne({ username, date: todayStr });
         
         if (!record || !record.isOnBreak) {
