@@ -346,7 +346,7 @@
             currentWorkflow.callDuration = task.callDuration || '0 mins 0 secs';
         }
 
-        // --- STEP 1: Basic Lead Details + Call Disposition Category & Remark ---
+        // --- STEP 1: Basic Lead Details + Call Disposition Category & Remark + Direct Submit if Call Not Connected ---
         function renderStep1() {
             const container = document.getElementById('singleTaskContainer');
             const progress = document.getElementById('progressIndicator');
@@ -370,6 +370,8 @@
                     </div>
                 `;
             }
+
+            const isNotConnected = currentWorkflow.mainCategory === 'Call Not Connected';
 
             container.innerHTML = `
                 <div class="space-y-6">
@@ -420,10 +422,35 @@
                         </select>
                     </div>
 
+                    <!-- Call Not Connected Direct Submit Extra Options Panel -->
+                    <div id="callNotConnectedExtra" class="space-y-4 pt-4 border-t border-slate-100 ${isNotConnected ? '' : 'hidden'}">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-emerald-600"></i> Schedule Follow-Up for Unreachable Lead?
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-emerald-500 shadow-2xs">
+                                <input type="radio" name="cncFollowUp" value="Yes" ${currentWorkflow.followUpRequired === 'Yes' ? 'checked' : ''} onchange="toggleCncFollowUp('Yes')" class="text-emerald-600 focus:ring-emerald-500"> Yes
+                            </label>
+                            <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-rose-500 shadow-2xs">
+                                <input type="radio" name="cncFollowUp" value="No" ${!currentWorkflow.followUpRequired || currentWorkflow.followUpRequired === 'No' ? 'checked' : ''} onchange="toggleCncFollowUp('No')" class="text-rose-600 focus:ring-rose-500"> No
+                            </label>
+                        </div>
+                        <div id="cncFollowUpDateTime" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 ${currentWorkflow.followUpRequired === 'Yes' ? '' : 'hidden'}">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Follow-Up Date</label>
+                                <input type="date" id="cncFollowUpDate" value="${currentWorkflow.followUpDate || ''}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Follow-Up Time</label>
+                                <input type="time" id="cncFollowUpTime" value="${currentWorkflow.followUpTime || ''}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 shadow-2xs">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="pt-4 border-t border-slate-100 flex justify-end">
-                        <button onclick="proceedToStep2('${task._id}')" 
-                            class="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25 transition flex items-center gap-2 cursor-pointer">
-                            <span>Next: Lead Temperature</span> <i class="fa-solid fa-arrow-right"></i>
+                        <button id="step1NextBtn" onclick="${isNotConnected ? `submitCallNotConnected('${task._id}')` : `proceedToStep2('${task._id}')`}" 
+                            class="${isNotConnected ? 'px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xl shadow-emerald-600/30' : 'px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25'} transition flex items-center gap-2 cursor-pointer">
+                            ${isNotConnected ? `<span>Submit Call Outcome</span> <i class="fa-solid fa-floppy-disk text-base"></i>` : `<span>Next: Lead Temperature</span> <i class="fa-solid fa-arrow-right"></i>`}
                         </button>
                     </div>
                 </div>
@@ -437,6 +464,8 @@
         function onCategoryChange(preselectedSub = '') {
             const mainCategory = document.getElementById('mainCategorySelect').value;
             const subSelect = document.getElementById('subRemarkSelect');
+            const notConnectedExtra = document.getElementById('callNotConnectedExtra');
+            const step1NextBtn = document.getElementById('step1NextBtn');
 
             subSelect.innerHTML = '<option value="">-- Choose Specific Remark --</option>';
 
@@ -453,6 +482,106 @@
             } else {
                 subSelect.disabled = true;
                 subSelect.className = 'w-full px-4 py-3.5 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs sm:text-sm transition font-medium text-slate-400 cursor-not-allowed';
+            }
+
+            currentWorkflow.mainCategory = mainCategory;
+
+            // Toggle Call Not Connected panel and button action dynamically
+            if (notConnectedExtra && step1NextBtn) {
+                const activeTaskId = currentWorkflow.taskId || (pendingTasks[0] ? pendingTasks[0]._id : '');
+                if (mainCategory === 'Call Not Connected') {
+                    notConnectedExtra.classList.remove('hidden');
+                    step1NextBtn.innerHTML = `<span>Submit Call Outcome</span> <i class="fa-solid fa-floppy-disk text-base"></i>`;
+                    step1NextBtn.setAttribute('onclick', `submitCallNotConnected('${activeTaskId}')`);
+                    step1NextBtn.className = 'px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xl shadow-emerald-600/30 transition flex items-center gap-2 cursor-pointer';
+                } else {
+                    notConnectedExtra.classList.add('hidden');
+                    step1NextBtn.innerHTML = `<span>Next: Lead Temperature</span> <i class="fa-solid fa-arrow-right"></i>`;
+                    step1NextBtn.setAttribute('onclick', `proceedToStep2('${activeTaskId}')`);
+                    step1NextBtn.className = 'px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25 transition flex items-center gap-2 cursor-pointer';
+                }
+            }
+        }
+
+        function toggleCncFollowUp(val) {
+            currentWorkflow.followUpRequired = val;
+            const dtDiv = document.getElementById('cncFollowUpDateTime');
+            if (dtDiv) {
+                if (val === 'Yes') {
+                    dtDiv.classList.remove('hidden');
+                } else {
+                    dtDiv.classList.add('hidden');
+                    currentWorkflow.followUpDate = '';
+                    currentWorkflow.followUpTime = '';
+                }
+            }
+        }
+
+        async function submitCallNotConnected(taskId) {
+            const mainCategory = document.getElementById('mainCategorySelect').value;
+            const subRemark = document.getElementById('subRemarkSelect').value;
+
+            if (!mainCategory || !subRemark) {
+                alert('Please select both a Call Disposition category and a specific remark before submitting.');
+                return;
+            }
+
+            let followUpReq = 'No';
+            let followUpDt = '';
+            let followUpTm = '';
+
+            const radioFollowUp = document.querySelector('input[name="cncFollowUp"]:checked');
+            if (radioFollowUp) {
+                followUpReq = radioFollowUp.value;
+                if (followUpReq === 'Yes') {
+                    followUpDt = document.getElementById('cncFollowUpDate').value;
+                    followUpTm = document.getElementById('cncFollowUpTime').value;
+                }
+            }
+
+            // Stop timer automatically if active
+            isCallActive = false;
+            if (callTimerInterval) clearInterval(callTimerInterval);
+
+            try {
+                const res = await fetch(`/api/update-task-status/${encodeURIComponent(currentUsername)}/${taskId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        call_connected: mainCategory,
+                        remark: subRemark,
+                        leadTemperature: 'COLD',
+                        tempSubOption: 'Call Not Connected',
+                        requirementBudget: '',
+                        requirementFlatSize: '',
+                        requirementFloor: '',
+                        requirementNote: '',
+                        followUpRequired: followUpReq,
+                        followUpOption: followUpReq === 'Yes' ? 'Call Back Requested' : '',
+                        followUpDate: followUpDt,
+                        followUpTime: followUpTm,
+                        visitScheduled: 'No',
+                        visitDate: '',
+                        visitTime: '',
+                        visitBuilding: '',
+                        visitLocation: '',
+                        visitNote: '',
+                        callDuration: currentWorkflow.callDuration
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    pendingTasks = pendingTasks.filter(t => t._id !== taskId);
+                    currentWorkflow = { taskId: '', mainCategory: '', subRemark: '', leadTemp: '', tempSubOption: '', requirementBudget: '', requirementFlatSize: '', requirementFloor: '', requirementNote: '', followUpRequired: '', followUpOption: '', followUpDate: '', followUpTime: '', visitScheduled: '', visitDate: '', visitTime: '', visitBuilding: '', visitLocation: '', visitNote: '', callDuration: '0 mins 0 secs' };
+                    if (pendingTasks.length > 0) {
+                        loadTaskIntoWorkflow(pendingTasks[0]);
+                    }
+                    renderStep1();
+                } else {
+                    alert(data.message || 'Failed to update task.');
+                }
+            } catch (err) {
+                alert('Server connection error.');
             }
         }
 
