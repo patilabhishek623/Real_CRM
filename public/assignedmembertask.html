@@ -237,6 +237,15 @@
                 "Interested – Wants to Speak With Spouse",
                 "Interested – Wants Developer/Builder Details"
             ],
+            "Call Connected — Not Interested": [
+                "Not in the Business",
+                "Already Purchased",
+                "Budget Too Low",
+                "Location Not Preferred",
+                "Looking for Commercial/Plot Only",
+                "Dropped Plan / Postponed",
+                "Other Reason"
+            ],
             "Follow-Up Required": [
                 "Call After 2 Days",
                 "Call After 3 Days",
@@ -346,7 +355,7 @@
             currentWorkflow.callDuration = task.callDuration || '0 mins 0 secs';
         }
 
-        // --- STEP 1: Basic Lead Details + Call Disposition Category & Remark + Direct Submit if Call Not Connected ---
+        // --- STEP 1: Basic Lead Details + Call Disposition Category & Remark + Direct Submit if Unreachable or Not Interested ---
         function renderStep1() {
             const container = document.getElementById('singleTaskContainer');
             const progress = document.getElementById('progressIndicator');
@@ -371,7 +380,7 @@
                 `;
             }
 
-            const isNotConnected = currentWorkflow.mainCategory === 'Call Not Connected';
+            const isDirectSubmit = currentWorkflow.mainCategory === 'Call Not Connected' || currentWorkflow.mainCategory === 'Call Connected — Not Interested';
 
             container.innerHTML = `
                 <div class="space-y-6">
@@ -411,6 +420,7 @@
                             <option value="">-- Choose Category --</option>
                             <option value="Call Not Connected" ${currentWorkflow.mainCategory === 'Call Not Connected' ? 'selected' : ''}>🔴 Call Not Connected</option>
                             <option value="Call Connected — Interested" ${currentWorkflow.mainCategory === 'Call Connected — Interested' ? 'selected' : ''}>🟢 Call Connected — Interested</option>
+                            <option value="Call Connected — Not Interested" ${currentWorkflow.mainCategory === 'Call Connected — Not Interested' ? 'selected' : ''}>🔴 Call Connected — Not Interested</option>
                             <option value="Follow-Up Required" ${currentWorkflow.mainCategory === 'Follow-Up Required' ? 'selected' : ''}>🟡 Follow-Up Required</option>
                         </select>
                     </div>
@@ -422,10 +432,10 @@
                         </select>
                     </div>
 
-                    <!-- Call Not Connected Direct Submit Extra Options Panel -->
-                    <div id="callNotConnectedExtra" class="space-y-4 pt-4 border-t border-slate-100 ${isNotConnected ? '' : 'hidden'}">
+                    <!-- Direct Submit Extra Options Panel for Unreachable / Not Interested -->
+                    <div id="callNotConnectedExtra" class="space-y-4 pt-4 border-t border-slate-100 ${isDirectSubmit ? '' : 'hidden'}">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-days text-emerald-600"></i> Schedule Follow-Up for Unreachable Lead?
+                            <i class="fa-solid fa-calendar-days text-emerald-600"></i> Schedule Follow-Up for this lead?
                         </label>
                         <div class="flex gap-4">
                             <label class="flex items-center gap-2.5 px-6 py-3 bg-white border border-slate-300 rounded-2xl cursor-pointer font-bold text-xs transition hover:border-emerald-500 shadow-2xs">
@@ -448,9 +458,9 @@
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 flex justify-end">
-                        <button id="step1NextBtn" onclick="${isNotConnected ? `submitCallNotConnected('${task._id}')` : `proceedToStep2('${task._id}')`}" 
-                            class="${isNotConnected ? 'px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xl shadow-emerald-600/30' : 'px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25'} transition flex items-center gap-2 cursor-pointer">
-                            ${isNotConnected ? `<span>Submit Call Outcome</span> <i class="fa-solid fa-floppy-disk text-base"></i>` : `<span>Next: Lead Temperature</span> <i class="fa-solid fa-arrow-right"></i>`}
+                        <button id="step1NextBtn" onclick="${isDirectSubmit ? `submitCallNotConnected('${task._id}')` : `proceedToStep2('${task._id}')`}" 
+                            class="${isDirectSubmit ? 'px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xl shadow-emerald-600/30' : 'px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/25'} transition flex items-center gap-2 cursor-pointer">
+                            ${isDirectSubmit ? `<span>Submit Call Outcome</span> <i class="fa-solid fa-floppy-disk text-base"></i>` : `<span>Next: Lead Temperature</span> <i class="fa-solid fa-arrow-right"></i>`}
                         </button>
                     </div>
                 </div>
@@ -486,10 +496,12 @@
 
             currentWorkflow.mainCategory = mainCategory;
 
-            // Toggle Call Not Connected panel and button action dynamically
+            // Toggle Direct Submit panel and button action dynamically
             if (notConnectedExtra && step1NextBtn) {
                 const activeTaskId = currentWorkflow.taskId || (pendingTasks[0] ? pendingTasks[0]._id : '');
-                if (mainCategory === 'Call Not Connected') {
+                const isDirectSubmit = mainCategory === 'Call Not Connected' || mainCategory === 'Call Connected — Not Interested';
+                
+                if (isDirectSubmit) {
                     notConnectedExtra.classList.remove('hidden');
                     step1NextBtn.innerHTML = `<span>Submit Call Outcome</span> <i class="fa-solid fa-floppy-disk text-base"></i>`;
                     step1NextBtn.setAttribute('onclick', `submitCallNotConnected('${activeTaskId}')`);
@@ -551,7 +563,7 @@
                         call_connected: mainCategory,
                         remark: subRemark,
                         leadTemperature: 'COLD',
-                        tempSubOption: 'Call Not Connected',
+                        tempSubOption: mainCategory,
                         requirementBudget: '',
                         requirementFlatSize: '',
                         requirementFloor: '',
