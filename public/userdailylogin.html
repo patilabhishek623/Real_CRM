@@ -236,10 +236,12 @@
 
         async function handlePunchIn() {
             try {
+                // Pass client's local time string to ensure accurate local timestamp storage
+                const clientTime = new Date().toISOString();
                 const res = await fetch(`/api/attendance/punch-in`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: currentUsername })
+                    body: JSON.stringify({ username: currentUsername, clientTime })
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -298,8 +300,8 @@
             }
 
             tbody.innerHTML = history.map(h => {
-                const pIn = h.punchIn ? new Date(h.punchIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
-                const pOut = h.punchOut ? new Date(h.punchOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active';
+                const pIn = h.punchIn ? new Date(h.punchIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : '-';
+                const pOut = h.punchOut ? new Date(h.punchOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : 'Active';
                 const breakMins = Math.round((h.totalBreakMs || 0) / 60000);
                 
                 let workStr = '-';
