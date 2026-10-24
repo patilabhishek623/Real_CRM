@@ -104,13 +104,12 @@ function getMemberTaskModel(username) {
     return mongoose.models[collectionName] || mongoose.model(collectionName, taskSchema, collectionName);
 }
 
-// --- Helper: Get Local YYYY-MM-DD Date String ---
+// --- Helper: Get Local YYYY-MM-DD Date String (IST) ---
 function getLocalDateString() {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const formatter = new Intl.DateTimeFormat('en-CA', options); // en-CA yields YYYY-MM-DD
+    return formatter.format(now);
 }
 
 // --- Explicit HTML Routes (Serving from 'public' folder) ---
@@ -153,11 +152,12 @@ app.get('/api/attendance', async (req, res) => {
 
             if (rec.punchIn) {
                 status = 'Present';
-                checkInTime = new Date(rec.punchIn).toLocaleTimeString([], { 
+                checkInTime = new Date(rec.punchIn).toLocaleTimeString('en-US', { 
                     hour: '2-digit', 
                     minute: '2-digit', 
                     second: '2-digit', 
-                    hour12: true 
+                    hour12: true,
+                    timeZone: 'Asia/Kolkata'
                 });
             }
 
@@ -195,7 +195,7 @@ app.get('/api/attendance/:username', async (req, res) => {
 
 app.post('/api/attendance/punch-in', async (req, res) => {
     try {
-        const { username } = req.body;
+        const { username, clientTime } = req.body;
         if (!username) return res.status(400).json({ success: false, message: 'Username is required.' });
 
         const todayStr = getLocalDateString();
@@ -205,10 +205,12 @@ app.post('/api/attendance/punch-in', async (req, res) => {
             return res.json({ success: false, message: 'Already punched in for today.' });
         }
 
+        const punchInTime = clientTime ? new Date(clientTime) : new Date();
+
         if (!record) {
-            record = new Attendance({ username, date: todayStr, punchIn: new Date() });
+            record = new Attendance({ username, date: todayStr, punchIn: punchInTime });
         } else {
-            record.punchIn = new Date();
+            record.punchIn = punchInTime;
         }
         await record.save();
         res.json({ success: true, message: 'Punched in successfully', record });
