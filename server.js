@@ -109,6 +109,7 @@ app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.
 app.get('/teamlead.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teamlead.html')); });
 app.get('/leaduser.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'leaduser.html')); });
 app.get('/assigntaskteammember.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'assigntaskteammember.html')); });
+app.get('/teamattendance.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teamattendance.html')); });
 app.get('/teammember.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teammember.html')); });
 app.get('/assignedmembertask.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'assignedmembertask.html')); });
 app.get('/followups.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'followups.html')); });
@@ -133,6 +134,17 @@ app.post('/api/login', async (req, res) => {
 });
 
 // --- API: Attendance Routes ---
+// Fetch all attendance records (for Team Lead attendance dashboard)
+app.get('/api/attendance', async (req, res) => {
+    try {
+        const records = await Attendance.find({}).sort({ date: -1, punchIn: -1 });
+        res.json({ success: true, records });
+    } catch (err) {
+        console.error('Error fetching all attendance records:', err);
+        res.status(500).json({ success: false, message: 'Error fetching attendance records' });
+    }
+});
+
 app.get('/api/attendance/:username', async (req, res) => {
     try {
         const username = req.params.username.trim();
