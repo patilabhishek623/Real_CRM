@@ -17,7 +17,6 @@ mongoose.connect(MONGO_URI)
     .then(async () => {
         console.log('Connected to MongoDB Atlas: Real_Crm');
         
-        // Check and ensure default users exist, create them if missing
         const leadExists = await User.findOne({ username: 'lead' });
         if (!leadExists) {
             await User.create({ username: 'lead', password: '123', role: 'teamlead' });
@@ -49,7 +48,8 @@ const attendanceSchema = new mongoose.Schema({
     isOnBreak: { type: Boolean, default: false },
     breakStartTime: { type: Date, default: null },
     totalBreakMs: { type: Number, default: 0 },
-    breaks: [{ start: Date, end: Date }]
+    breaks: [{ start: Date, end: Date }],
+    status: { type: String, enum: ['Present', 'Absent'], default: 'Present' }
 });
 const Attendance = mongoose.model('Attendance', attendanceSchema, 'attendance');
 
@@ -148,7 +148,6 @@ app.get('/api/attendance', async (req, res) => {
         const todayStr = getLocalDateString();
         const queryDate = req.query.date || todayStr;
 
-        // Fetch all active team members
         const members = await User.find({ role: 'teammember' }, 'username');
         let records = [];
 
@@ -171,6 +170,8 @@ app.get('/api/attendance', async (req, res) => {
                     hour12: true,
                     timeZone: 'Asia/Kolkata'
                 });
+            } else if (rec && rec.status === 'Absent') {
+                status = 'Absent';
             }
 
             records.push({
@@ -196,11 +197,48 @@ app.get('/api/attendance/:username', async (req, res) => {
         const username = req.params.username.trim();
         const todayStr = getLocalDateString();
         
+        // Default range: 1st of current month to today
+        const currentYearMonth = todayStr.substring(0, 7);
+        const defaultStart = `${currentYearMonth}-01`;
+        
+        const startDate = req.query.startDate || defaultStart;
+        const endDate = req.query.endDate || todayStr;
+
+        // Generate all dates in range and ensure Absent records are saved in DB if missing
+        let start = new Date(startDate);
+        let end = new Date(endDate);
+        
+        while (start <= end) {
+            const dateStr = start.toISOString().split('T')[0];
+            if (dateStr <= todayStr) {
+                let existing = await Attendance.findOne({ username, date: dateStr });
+                if (!existing || (!existing.punchIn && existing.status !== 'Absent')) {
+                    if (!existing) {
+                        await Attendance.create({
+                            username,
+                            date: dateStr,
+                            punchIn: null,
+                            punchOut: null,
+                            status: 'Absent'
+                        });
+                    } else if (!existing.punchIn) {
+                        existing.status = 'Absent';
+                        await existing.save();
+                    }
+                }
+            }
+            start.setDate(start.getDate() + 1);
+        }
+
         let todayRecord = await Attendance.findOne({ username, date: todayStr });
-        const history = await Attendance.find({ username }).sort({ date: -1 }).limit(30);
+        const history = await Attendance.find({ 
+            username, 
+            date: { $gte: startDate, $lte: endDate } 
+        }).sort({ date: -1 });
 
         res.json({ success: true, today: todayRecord, history });
     } catch (err) {
+        console.error('Error fetching attendance data:', err);
         res.status(500).json({ success: false, message: 'Error fetching attendance data' });
     }
 });
@@ -220,9 +258,10 @@ app.post('/api/attendance/punch-in', async (req, res) => {
         const punchInTime = clientTime ? new Date(clientTime) : new Date();
 
         if (!record) {
-            record = new Attendance({ username, date: todayStr, punchIn: punchInTime });
+            record = new Attendance({ username, date: todayStr, punchIn: punchInTime, status: 'Present' });
         } else {
             record.punchIn = punchInTime;
+            record.status = 'Present';
         }
         await record.save();
         res.json({ success: true, message: 'Punched in successfully', record });
@@ -258,6 +297,7 @@ app.post('/api/attendance/punch-out', async (req, res) => {
         }
 
         record.punchOut = new Date();
+        record.status = 'Present';
         await record.save();
         res.json({ success: true, message: 'Punched out successfully', record });
     } catch (err) {
