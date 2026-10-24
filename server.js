@@ -152,7 +152,7 @@ app.get('/api/attendance', async (req, res) => {
         let records = [];
 
         for (const member of members) {
-            const rec = await Attendance.findOne({ username: member.username, date: queryDate });
+            let rec = await Attendance.findOne({ username: member.username, date: queryDate });
             
             let checkInTime = 'N/A';
             let status = 'Punch-In Pending';
@@ -170,6 +170,21 @@ app.get('/api/attendance', async (req, res) => {
                     hour12: true,
                     timeZone: 'Asia/Kolkata'
                 });
+            } else if (queryDate < todayStr) {
+                // Past date without punch-in -> Mark Absent automatically in DB & UI
+                status = 'Absent';
+                if (!rec) {
+                    rec = await Attendance.create({
+                        username: member.username,
+                        date: queryDate,
+                        punchIn: null,
+                        punchOut: null,
+                        status: 'Absent'
+                    });
+                } else if (rec.status !== 'Absent') {
+                    rec.status = 'Absent';
+                    await rec.save();
+                }
             } else if (rec && rec.status === 'Absent') {
                 status = 'Absent';
             }
@@ -197,14 +212,12 @@ app.get('/api/attendance/:username', async (req, res) => {
         const username = req.params.username.trim();
         const todayStr = getLocalDateString();
         
-        // Default range: 1st of current month to today
         const currentYearMonth = todayStr.substring(0, 7);
         const defaultStart = `${currentYearMonth}-01`;
         
         const startDate = req.query.startDate || defaultStart;
         const endDate = req.query.endDate || todayStr;
 
-        // Generate all dates in range and ensure Absent records are saved in DB if missing
         let start = new Date(startDate);
         let end = new Date(endDate);
         
