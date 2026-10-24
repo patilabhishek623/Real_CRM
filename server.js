@@ -120,6 +120,7 @@ app.get('/visit-interested.html', (req, res) => { res.sendFile(path.join(__dirna
 app.get('/lead-response.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'lead-response.html')); });
 app.get('/negotation.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'negotation.html')); });
 app.get('/userdailylogin.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'userdailylogin.html')); });
+app.get('/teamattendance.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teamattendance.html')); });
 
 // --- API: Login Route ---
 app.post('/api/login', async (req, res) => {
