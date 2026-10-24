@@ -108,7 +108,7 @@ function getMemberTaskModel(username) {
 function getLocalDateString() {
     const now = new Date();
     const options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const formatter = new Intl.DateTimeFormat('en-CA', options); // en-CA yields YYYY-MM-DD
+    const formatter = new Intl.DateTimeFormat('en-CA', options);
     return formatter.format(now);
 }
 
@@ -118,6 +118,7 @@ app.get('/teamlead.html', (req, res) => { res.sendFile(path.join(__dirname, 'pub
 app.get('/leaduser.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'leaduser.html')); });
 app.get('/assigntaskteammember.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'assigntaskteammember.html')); });
 app.get('/teamattendance.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teamattendance.html')); });
+app.get('/attendance.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'attendance.html')); });
 app.get('/teammember.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'teammember.html')); });
 app.get('/assignedmembertask.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'assignedmembertask.html')); });
 app.get('/followups.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'followups.html')); });
