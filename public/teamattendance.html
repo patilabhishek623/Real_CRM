@@ -126,6 +126,22 @@
                         </h3>
                         <p class="text-xs text-slate-500 mt-0.5" id="tableHeaderSub">Fetched directly from MongoDB collection <code class="bg-slate-100 text-blue-600 px-1.5 py-0.5 rounded font-mono">attendance</code> and user accounts.</p>
                     </div>
+                    
+                    <!-- Date Range Filter Container (Only shown in Member Monthly View) -->
+                    <div id="dateRangeFilterContainer" class="hidden flex items-center gap-2 flex-wrap">
+                        <div class="flex items-center gap-1 text-[11px] font-bold text-slate-600">
+                            <span>From:</span>
+                            <input type="date" id="filterStartDate" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-slate-700">
+                        </div>
+                        <div class="flex items-center gap-1 text-[11px] font-bold text-slate-600">
+                            <span>To:</span>
+                            <input type="date" id="filterEndDate" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-slate-700">
+                        </div>
+                        <button id="applyDateFilterBtn" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition cursor-pointer shadow-sm">
+                            Apply Range
+                        </button>
+                    </div>
+
                     <div class="flex items-center gap-2" id="headerActionBtn">
                         <button onclick="fetchAttendanceData()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-rotate-right"></i> Refresh Logs
@@ -158,6 +174,8 @@
     </div>
 
     <script>
+        let currentViewingMember = null;
+
         function toggleMobileMenu() {
             const drawer = document.getElementById('mobileDrawer');
             drawer.classList.toggle('hidden');
@@ -179,6 +197,8 @@
         }
 
         async function fetchAttendanceData() {
+            currentViewingMember = null;
+            document.getElementById('dateRangeFilterContainer').classList.add('hidden');
             const tbody = document.getElementById('attendanceTableBody');
             tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400 italic"><i class="fa-solid fa-spinner animate-spin text-blue-600 mr-2"></i> Refreshing attendance records...</td></tr>`;
 
@@ -193,9 +213,12 @@
                         const tr = document.createElement('tr');
                         tr.className = 'hover:bg-slate-50/80 transition';
                         
-                        const statusBadge = rec.status === 'Present' || rec.status === 'Checked-In'
-                            ? `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px]">Present</span>`
-                            : `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold text-[10px]">Punch-In Pending</span>`;
+                        let statusBadge = `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold text-[10px]">Punch-In Pending</span>`;
+                        if (rec.status === 'Present') {
+                            statusBadge = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px]">Present</span>`;
+                        } else if (rec.status === 'Absent') {
+                            statusBadge = `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold text-[10px]">Absent</span>`;
+                        }
 
                         const usernameVal = rec.username || 'Unknown';
 
@@ -218,7 +241,10 @@
             }
         }
 
-        async function viewMemberMonth(username) {
+        async function viewMemberMonth(username, customStart = '', customEnd = '') {
+            currentViewingMember = username;
+            document.getElementById('dateRangeFilterContainer').classList.remove('hidden');
+
             const tbody = document.getElementById('attendanceTableBody');
             const bannerTitle = document.getElementById('bannerTitle');
             const bannerDesc = document.getElementById('bannerDesc');
@@ -227,9 +253,9 @@
             const headerAction = document.getElementById('headerActionBtn');
             const headerRow = document.getElementById('tableHeaderRow');
 
-            bannerTitle.textContent = `${username}'s Monthly Attendance`;
-            bannerDesc.textContent = `Reviewing full attendance and work hours history for ${username}.`;
-            tableTitle.innerHTML = `<i class="fa-solid fa-calendar-days text-blue-600"></i> Full Month Records: ${username}`;
+            bannerTitle.textContent = `${username}'s Attendance Range`;
+            bannerDesc.textContent = `Reviewing full attendance history and absent logs for ${username}.`;
+            tableTitle.innerHTML = `<i class="fa-solid fa-calendar-days text-blue-600"></i> Range Records: ${username}`;
             tableSub.innerHTML = `Showing history logs for team member <code class="bg-slate-100 text-blue-600 px-1.5 py-0.5 rounded font-mono">${username}</code>.`;
             
             headerAction.innerHTML = `
@@ -247,9 +273,22 @@
 
             tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400 italic"><i class="fa-solid fa-spinner animate-spin text-blue-600 mr-2"></i> Loading member records...</td></tr>`;
 
+            let url = `/api/attendance/${encodeURIComponent(username)}`;
+            let params = [];
+            if (customStart) params.push(`startDate=${customStart}`);
+            if (customEnd) params.push(`endDate=${customEnd}`);
+            if (params.length > 0) url += `?${params.join('&')}`;
+
             try {
-                const res = await fetch(`/api/attendance/${encodeURIComponent(username)}`);
+                const res = await fetch(url);
                 const data = await res.json();
+
+                if (data.history && data.history.length > 0 && !customStart && !customEnd) {
+                    // Set default filter inputs to min and max of fetched range
+                    const dates = data.history.map(h => h.date).sort();
+                    document.getElementById('filterStartDate').value = dates[0];
+                    document.getElementById('filterEndDate').value = dates[dates.length - 1];
+                }
 
                 tbody.innerHTML = '';
 
@@ -258,12 +297,13 @@
                         const tr = document.createElement('tr');
                         tr.className = 'hover:bg-slate-50/80 transition';
 
-                        const pIn = rec.punchIn ? new Date(rec.punchIn).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }) : 'N/A';
-                        const pOut = rec.punchOut ? new Date(rec.punchOut).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }) : 'Active / Not Out';
+                        const pIn = rec.punchIn ? new Date(rec.punchIn).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }) : '-';
+                        const pOut = rec.punchOut ? new Date(rec.punchOut).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }) : (rec.punchIn ? 'Active / Not Out' : '-');
                         
-                        const statusBadge = rec.punchIn 
-                            ? `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px]">Present</span>` 
-                            : `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold text-[10px]">Punch-In Pending</span>`;
+                        let statusBadge = `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold text-[10px]">Absent</span>`;
+                        if (rec.punchIn || rec.status === 'Present') {
+                            statusBadge = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px]">Present</span>`;
+                        }
 
                         tr.innerHTML = `
                             <td class="py-3.5 px-4 font-bold text-slate-900">${rec.date || 'N/A'}</td>
@@ -274,15 +314,25 @@
                         tbody.appendChild(tr);
                     });
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 font-bold italic">Punch-In Pending</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 font-bold italic">No attendance records found for this range.</td></tr>`;
                 }
             } catch (err) {
                 console.error('Error fetching member history:', err);
-                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 font-bold">Punch-In Pending / Error loading records.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 font-bold">Error loading records.</td></tr>`;
             }
         }
 
+        document.getElementById('applyDateFilterBtn').addEventListener('click', () => {
+            if (!currentViewingMember) return;
+            const start = document.getElementById('filterStartDate').value;
+            const end = document.getElementById('filterEndDate').value;
+            viewMemberMonth(currentViewingMember, start, end);
+        });
+
         function resetToTeamView() {
+            currentViewingMember = null;
+            document.getElementById('dateRangeFilterContainer').classList.add('hidden');
+
             const bannerTitle = document.getElementById('bannerTitle');
             const bannerDesc = document.getElementById('bannerDesc');
             const tableTitle = document.getElementById('tableHeaderTitle');
