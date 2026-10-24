@@ -127,6 +127,11 @@
                         <p class="text-xs text-slate-500 mt-0.5" id="tableHeaderSub">Fetched directly from MongoDB collection <code class="bg-slate-100 text-blue-600 px-1.5 py-0.5 rounded font-mono">attendance</code> and user accounts.</p>
                     </div>
                     
+                    <!-- Date Filter for Team View -->
+                    <div id="teamDateFilterContainer" class="flex items-center gap-2">
+                        <input type="date" id="teamDateInput" onchange="fetchAttendanceData()" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700">
+                    </div>
+
                     <!-- Date Range Filter Container (Only shown in Member Monthly View) -->
                     <div id="dateRangeFilterContainer" class="hidden flex items-center gap-2 flex-wrap">
                         <div class="flex items-center gap-1 text-[11px] font-bold text-slate-600">
@@ -175,6 +180,8 @@
 
     <script>
         let currentViewingMember = null;
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('teamDateInput').value = todayStr;
 
         function toggleMobileMenu() {
             const drawer = document.getElementById('mobileDrawer');
@@ -199,11 +206,14 @@
         async function fetchAttendanceData() {
             currentViewingMember = null;
             document.getElementById('dateRangeFilterContainer').classList.add('hidden');
+            document.getElementById('teamDateFilterContainer').classList.remove('hidden');
+
+            const selectedDate = document.getElementById('teamDateInput').value || todayStr;
             const tbody = document.getElementById('attendanceTableBody');
             tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400 italic"><i class="fa-solid fa-spinner animate-spin text-blue-600 mr-2"></i> Refreshing attendance records...</td></tr>`;
 
             try {
-                const res = await fetch('/api/attendance');
+                const res = await fetch(`/api/attendance?date=${selectedDate}`);
                 const data = await res.json();
 
                 tbody.innerHTML = '';
@@ -213,7 +223,7 @@
                         const tr = document.createElement('tr');
                         tr.className = 'hover:bg-slate-50/80 transition';
                         
-                        let statusBadge = `<span class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold text-[10px]">Punch-In Pending</span>`;
+                        let statusBadge = `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg font-bold text-[10px]">Punch-In Pending</span>`;
                         if (rec.status === 'Present') {
                             statusBadge = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px]">Present</span>`;
                         } else if (rec.status === 'Absent') {
@@ -243,6 +253,7 @@
 
         async function viewMemberMonth(username, customStart = '', customEnd = '') {
             currentViewingMember = username;
+            document.getElementById('teamDateFilterContainer').classList.add('hidden');
             document.getElementById('dateRangeFilterContainer').classList.remove('hidden');
 
             const tbody = document.getElementById('attendanceTableBody');
@@ -284,7 +295,6 @@
                 const data = await res.json();
 
                 if (data.history && data.history.length > 0 && !customStart && !customEnd) {
-                    // Set default filter inputs to min and max of fetched range
                     const dates = data.history.map(h => h.date).sort();
                     document.getElementById('filterStartDate').value = dates[0];
                     document.getElementById('filterEndDate').value = dates[dates.length - 1];
@@ -332,6 +342,7 @@
         function resetToTeamView() {
             currentViewingMember = null;
             document.getElementById('dateRangeFilterContainer').classList.add('hidden');
+            document.getElementById('teamDateFilterContainer').classList.remove('hidden');
 
             const bannerTitle = document.getElementById('bannerTitle');
             const bannerDesc = document.getElementById('bannerDesc');
