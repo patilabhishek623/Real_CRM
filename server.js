@@ -145,13 +145,24 @@ app.post('/api/login', async (req, res) => {
 // --- API: Attendance Routes ---
 app.get('/api/attendance', async (req, res) => {
     try {
-        const rawRecords = await Attendance.find({}).sort({ punchIn: -1, date: -1 });
+        const todayStr = getLocalDateString();
+        const queryDate = req.query.date || todayStr;
 
-        const records = rawRecords.map(rec => {
-            let status = 'Absent';
+        // Fetch all active team members
+        const members = await User.find({ role: 'teammember' }, 'username');
+        let records = [];
+
+        for (const member of members) {
+            const rec = await Attendance.findOne({ username: member.username, date: queryDate });
+            
             let checkInTime = 'N/A';
+            let status = 'Punch-In Pending';
+            let punchIn = null;
+            let punchOut = null;
 
-            if (rec.punchIn) {
+            if (rec && rec.punchIn) {
+                punchIn = rec.punchIn;
+                punchOut = rec.punchOut || null;
                 status = 'Present';
                 checkInTime = new Date(rec.punchIn).toLocaleTimeString('en-US', { 
                     hour: '2-digit', 
@@ -162,16 +173,16 @@ app.get('/api/attendance', async (req, res) => {
                 });
             }
 
-            return {
-                _id: rec._id,
-                username: rec.username,
-                date: rec.date,
+            records.push({
+                _id: rec ? rec._id : null,
+                username: member.username,
+                date: queryDate,
                 checkInTime: checkInTime,
                 status: status,
-                punchIn: rec.punchIn,
-                punchOut: rec.punchOut
-            };
-        });
+                punchIn: punchIn,
+                punchOut: punchOut
+            });
+        }
 
         res.json({ success: true, records });
     } catch (err) {
