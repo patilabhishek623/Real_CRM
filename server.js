@@ -129,6 +129,7 @@ app.get('/visit-interested.html', (req, res) => { res.sendFile(path.join(__dirna
 app.get('/lead-response.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'lead-response.html')); });
 app.get('/negotation.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'negotation.html')); });
 app.get('/userdailylogin.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'userdailylogin.html')); });
+app.get('/team_member_report.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'team_member_report.html')); });
 
 // --- API: Login Route ---
 app.post('/api/login', async (req, res) => {
@@ -407,6 +408,77 @@ app.get('/api/members', async (req, res) => {
         res.json({ success: true, members });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Error fetching members' });
+    }
+});
+
+app.get('/api/all-calls-report', async (req, res) => {
+    try {
+        const { username, startDate, endDate } = req.query;
+        const members = username && username !== 'all'
+            ? [{ username: username.trim() }]
+            : await User.find({ role: 'teammember' }, 'username');
+
+        let allCalls = [];
+
+        for (const member of members) {
+            const MemberTaskModel = getMemberTaskModel(member.username);
+            const tasks = await MemberTaskModel.find();
+
+            tasks.forEach(t => {
+                const taskObj = t.toObject ? t.toObject() : t;
+                let i = 1;
+                while (taskObj[`call${i}`]) {
+                    const call = taskObj[`call${i}`];
+                    const loggedDateObj = call.loggedAt ? new Date(call.loggedAt) : (taskObj.createdAt ? new Date(taskObj.createdAt) : null);
+                    const localDateStr = loggedDateObj && !isNaN(loggedDateObj) ? getLocalDateString(loggedDateObj) : '';
+
+                    // Apply server-side date filtering if provided
+                    let dateMatch = true;
+                    if (startDate && localDateStr && localDateStr < startDate) dateMatch = false;
+                    if (endDate && localDateStr && localDateStr > endDate) dateMatch = false;
+                    if ((startDate || endDate) && !localDateStr) dateMatch = false;
+
+                    if (dateMatch) {
+                        allCalls.push({
+                            memberUsername: member.username,
+                            taskId: taskObj._id,
+                            leadName: taskObj.name || 'Untitled Lead',
+                            contactNumber: taskObj.contactNumber || '',
+                            propertyDescription: taskObj.description || '',
+                            callNumber: `Call ${i}`,
+                            title: call.title || 'Call Log',
+                            callConnected: call.call_connected || 'N/A',
+                            leadTemperature: call.leadTemperature || '',
+                            tempSubOption: call.tempSubOption || '',
+                            leadStatus: call.leadStatus || '',
+                            followUpRequired: call.followUpRequired || 'No',
+                            followUpDate: call.followUpDate || '',
+                            followUpTime: call.followUpTime || '',
+                            visitScheduled: call.visitScheduled || 'No',
+                            visitDate: call.visitDate || '',
+                            visitBuilding: call.visitBuilding || '',
+                            callDuration: call.callDuration || '0 mins 0 secs',
+                            remark: call.remark || '',
+                            loggedAt: call.loggedAt || null,
+                            localDate: localDateStr
+                        });
+                    }
+                    i++;
+                }
+            });
+        }
+
+        // Sort newest calls first
+        allCalls.sort((a, b) => {
+            const timeA = a.loggedAt ? new Date(a.loggedAt).getTime() : 0;
+            const timeB = b.loggedAt ? new Date(b.loggedAt).getTime() : 0;
+            return timeB - timeA;
+        });
+
+        res.json({ success: true, calls: allCalls });
+    } catch (err) {
+        console.error('Error generating team member call report:', err);
+        res.status(500).json({ success: false, message: 'Error fetching call report data.' });
     }
 });
 
