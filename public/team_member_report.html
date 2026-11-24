@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Member Call Report | Real_CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold shadow-sm">
+                    <i class="fa-solid fa-phone-volume"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Team Member Call Report</h1>
+                    <p class="text-xs text-slate-500">Comprehensive outbound call logs & performance tracking</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="exportToCSV()" class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition">
+                    <i class="fa-solid fa-file-csv text-sm"></i> Export CSV
+                </button>
+                <a href="/teamlead.html" class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                    <i class="fa-solid fa-arrow-left"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Filter Bar -->
+        <section class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                
+                <!-- Team Member Filter (Name Wise) -->
+                <div>
+                    <label for="memberFilter" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-user text-indigo-500 mr-1"></i> Team Member
+                    </label>
+                    <select id="memberFilter" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                        <option value="all">All Team Members</option>
+                    </select>
+                </div>
+
+                <!-- Start Date Filter -->
+                <div>
+                    <label for="startDateFilter" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                        <i class="fa-regular fa-calendar text-indigo-500 mr-1"></i> From Date
+                    </label>
+                    <input type="date" id="startDateFilter" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                </div>
+
+                <!-- End Date Filter -->
+                <div>
+                    <label for="endDateFilter" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                        <i class="fa-regular fa-calendar-check text-indigo-500 mr-1"></i> To Date
+                    </label>
+                    <input type="date" id="endDateFilter" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                </div>
+
+                <!-- Call Connection Status Filter -->
+                <div>
+                    <label for="statusFilter" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-signal text-indigo-500 mr-1"></i> Call Status
+                    </label>
+                    <select id="statusFilter" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                        <option value="all">All Statuses</option>
+                        <option value="Yes">Connected (Yes)</option>
+                        <option value="No">Not Connected (No)</option>
+                    </select>
+                </div>
+
+                <!-- Lead / Number Quick Search -->
+                <div>
+                    <label for="searchInput" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-magnifying-glass text-indigo-500 mr-1"></i> Search Lead / Phone
+                    </label>
+                    <input type="text" id="searchInput" placeholder="Name or mobile..." class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <button onclick="fetchCallReport()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm py-2 px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-filter"></i> Filter
+                    </button>
+                    <button onclick="resetFilters()" title="Reset Filters" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm py-2 px-3 rounded-lg transition">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Date Presets -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+                <span class="text-slate-500 font-medium mr-1">Quick Date:</span>
+                <button onclick="setQuickDate('today')" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 font-medium transition">Today</button>
+                <button onclick="setQuickDate('yesterday')" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 font-medium transition">Yesterday</button>
+                <button onclick="setQuickDate('last7')" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 font-medium transition">Last 7 Days</button>
+                <button onclick="setQuickDate('thisMonth')" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 font-medium transition">This Month</button>
+                <button onclick="setQuickDate('allTime')" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 font-medium transition">All Time</button>
+            </div>
+        </section>
+
+        <!-- Summary KPI Cards -->
+        <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Total Calls Logged</span>
+                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-phone"></i></span>
+                </div>
+                <p id="statTotalCalls" class="text-2xl font-bold text-slate-900 mt-2">0</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Connected Calls</span>
+                    <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-check-circle"></i></span>
+                </div>
+                <p id="statConnectedCalls" class="text-2xl font-bold text-emerald-600 mt-2">0</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Follow-Ups Set</span>
+                    <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                </div>
+                <p id="statFollowUps" class="text-2xl font-bold text-amber-600 mt-2">0</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Site Visits Booked</span>
+                    <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-building"></i></span>
+                </div>
+                <p id="statVisits" class="text-2xl font-bold text-purple-600 mt-2">0</p>
+            </div>
+        </section>
+
+        <!-- Data Table Section -->
+        <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <h2 class="text-sm font-bold text-slate-800">Call Logs Breakdown</h2>
+                <span id="recordCountBadge" class="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">Showing 0 records</span>
+            </div>
+
+            <div class="table-container overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            <th class="py-3.5 px-4">#</th>
+                            <th class="py-3.5 px-4">Team Member</th>
+                            <th class="py-3.5 px-4">Date & Time</th>
+                            <th class="py-3.5 px-4">Lead Name & Phone</th>
+                            <th class="py-3.5 px-4">Call #</th>
+                            <th class="py-3.5 px-4">Connected</th>
+                            <th class="py-3.5 px-4">Temp / Status</th>
+                            <th class="py-3.5 px-4">Duration</th>
+                            <th class="py-3.5 px-4">Follow-Up / Visit</th>
+                            <th class="py-3.5 px-4">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody" class="divide-y divide-slate-100 text-sm">
+                        <tr>
+                            <td colspan="10" class="py-12 text-center text-slate-400">
+                                <i class="fa-solid fa-spinner fa-spin text-xl text-indigo-500 mb-2"></i>
+                                <p>Loading team call logs...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+            <span>Real_CRM &bull; Team Performance & Call Reporting</span>
+            <span class="font-medium text-slate-600">Powered by Abhishek Patil</span>
+        </div>
+    </footer>
+
+    <script>
+        let rawCallsData = [];
+        let filteredCallsData = [];
+
+        // Format IST Date helper (YYYY-MM-DD)
+        function getISTDateString(dateObj = new Date()) {
+            return new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(dateObj);
+        }
+
+        // Format readable timestamp in IST
+        function formatDateTimeIST(isoString) {
+            if (!isoString) return { date: 'N/A', time: '' };
+            const d = new Date(isoString);
+            if (isNaN(d)) return { date: 'N/A', time: '' };
+
+            const datePart = d.toLocaleDateString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+            const timePart = d.toLocaleTimeString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            return { date: datePart, time: timePart };
+        }
+
+        // Load all team members into dropdown
+        async function loadMembersDropdown() {
+            try {
+                const res = await fetch('/api/members');
+                const data = await res.json();
+                if (data.success && Array.isArray(data.members)) {
+                    const select = document.getElementById('memberFilter');
+                    data.members.forEach(m => {
+                        const opt = document.createElement('option');
+                        opt.value = m.username;
+                        opt.textContent = m.username;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading members:', err);
+            }
+        }
+
+        // Fetch call report data from backend
+        async function fetchCallReport() {
+            const member = document.getElementById('memberFilter').value;
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10" class="py-12 text-center text-slate-400">
+                        <i class="fa-solid fa-spinner fa-spin text-xl text-indigo-500 mb-2"></i>
+                        <p>Fetching call records...</p>
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const params = new URLSearchParams();
+                if (member && member !== 'all') params.append('username', member);
+                if (startDate) params.append('startDate', startDate);
+                if (endDate) params.append('endDate', endDate);
+
+                const res = await fetch(`/api/all-calls-report?${params.toString()}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    rawCallsData = data.calls || [];
+                    applyClientFilters();
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="10" class="py-8 text-center text-rose-500 font-medium">${data.message || 'Failed to load report'}</td></tr>`;
+                }
+            } catch (err) {
+                console.error('Error fetching report:', err);
+                tbody.innerHTML = `<tr><td colspan="10" class="py-8 text-center text-rose-500 font-medium">Server connection error while loading report.</td></tr>`;
+            }
+        }
+
+        // Apply instant client-side filters (Status & Search)
+        function applyClientFilters() {
+            const statusVal = document.getElementById('statusFilter').value.toLowerCase();
+            const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            filteredCallsData = rawCallsData.filter(item => {
+                // Status filter
+                if (statusVal !== 'all') {
+                    const conn = (item.callConnected || '').toLowerCase();
+                    if (statusVal === 'yes' && conn !== 'yes' && conn !== 'connected' && conn !== 'completed') return false;
+                    if (statusVal === 'no' && (conn === 'yes' || conn === 'connected' || conn === 'completed')) return false;
+                }
+
+                // Search filter
+                if (searchVal) {
+                    const matchName = (item.leadName || '').toLowerCase().includes(searchVal);
+                    const matchPhone = (item.contactNumber || '').toLowerCase().includes(searchVal);
+                    const matchMember = (item.memberUsername || '').toLowerCase().includes(searchVal);
+                    const matchRemark = (item.remark || '').toLowerCase().includes(searchVal);
+                    if (!matchName && !matchPhone && !matchMember && !matchRemark) return false;
+                }
+
+                return true;
+            });
+
+            updateKPIs(filteredCallsData);
+            renderTable(filteredCallsData);
+        }
+
+        // Update KPI Summary Cards
+        function updateKPIs(calls) {
+            document.getElementById('statTotalCalls').textContent = calls.length;
+
+            const connectedCount = calls.filter(c => {
+                const val = (c.callConnected || '').toLowerCase();
+                return val === 'yes' || val === 'connected' || val === 'completed';
+            }).length;
+            document.getElementById('statConnectedCalls').textContent = connectedCount;
+
+            const followUpCount = calls.filter(c => (c.followUpRequired || '').toLowerCase() === 'yes').length;
+            document.getElementById('statFollowUps').textContent = followUpCount;
+
+            const visitCount = calls.filter(c => (c.visitScheduled || '').toLowerCase() === 'yes').length;
+            document.getElementById('statVisits').textContent = visitCount;
+
+            document.getElementById('recordCountBadge').textContent = `Showing ${calls.length} record${calls.length === 1 ? '' : 's'}`;
+        }
+
+        // Render Table Rows
+        function renderTable(calls) {
+            const tbody = document.getElementById('reportTableBody');
+
+            if (!calls.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="py-12 text-center text-slate-400">
+                            <i class="fa-regular fa-folder-open text-2xl mb-2 block"></i>
+                            <p class="font-medium text-slate-600">No call records match the selected filters.</p>
+                            <p class="text-xs mt-1">Try expanding your date range or resetting filters.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = calls.map((call, idx) => {
+                const { date, time } = formatDateTimeIST(call.loggedAt);
+                const isConnected = ['yes', 'connected', 'completed'].includes((call.callConnected || '').toLowerCase());
+
+                const connBadge = isConnected
+                    ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Yes</span>`
+                    : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ${escapeHtml(call.callConnected || 'No')}</span>`;
+
+                let tempBadge = '<span class="text-slate-400 text-xs">-</span>';
+                if (call.leadTemperature) {
+                    const tLower = call.leadTemperature.toLowerCase();
+                    let colorClass = 'bg-slate-100 text-slate-700';
+                    if (tLower.includes('hot')) colorClass = 'bg-orange-50 text-orange-700 border border-orange-200';
+                    else if (tLower.includes('warm')) colorClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+                    else if (tLower.includes('cold')) colorClass = 'bg-sky-50 text-sky-700 border border-sky-200';
+                    tempBadge = `<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold ${colorClass}">${escapeHtml(call.leadTemperature)}</span>`;
+                }
+
+                let nextActionHtml = '<span class="text-slate-400 text-xs">None</span>';
+                if (call.visitScheduled === 'Yes' && call.visitDate) {
+                    nextActionHtml = `<div class="text-xs font-semibold text-purple-700"><i class="fa-solid fa-building mr-1"></i>Visit: ${escapeHtml(call.visitDate)}</div>`;
+                } else if (call.followUpRequired === 'Yes' && call.followUpDate) {
+                    nextActionHtml = `<div class="text-xs font-semibold text-amber-700"><i class="fa-solid fa-clock mr-1"></i>F/U: ${escapeHtml(call.followUpDate)} ${escapeHtml(call.followUpTime)}</div>`;
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-3 px-4 text-xs text-slate-400 font-medium">${idx + 1}</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">
+                                <i class="fa-solid fa-user-tie text-[10px]"></i> ${escapeHtml(call.memberUsername)}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap">
+                            <div class="text-xs font-semibold text-slate-800">${date}</div>
+                            <div class="text-[11px] text-slate-500">${time}</div>
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="font-semibold text-slate-900 text-xs">${escapeHtml(call.leadName)}</div>
+                            <div class="text-xs text-slate-500 font-mono mt-0.5">${escapeHtml(call.contactNumber || 'No Number')}</div>
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap">
+                            <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">${escapeHtml(call.callNumber)}</span>
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap">${connBadge}</td>
+                        <td class="py-3 px-4">
+                            ${tempBadge}
+                            ${call.leadStatus ? `<div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(call.leadStatus)}</div>` : ''}
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap text-xs text-slate-600 font-medium">
+                            ${escapeHtml(call.callDuration)}
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap">${nextActionHtml}</td>
+                        <td class="py-3 px-4 text-xs text-slate-600 max-w-xs truncate" title="${escapeHtml(call.remark)}">
+                            ${escapeHtml(call.remark || '-')}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Quick Date Presets
+        function setQuickDate(preset) {
+            const now = new Date();
+            const todayStr = getISTDateString(now);
+            const startInput = document.getElementById('startDateFilter');
+            const endInput = document.getElementById('endDateFilter');
+
+            if (preset === 'today') {
+                startInput.value = todayStr;
+                endInput.value = todayStr;
+            } else if (preset === 'yesterday') {
+                const yest = new Date(now);
+                yest.setDate(now.getDate() - 1);
+                const yestStr = getISTDateString(yest);
+                startInput.value = yestStr;
+                endInput.value = yestStr;
+            } else if (preset === 'last7') {
+                const past = new Date(now);
+                past.setDate(now.getDate() - 6);
+                startInput.value = getISTDateString(past);
+                endInput.value = todayStr;
+            } else if (preset === 'thisMonth') {
+                startInput.value = `${todayStr.substring(0, 7)}-01`;
+                endInput.value = todayStr;
+            } else if (preset === 'allTime') {
+                startInput.value = '';
+                endInput.value = '';
+            }
+            fetchCallReport();
+        }
+
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('memberFilter').value = 'all';
+            document.getElementById('startDateFilter').value = '';
+            document.getElementById('endDateFilter').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('searchInput').value = '';
+            fetchCallReport();
+        }
+
+        // Export filtered table data to CSV
+        function exportToCSV() {
+            if (!filteredCallsData.length) {
+                alert('No call records available to export.');
+                return;
+            }
+
+            const headers = [
+                'Team Member', 'Date', 'Time', 'Lead Name', 'Contact Number',
+                'Call Number', 'Connected', 'Lead Temperature', 'Lead Status',
+                'Call Duration', 'Follow-Up Required', 'Follow-Up Date',
+                'Visit Scheduled', 'Visit Date', 'Remark'
+            ];
+
+            const rows = filteredCallsData.map(c => {
+                const { date, time } = formatDateTimeIST(c.loggedAt);
+                return [
+                    c.memberUsername,
+                    date,
+                    time,
+                    c.leadName,
+                    c.contactNumber,
+                    c.callNumber,
+                    c.callConnected,
+                    c.leadTemperature,
+                    c.leadStatus,
+                    c.callDuration,
+                    c.followUpRequired,
+                    c.followUpDate,
+                    c.visitScheduled,
+                    c.visitDate,
+                    c.remark
+                ].map(val => `"${String(val || '').replace(/"/g, '""')}"`).join(',');
+            });
+
+            const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            const today = getISTDateString();
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `Team_Member_Call_Report_${today}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // HTML Escaping helper
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Event Listeners for instant client-side filtering
+        document.getElementById('statusFilter').addEventListener('change', applyClientFilters);
+        document.getElementById('searchInput').addEventListener('input', applyClientFilters);
+        document.getElementById('memberFilter').addEventListener('change', fetchCallReport);
+
+        // Initialize Page
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadMembersDropdown();
+            // Default to Today's report on load (or remove next 2 lines to show All Time by default)
+            const todayStr = getISTDateString();
+            document.getElementById('startDateFilter').value = todayStr;
+            document.getElementById('endDateFilter').value = todayStr;
+            await fetchCallReport();
+        });
+    </script>
+</body>
+</html>
